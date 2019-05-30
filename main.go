@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -22,6 +23,9 @@ var clients []client
 func main() {
 
 	// TODO: fazer a base num BD SQL para começar a brincar
+	// createDB()
+	s, b := os.LookupEnv("DB_HOST")
+	fmt.Println(s, b)
 
 }
 
