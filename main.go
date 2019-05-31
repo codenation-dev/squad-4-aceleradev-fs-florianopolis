@@ -1,99 +1,106 @@
 package main
 
 import (
-	"encoding/csv"
 	"fmt"
-	"io"
 	"log"
-	"net/http"
 	"os"
-
-	"github.com/mholt/archiver"
+	"strings"
 )
 
-type client struct {
-	name         string
-	isBankFunc   bool
-	isPublicFunc bool
-	income       float64
-}
+var originalFilename = "remuneracao_Marco_2019.rar"
+var savedFilename = "Remuneracao_Marco_2019.txt"
+var httpAddress = "http://www.transparencia.sp.gov.br/PortalTransparencia-Report/historico"
+var extractFolder = "extracted"
+var downloadFolder = "downloaded"
+var downloadedFilePath = fmt.Sprintf("%v/%v", downloadFolder, originalFilename)
+var httpPath = fmt.Sprintf("%v/%v", httpAddress, originalFilename)
+var extractedFilePath = fmt.Sprintf("%v/%v", extractFolder, savedFilename)
+var dbaccountHoldersPath = "db/accountHolders.csv"
 
-var clients []client
+const indexaccountHolderName int = 0
+const indexisBankFunc int = 1
+const indexisPublicFunc int = 2
+const indexIncome int = 3
 
 func main() {
-
-	// TODO: fazer a base num BD SQL para começar a brincar
-	// createDB()
-	s, b := os.LookupEnv("DB_HOST")
-	fmt.Println(s, b)
-
+	menuPrinc()
 }
 
-func check(command string, e error) {
-	if e != nil {
-		log.Fatalf("%q failed with %s\n", command, e.Error())
-	}
+func menuPrinc() {
 
-}
+	fmt.Println("\nMenu inicial:\n*************")
+	fmt.Println("S-\tSetup novo banco de dados")
+	fmt.Println("I-\tImportar arquivo de clientes")
+	fmt.Println("A-\tAtualizar, comparando com lista dos funcionários públicos")
+	fmt.Println("C-\tCadastrar usuários para receber alertas")
+	fmt.Println("L-\tListar todos os clientes")
+	fmt.Println("U-\tListar usuários")
+	fmt.Println("D-\tDashboard")
 
-func importClientsCSV() []client {
-	// import from the file given by the exercise
-	// returns []uf
+	choice := readStringInput("\nDigite a opção desejada: ")
 
-	f, err := os.Open("clientes.csv")
-	check("os.Open", err)
-	defer f.Close()
-
-	// Parse the file
-	r := csv.NewReader(f)
-
-	for {
-		// Read each record from csv
-		record, err := r.Read()
-		if err == io.EOF {
-			break
+	if choice == "I" {
+		err := importClientesCSV("clientes.csv")
+		if err != nil {
+			log.Fatal(err)
 		}
-		check("r.Read()", err)
-
-		clients = append(clients, client{name: record[0]})
+		menuPrinc()
+	} else if choice == "U" {
+		err := readUsers()
+		if err != nil {
+			fmt.Printf("Could not read db: %v", err)
+		}
+		menuPrinc()
+	} else if choice == "L" {
+		err := readAccountHolders()
+		if err != nil {
+			fmt.Printf("Could not read db: %v", err)
+		}
+		menuPrinc()
+	} else if choice == "S" {
+		err := setupDB()
+		if err != nil {
+			log.Printf("Could not setup a new db: %v", err)
+		}
+		menuPrinc()
+	} else if choice == "C" {
+		addNewUser()
+		menuPrinc()
+	} else {
+		fmt.Println("\nFudeu!!!")
 	}
-	return clients
+
 }
 
-func downloadHTTPFile(path, filename string) (string, error) {
-	// download the file with the list of SP public agents
-	// returns the path to the file
-	r, err := http.Get(path + filename + ".rar")
-	check("http.Get", err)
-
-	destPath := "file.rar"
-	dest, err := os.Create(destPath)
-	check("os.Create", err)
-	defer dest.Close()
-
-	_, err = io.Copy(dest, r.Body)
-	check("io.Copy", err)
-
-	return destPath, nil
+func addNewUser() {
+	var u user
+	u.Email = readStringInput("Digite o email do usuário: ")
+	u.Password = readStringInput("Digite a senha: ")
+	err := addUser(u)
+	if err != nil {
+		log.Printf("não foi possivel cadastrar usuário: %v", err)
+	}
+	again := readStringInput("\nCadastrar mais um? (s/n) ")
+	if again == "s" {
+		addNewUser()
+	}
 }
 
-func fetchPublicAgentsFile() {
-	filename := "remuneracao_Marco_2019"
-	path := "http://www.transparencia.sp.gov.br/PortalTransparencia-Report/historico/"
-	destFolder := "extracted"
-	compressedFile := "file.rar"
+func makeMapAgents() map[string]string {
+	var indexName int
+	var indexIncome = 3
 
-	if _, err := os.Stat(
-		"/home/gui/dev/go_projects/src/codenation/banco-uati-presencial/file.rar",
-	); err != nil {
-		_, err := downloadHTTPFile(path, filename)
-		check("downloadPublicAgentsFile", err)
+	if _, err := os.Stat(extractedFilePath); os.IsNotExist(err) {
+		downloadPublicAgentsFile(false)
 	}
 
-	if _, err := os.Stat(
-		"/home/gui/dev/go_projects/src/codenation/banco-uati-presencial/extracted/Remuneracao_Marco_2019.txt",
-	); err != nil {
-		err := archiver.Unarchive(compressedFile, destFolder)
-		check("archiver.Unarchive", err)
+	mapAgents := make(map[string]string)
+	job := func(row []string) bool {
+		r := strings.Replace(row[indexIncome], ",", ".", 1)
+		mapAgents[row[indexName]] = r
+		return true
 	}
+
+	readCSV(extractedFilePath, job, ';', true)
+	return mapAgents
 }
