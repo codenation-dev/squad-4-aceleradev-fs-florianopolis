@@ -2,31 +2,33 @@ CREATE DATABASE uati;
 
 \c uati;
 
-CREATE TABLE IF NOT EXISTS public_func (
-func_id SERIAL,
-func_name TEXT NOT NULL,
-func_wage NUMERIC(10,2) DEFAULT 0.00,
-place TEXT NOT NULL
+DROP TABLE IF EXISTS public_funcs, customers, users, warnings;
+
+CREATE TABLE IF NOT EXISTS public_funcs (
+fid SERIAL,
+name TEXT,
+wage NUMERIC(10,2),
+place TEXT
 );
 
-CREATE TABLE IF NOT EXISTS customer	(
-cust_id SERIAL,
-cust_name TEXT NOT NULL,
-cust_wage NUMERIC(10,2) DEFAULT 0.00,
-isPublic bit DEFAULT NULL,
-sentWarning TEXT DEFAULT NULL
+CREATE TABLE IF NOT EXISTS customers	(
+cid SERIAL,
+name TEXT,
+wage NUMERIC(10,2),
+is_public bit,
+sent_warning TEXT
 );
 
 CREATE TABLE IF NOT EXISTS users(
 uid SERIAL,
-email TEXT NOT NULL,
-password TEXT
+email TEXT UNIQUE,
+pass TEXT
 );
 
 CREATE TABLE IF NOT EXISTS warnings(
-warning_id SERIAL,
+wid SERIAL,
 dt TIMESTAMP,
-message TEXT,
+msg TEXT,
 sent_to text,
 from_customer TEXT
 );

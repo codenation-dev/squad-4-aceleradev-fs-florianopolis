@@ -6,7 +6,13 @@ import (
 	"net/http"
 )
 
-// ErrorResponse send the error message to w
+// DefaultResponse implements a struct to use in response data
+type DefaultResponse struct {
+	Data   interface{} `json:"data"`
+	Status int         `Json:"status"`
+}
+
+// ErrorResponse send the error message to http.ResponseWriter
 func ErrorResponse(w http.ResponseWriter, err error, status int) {
 	w.WriteHeader(status)
 	ToJSON(w, struct {
