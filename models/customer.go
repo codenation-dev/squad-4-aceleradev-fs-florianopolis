@@ -1,9 +1,13 @@
 package models
 
 import (
-	// "codenation/squad-4-aceleradev-fs-florianopolis/models"
-
+	"errors"
 	"fmt"
+)
+
+var (
+	// ErrCustNotFound - customer not found
+	ErrCustNotFound = errors.New("Cliente não encontrado")
 )
 
 // Customer of the bank
@@ -46,6 +50,8 @@ func NewCustomer(c Customer) (bool, error) {
 }
 
 // GetCustomers returns a list of all bank's customers
+// TODO: será que posso usar esta função para receber os dados do arquivo.csv
+
 func GetCustomers() ([]Customer, error) {
 	db := Connect()
 	defer db.Close()
@@ -86,6 +92,9 @@ func GetCustomersPublicFuncs() ([]Customer, error) {
 		}
 		customers = append(customers, c)
 	}
+	if len(customers) == 0 {
+		return nil, ErrCustNotFound
+	}
 	return customers, nil
 }
 
@@ -108,5 +117,51 @@ func GetVIPCustomers(goodWage float32) ([]Customer, error) {
 		}
 		customers = append(customers, c)
 	}
+	if len(customers) == 0 {
+		return nil, ErrCustNotFound
+	}
 	return customers, nil
+}
+
+// GetCustomersByName returns a bank customer
+func GetCustomersByName(name string) ([]Customer, error) {
+	db := Connect()
+	defer db.Close()
+	sql := "SELECT * FROM customers WHERE name = $1"
+	rows, err := db.Query(sql, name)
+	if err != nil {
+		return nil, fmt.Errorf("%v", err)
+	}
+	defer rows.Close()
+	var customers []Customer
+	for rows.Next() {
+		var c Customer
+		err := rows.Scan(&c.CID, &c.Name, &c.Wage, &c.IsPublic, &c.SentWarning)
+		if err != nil {
+			return nil, err
+		}
+		customers = append(customers, c)
+	}
+	if len(customers) == 0 {
+		return nil, ErrCustNotFound
+	}
+	return customers, nil
+}
+
+// UpdateCustomer updates a customer
+func UpdateCustomer(c Customer) (int64, error) {
+	db := Connect()
+	defer db.Close()
+	sql := `UPDATE customers 
+			SET name = $1, wage = $2, is_public = $3, sent_warning = $4
+			WHERE cid = $5`
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		return 0, err
+	}
+	rows, err := stmt.Exec(c.Name, c.Wage, c.IsPublic, c.SentWarning, c.CID)
+	if err != nil {
+		return 0, err
+	}
+	return rows.RowsAffected()
 }

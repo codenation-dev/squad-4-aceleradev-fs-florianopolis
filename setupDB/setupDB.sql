@@ -21,13 +21,14 @@ sent_warning TEXT
 
 CREATE TABLE IF NOT EXISTS users(
 uid SERIAL,
+login TEXT UNIQUE,
 email TEXT UNIQUE,
 pass TEXT
 );
 
 CREATE TABLE IF NOT EXISTS warnings(
 wid SERIAL,
-dt TIMESTAMP,
+dt TEXT,
 msg TEXT,
 sent_to text,
 from_customer TEXT

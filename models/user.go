@@ -10,6 +10,7 @@ import (
 // User of the app
 type User struct {
 	UID   int32  `json:"uid"`
+	Login string `json:"login"`
 	Email string `json:"email"`
 	Pass  string `json:"pass"`
 }
@@ -22,8 +23,10 @@ func NewUser(u User) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	sql := `INSERT INTO users (email, pass)
-			VALUES ($1, $2)
+	// TODO: quando tenta inserir com valor duplo acaba consumindo uma uid e
+	// pulando um numero, tem como não acontecer isso?
+	sql := `INSERT INTO users (login, email, pass)
+			VALUES ($1, $2, $3)
 			RETURNING uid`
 	{
 		stmt, err := tx.Prepare(sql)
@@ -40,7 +43,7 @@ func NewUser(u User) (bool, error) {
 		}
 
 		err = stmt.QueryRow(
-			u.Email, hashedPassword,
+			u.Login, u.Email, string(hashedPassword),
 		).Scan(&u.UID)
 		if err != nil {
 			tx.Rollback()
@@ -55,7 +58,7 @@ func NewUser(u User) (bool, error) {
 func GetUsers() ([]User, error) {
 	db := Connect()
 	defer db.Close()
-	sql := "SELECT uid, email FROM users"
+	sql := "SELECT uid, login, email FROM users"
 	rows, err := db.Query(sql)
 	if err != nil {
 		return nil, fmt.Errorf("%v", err)
@@ -64,7 +67,8 @@ func GetUsers() ([]User, error) {
 	var users []User
 	for rows.Next() {
 		var u User
-		err := rows.Scan(&u.UID, &u.Email)
+		err := rows.Scan(&u.UID, &u.Login, &u.Email)
+		u.Pass = "*****"
 		if err != nil {
 			return nil, err
 		}

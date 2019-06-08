@@ -43,6 +43,18 @@ func GetVIPCustomers(w http.ResponseWriter, r *http.Request) {
 	utils.ToJSON(w, customers)
 }
 
+// GetCustomerByName returns one customer
+func GetCustomerByName(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	name, _ := params["name"]
+	customers, err := models.GetCustomersByName(name)
+	if err != nil {
+		utils.ErrorResponse(w, err, http.StatusBadRequest)
+		return
+	}
+	utils.ToJSON(w, customers)
+}
+
 // PostCustomer insert new customer on the db
 func PostCustomer(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
