@@ -16,6 +16,7 @@ type cliente struct {
 	Name string
 }
 
+//dados conexao
 const (
 	host     = "172.17.0.2"
 	port     = 5432
