@@ -17,7 +17,7 @@ type cliente struct {
 }
 
 const (
-	host     = "127.17.0.2"
+	host     = "172.17.0.2"
 	port     = 5432
 	user     = "postgres"
 	password = "12345"
@@ -28,7 +28,7 @@ func main() {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
-
+println(psqlInfo)
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(err)
@@ -38,8 +38,8 @@ func main() {
 	//fmt.Println(clienteList)
 	//	insertClientList(db, clienteList)
 	for id, cliente := range clienteList {
-		println(fmt.Sprintf("INSERT INTO cliente(id_cliente, nome) VALUES(%d, '%s')", id+1, cliente.Name))
-		rows, err := db.Query(fmt.Sprintf("INSERT INTO cliente(id_cliente, nome) VALUES(%d, '%s')", id+1, cliente.Name))
+		println(fmt.Sprintf("INSERT INTO uati.cliente(id_cliente, nome) VALUES(%d, '%s')", id+1, cliente.Name))
+		rows, err := db.Exec(fmt.Sprintf("INSERT INTO uati.cliente(id_cliente, nome) VALUES(%d, '%s')", id+1, cliente.Name))
 		if err != nil {
 			panic(err)
 		} else {
