@@ -73,17 +73,8 @@ func main() {
 
 }
 
-// Customer of the bank
-type Customer struct {
-	ID          int     `json:"cid"`
-	Name        string  `json:"name"`
-	Wage        float32 `json:"wage"`
-	IsPublic    int8    `json:"is_public"`
-	SentWarning string  `json:"sent_warning"` //TODO: Isso pode se tornar o ID da tabela warning
-}
-
 // DeleteCustomers handles method "DELETE" to route /customer
-func (a *App) DeleteCustomers(w http.ResponseWriter, r *http.Request) {
+func (a *App) Delete(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
 	if err != nil {
@@ -172,34 +163,4 @@ func (a *App) getCustomers(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	w.Write(b)
-}
-
-// ReadCustomers read customers from the DB
-// If id = 0, it will return all customers
-func ReadCustomers(db *sql.DB, id int) ([]Customer, error) {
-	var err error
-	var query string
-	var rows *sql.Rows
-
-	if id == 0 {
-		query = "SELECT * FROM customers"
-		rows, err = db.Query(query)
-
-	} else {
-		query = "SELECT * FROM customers WHERE id=$1"
-		rows, err = db.Query(query, id)
-	}
-	if err != nil {
-		return nil, err
-	}
-	customers := []Customer{}
-	for rows.Next() {
-		c := Customer{}
-		err = rows.Scan(&c.ID, &c.Name, &c.Wage, &c.IsPublic, &c.SentWarning)
-		if err != nil {
-			return nil, err
-		}
-		customers = append(customers, c)
-	}
-	return customers, nil
 }
