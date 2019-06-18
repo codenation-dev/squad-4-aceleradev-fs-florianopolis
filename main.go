@@ -1,131 +1,45 @@
 package main
 
 import (
-	"database/sql"
-	"encoding/json"
+	"codenation/squad-4-aceleradev-fs-florianopolis/adding"
+	"codenation/squad-4-aceleradev-fs-florianopolis/http/rest"
+	"codenation/squad-4-aceleradev-fs-florianopolis/reading"
+	"codenation/squad-4-aceleradev-fs-florianopolis/storage/postgres"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 
-	"github.com/gorilla/mux"
 	_ "github.com/lib/pq" // postgres
 )
 
-const (
-	DRIVER_NAME = "postgres"
-	DB_USER     = "postgres"
-	DB_PASSWORD = "12345"
-	DB_NAME     = "uati"
-	SSLMODE     = "disable"
-	HOST        = "172.17.0.2"
-	PORT        = "5432"
-)
-
-var app App
-
-func (a *App) connectDB() {
-	connString := fmt.Sprintf(fmt.Sprintf(
-		"user=%s password=%s host=%s port=%s dbname=%s sslmode=%s",
-		DB_USER, DB_PASSWORD, HOST, PORT, DB_NAME, SSLMODE,
-	))
-
-	db, err := sql.Open("postgres", connString)
-	a.db = db
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func getHome(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
-	err := json.NewEncoder(w).Encode("API Banco Uati")
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 func main() {
 
-	app.connectDB()
-	app.NewRouter()
+	// set services
+	var adder adding.Service
+	var reader reading.Service
+	// var deleter deleting.Service
+	// var updater updating.Service
 
-	apiPort := ":3000"
-	http.ListenAndServe(apiPort, app.router)
-
-}
-
-// DeleteCustomers handles method "DELETE" to route /customer
-func (a *App) Delete(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id, err := strconv.Atoi(params["id"])
+	// If have more than one storage types, make the case/switch here
+	s, err := postgres.NewStorage()
 	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = a.db.Exec("DELETE FROM customers WHERE id=$1", id)
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Fprintln(w, "Cadastro não encontrado")
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintln(w, "Delete efetuado com sucesso")
-}
-
-// PutCustomers handles method "PUT" to route /customer
-func (a *App) PutCustomers(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id, err := strconv.Atoi(params["id"])
-	if err != nil {
-		log.Fatal(err)
-	}
-	cc, err := ReadCustomers(a.db, id)
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Fprintln(w, "Cadastro não encontrado")
-		return
-	}
-	c := cc[0]
-
-	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = json.Unmarshal(b, &c)
-	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("could not set new storage: %v", err)
 	}
 
-	query := "UPDATE customers SET name=$1, wage=$2, is_public=$3, sent_warning=$4 WHERE id=$5"
-	_, err = a.db.Exec(query, c.Name, c.Wage, c.IsPublic, c.SentWarning, c.ID)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Fprintln(w, "Update realizado com sucesso")
-}
+	adder = adding.NewService(s)
+	reader = reading.NewService(s)
+	// deleter = deleting.NewService(s)
+	// updater = updating.NewService(s)
 
-// PostCustomers handles the POST route to /customer
-func (a *App) PostCustomers(w http.ResponseWriter, r *http.Request) {
-	c := Customer{}
-	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = json.Unmarshal(b, &c)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// set uo HTTP server
+	router := rest.Handler(
+		adder,
+		reader,
+		// deleter,
+		// updater,
+	)
 
-	query := `INSERT INTO customers (name, wage, is_public, sent_warning) 
-	VALUES ($1, $2, $3, $4)
-	RETURNING id`
-	_, err = a.db.Exec(query, c.Name, c.Wage, c.IsPublic, c.SentWarning)
+	fmt.Println("Server running ou port 3000")
+	log.Fatal(http.ListenAndServe(":3000", router))
 
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Fprintln(w, "Cliente cadastrado com sucesso")
 }

@@ -1,4 +1,4 @@
-package models
+package reading
 
 // Customer of the bank
 type Customer struct {
