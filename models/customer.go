@@ -1,4 +1,4 @@
-package main
+package models
 
 // Customer of the bank
 type Customer struct {
