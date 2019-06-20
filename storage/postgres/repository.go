@@ -73,12 +73,6 @@ func (s *Storage) GetCustomerByID(id int) (entity.Customer, error) {
 	if err != nil {
 		return entity.Customer{}, err
 	}
-
-	// err := s.db.QueryRow(query, id).Scan(&c.ID, &c.Name, &c.Wage, &c.IsPublic, &c.SentWarning)
-	// if err != nil {
-	// 	return entity.Customer{}, err
-	// }
-
 	return c, err
 }
 
