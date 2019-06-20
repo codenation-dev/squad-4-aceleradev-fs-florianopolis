@@ -48,25 +48,31 @@ func (s *Storage) DeleteCustomerByID(id int) error {
 }
 
 // AddCustomer inserts a new customer on the DB
-func (s *Storage) AddCustomer(c entity.Customer) error {
-	_, err := s.db.Exec(`INSERT INTO customers (name, wage, is_public, sent_warning)
+func (s *Storage) AddCustomer(c entity.Customer) (sql.Result, error) {
+	res, err := s.db.Exec(`INSERT INTO customers (name, wage, is_public, sent_warning)
 						VALUES ($1, $2, $3, $4)`,
 		&c.Name, &c.Wage, &c.IsPublic, &c.SentWarning)
 	// if err != nil {
 	// 	return err
 	// }
-	return err
+	// fmt.Println("AQUI")
+	return res, err
 }
 
 // GetCustomerByID read a customer from the DB, given the id
 func (s *Storage) GetCustomerByID(id int) (entity.Customer, error) {
 	c := entity.Customer{}
 	query := "SELECT * FROM customers WHERE id=$1"
-	err := s.db.QueryRow(query, id).Scan(&c.ID, &c.Name, &c.Wage, &c.IsPublic, &c.SentWarning)
-	// if err != nil {
-	// 	return entity.Customer{}, err
-	// }
+	stmt, err := s.db.Prepare(query)
+	if err != nil {
+		panic(err)
+	}
+	defer stmt.Close()
 
+	stmt.QueryRow(id).Scan(&c.ID, &c.Name, &c.Wage, &c.IsPublic, &c.SentWarning)
+	if err != nil {
+		return entity.Customer{}, err
+	}
 	return c, err
 }
 
