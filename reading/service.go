@@ -1,17 +1,19 @@
 package reading
 
+import "codenation/squad-4-aceleradev-fs-florianopolis/entity"
+
 // Service provides reading operations
 type Service interface {
-	GetAllCustomers() ([]Customer, error)
-	GetCustomerByID(c Customer) (Customer, error)
-	GetCustomerByName(pattern string) ([]Customer, error)
+	GetAllCustomers() ([]entity.Customer, error)
+	GetCustomerByID(id int) (entity.Customer, error)
+	GetCustomerByName(pattern string) ([]entity.Customer, error)
 }
 
 // Repository provides access to BD
 type Repository interface {
-	GetAllCustomers() ([]Customer, error)
-	GetCustomerByID(c Customer) (Customer, error)
-	GetCustomerByName(pattern string) ([]Customer, error)
+	GetAllCustomers() ([]entity.Customer, error)
+	GetCustomerByID(id int) (entity.Customer, error)
+	GetCustomerByName(pattern string) ([]entity.Customer, error)
 }
 
 type service struct {
@@ -23,14 +25,14 @@ func NewService(r Repository) Service {
 	return &service{r}
 }
 
-func (s *service) GetAllCustomers() ([]Customer, error) {
+func (s *service) GetAllCustomers() ([]entity.Customer, error) {
 	return s.bR.GetAllCustomers()
 }
 
-func (s *service) GetCustomerByID(c Customer) (Customer, error) {
-	return s.bR.GetCustomerByID(c)
+func (s *service) GetCustomerByID(id int) (entity.Customer, error) {
+	return s.bR.GetCustomerByID(id)
 }
 
-func (s *service) GetCustomerByName(pattern string) ([]Customer, error) {
+func (s *service) GetCustomerByName(pattern string) ([]entity.Customer, error) {
 	return s.bR.GetCustomerByName(pattern)
 }
