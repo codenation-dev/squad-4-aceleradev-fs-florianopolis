@@ -3,13 +3,15 @@ package reading
 // Service provides reading operations
 type Service interface {
 	GetAllCustomers() ([]Customer, error)
-	GetCustomerByID(Customer) (Customer, error)
+	GetCustomerByID(c Customer) (Customer, error)
+	GetCustomerByName(pattern string) ([]Customer, error)
 }
 
 // Repository provides access to BD
 type Repository interface {
 	GetAllCustomers() ([]Customer, error)
-	GetCustomerByID(Customer) (Customer, error)
+	GetCustomerByID(c Customer) (Customer, error)
+	GetCustomerByName(pattern string) ([]Customer, error)
 }
 
 type service struct {
@@ -27,4 +29,8 @@ func (s *service) GetAllCustomers() ([]Customer, error) {
 
 func (s *service) GetCustomerByID(c Customer) (Customer, error) {
 	return s.bR.GetCustomerByID(c)
+}
+
+func (s *service) GetCustomerByName(pattern string) ([]Customer, error) {
+	return s.bR.GetCustomerByName(pattern)
 }

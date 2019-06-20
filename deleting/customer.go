@@ -1,4 +1,4 @@
-package postgres
+package deleting
 
 // Customer of the bank
 type Customer struct {

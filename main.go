@@ -2,7 +2,8 @@ package main
 
 import (
 	"codenation/squad-4-aceleradev-fs-florianopolis/adding"
-	"codenation/squad-4-aceleradev-fs-florianopolis/http/rest"
+	"codenation/squad-4-aceleradev-fs-florianopolis/deleting"
+	"codenation/squad-4-aceleradev-fs-florianopolis/delivery/rest"
 	"codenation/squad-4-aceleradev-fs-florianopolis/reading"
 	"codenation/squad-4-aceleradev-fs-florianopolis/storage/postgres"
 	"fmt"
@@ -17,7 +18,7 @@ func main() {
 	// set services
 	var adder adding.Service
 	var reader reading.Service
-	// var deleter deleting.Service
+	var deleter deleting.Service
 	// var updater updating.Service
 
 	// If have more than one storage types, make the case/switch here
@@ -28,14 +29,14 @@ func main() {
 
 	adder = adding.NewService(s)
 	reader = reading.NewService(s)
-	// deleter = deleting.NewService(s)
+	deleter = deleting.NewService(s)
 	// updater = updating.NewService(s)
 
 	// set uo HTTP server
 	router := rest.Handler(
 		adder,
 		reader,
-		// deleter,
+		deleter,
 		// updater,
 	)
 

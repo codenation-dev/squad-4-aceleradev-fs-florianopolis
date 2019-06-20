@@ -42,15 +42,21 @@ func NewStorage() (*Storage, error) {
 	return s, nil
 }
 
+// DeleteCustomerByID delets a customer from the db
+func (s *Storage) DeleteCustomerByID(id int) error {
+	_, err := s.db.Exec(`DELETE FROM customers WHERE id=$1`, id)
+	return err
+}
+
 // AddCustomer inserts a new customer on the DB
 func (s *Storage) AddCustomer(c adding.Customer) error {
 	_, err := s.db.Exec(`INSERT INTO customers (name, wage, is_public, sent_warning)
 						VALUES ($1, $2, $3, $4)`,
 		&c.Name, &c.Wage, &c.IsPublic, &c.SentWarning)
-	if err != nil {
-		return err
-	}
-	return nil
+	// if err != nil {
+	// 	return err
+	// }
+	return err
 }
 
 // GetCustomerByID read a customer from the DB, given the id
@@ -59,7 +65,7 @@ func (s *Storage) GetCustomerByID(c reading.Customer) (reading.Customer, error) 
 	query := "SELECT name, wage, is_public, sent_warning FROM customers WHERE id=$1"
 	err := s.db.QueryRow(query, c.ID).Scan(&c.Name, &c.Wage, &c.IsPublic, &c.SentWarning)
 	// if err != nil {
-	// 	return nil, err
+	// 	return reading.Customer{}, err
 	// }
 	return c, err
 }
@@ -82,23 +88,24 @@ func (s *Storage) GetAllCustomers() ([]reading.Customer, error) {
 	return customers, nil
 }
 
-// // ReadCustomerByName returns a slice of customers with the given pattern in the name column
-// func (s *Storage) ReadCustomerByName(pattern string) ([]*Customer, error) {
-// 	customers := []*Customer{}
-// 	rows, err := s.db.Query(`SELECT * FROM customers WHERE name LIKE "%$1%"`, pattern)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	for rows.Next() {
-// 		c := new(Customer)
-// 		err := rows.Scan(c) // se der erro, acrescentar &
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		customers = append(customers, c)
-// 	}
-// 	return customers, nil
-// }
+// GetCustomerByName returns a slice of customers with the given pattern in the name column
+func (s *Storage) GetCustomerByName(pattern string) ([]reading.Customer, error) {
+	customers := []reading.Customer{}
+	query := fmt.Sprintf("SELECT * FROM customers WHERE name LIKE '%%%s%%'", pattern)
+	rows, err := s.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		c := reading.Customer{}
+		err := rows.Scan(&c.ID, &c.Name, &c.Wage, &c.IsPublic, &c.SentWarning)
+		if err != nil {
+			return nil, err
+		}
+		customers = append(customers, c)
+	}
+	return customers, nil
+}
 
 // // UpdateCustomer replace some data mantaining the same id
 // func (s *Storage) UpdateCustomer(c *Customer) error {

@@ -2,6 +2,7 @@ package rest
 
 import (
 	"codenation/squad-4-aceleradev-fs-florianopolis/adding"
+	"codenation/squad-4-aceleradev-fs-florianopolis/deleting"
 	"codenation/squad-4-aceleradev-fs-florianopolis/reading"
 	"encoding/json"
 	"fmt"
@@ -17,27 +18,27 @@ type serv struct {
 	add  adding.Service
 	read reading.Service
 	// u updating.Service
-	// d delleting.Service
+	del deleting.Service
 }
 
 // Handler handle the API routes
 func Handler(
 	add adding.Service,
 	read reading.Service,
+	del deleting.Service,
 	// u updating.Service,
-	// d deleting.Service,
 ) http.Handler {
-	s := serv{add: add, read: read}
+	s := serv{add: add, read: read, del: del}
 	// u: u,
-	// d: d,
 
 	router := mux.NewRouter()
 	router.HandleFunc("/", getHome).Methods("GET")
 	router.HandleFunc("/customer/all", s.getAllCustomers).Methods("GET")
 	router.HandleFunc("/customer", s.getCustomer).Methods("GET").Queries("id", "{id}")
+	router.HandleFunc("/customer", s.getCustomerByName).Methods("GET").Queries("name", "{pattern}")
 	router.HandleFunc("/customer", s.addCustomer).Methods("POST")
+	router.HandleFunc("/customer", s.deleteCustomerByID).Methods("DELETE").Queries("id", "{id}")
 	// r.HandleFunc("/customers", a.PutCustomers).Methods("PUT").Queries("id", "{id}")
-	// r.HandleFunc("/customers", a.DeleteCustomers).Methods("DELETE").Queries("id", "{id}")
 
 	return router
 }
@@ -48,6 +49,29 @@ func getHome(w http.ResponseWriter, r *http.Request) {
 	err := json.NewEncoder(w).Encode("API Banco Uati")
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+func (s serv) deleteCustomerByID(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id, err := strconv.Atoi(params["id"])
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = s.del.DeleteCustomerByID(id)
+
+	w.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		err = json.NewEncoder(w).Encode(fmt.Sprintf("Erro na solicitação: %v", err))
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		err = json.NewEncoder(w).Encode("Usuário deletado com sucesso")
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 
@@ -68,6 +92,27 @@ func (s serv) addCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (s serv) getCustomerByName(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-type", "application/json")
+	params := mux.Vars(r)
+	//TODO: validar pattern para o modelo da codenation
+	customers, err := s.read.GetCustomerByName(params["name"])
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		msg := fmt.Sprintf("Houve um problema na procura deste nome: %v", err)
+		err := json.NewEncoder(w).Encode(msg)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		b, err := json.Marshal(customers)
+		if err != nil {
+			log.Fatal(err)
+		}
+		w.Write(b)
+	}
+}
+
 func (s serv) getCustomer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 
@@ -85,12 +130,13 @@ func (s serv) getCustomer(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
+	} else {
+		b, err := json.Marshal(c)
+		if err != nil {
+			log.Fatal(err)
+		}
+		w.Write(b)
 	}
-	b, err := json.Marshal(c)
-	if err != nil {
-		log.Fatal(err)
-	}
-	w.Write(b)
 }
 
 func (s serv) getAllCustomers(w http.ResponseWriter, r *http.Request) {
