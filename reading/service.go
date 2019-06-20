@@ -2,12 +2,14 @@ package reading
 
 // Service provides reading operations
 type Service interface {
-	GetAllCustomers() []Customer
+	GetAllCustomers() ([]Customer, error)
+	GetCustomerByID(Customer) (Customer, error)
 }
 
 // Repository provides access to BD
 type Repository interface {
 	GetAllCustomers() ([]Customer, error)
+	GetCustomerByID(Customer) (Customer, error)
 }
 
 type service struct {
@@ -16,13 +18,13 @@ type service struct {
 
 // NewService creates a reading service with all dependencies
 func NewService(r Repository) Service {
-	return &service(r) //TODO: por que o adding aceita e o reading não???
+	return &service{r}
 }
 
-func (s *service) GetAllCustomers() []Customer {
-	c, err := s.bR.GetAllCustomers()
-	if err != nil {
-		return nil
-	}
-	return c
+func (s *service) GetAllCustomers() ([]Customer, error) {
+	return s.bR.GetAllCustomers()
+}
+
+func (s *service) GetCustomerByID(c Customer) (Customer, error) {
+	return s.bR.GetCustomerByID(c)
 }

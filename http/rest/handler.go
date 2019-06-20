@@ -8,43 +8,44 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
 
 type serv struct {
-	a adding.Service
-	r reading.Service
+	add  adding.Service
+	read reading.Service
 	// u updating.Service
 	// d delleting.Service
 }
 
 // Handler handle the API routes
 func Handler(
-	a adding.Service,
-	r reading.Service,
+	add adding.Service,
+	read reading.Service,
 	// u updating.Service,
 	// d deleting.Service,
 ) http.Handler {
-	s := serv{a: a, r: r}
+	s := serv{add: add, read: read}
 	// u: u,
 	// d: d,
 
-	r := mux.NewRouter()
-	r.HandleFunc("/", getHome).Methods("GET")
-	r.Handlefunc("/customer/all", s.getAllCustomer).Methods("GET")
-	r.HandleFunc("/customers", s.addCustomer).Methods("POST")
+	router := mux.NewRouter()
+	router.HandleFunc("/", getHome).Methods("GET")
+	router.HandleFunc("/customer/all", s.getAllCustomers).Methods("GET")
+	router.HandleFunc("/customer", s.getCustomer).Methods("GET").Queries("id", "{id}")
+	router.HandleFunc("/customer", s.addCustomer).Methods("POST")
 	// r.HandleFunc("/customers", a.PutCustomers).Methods("PUT").Queries("id", "{id}")
 	// r.HandleFunc("/customers", a.DeleteCustomers).Methods("DELETE").Queries("id", "{id}")
 
-	return r
+	return router
 }
 
 func getHome(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	_, err := fmt.Fprint(w, "API Banco Uati")
-	// err := json.NewEncoder(w).Encode("API Banco Uati")
+	err := json.NewEncoder(w).Encode("API Banco Uati")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,30 +59,57 @@ func (s serv) addCustomer(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	s.a.AddCustomer(c)
+	s.add.AddCustomer(c)
 
 	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintln(w, "Usuário adicionado com sucesso")
+	err = json.NewEncoder(w).Encode("Usuário adicionado com sucesso")
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
-func (s serv) getCustomers(w http.ResponseWriter, r *http.Request) {
-	customers, err := s.r.GetAllCustomer()
-	if err != nil {
-		w.Header().Set("Content-type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
+func (s serv) getCustomer(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-type", "application/json")
 
-		err := json.NewEncoder(w).Encode("Sorry, something bad happened.")
+	params := mux.Vars(r)
+	id, err := strconv.Atoi(params["id"])
+	if err != nil {
+		log.Fatal(err)
+	}
+	c := reading.Customer{ID: id}
+	c, err = s.read.GetCustomerByID(c)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		msg := fmt.Sprintf("Houve um problema na procura deste cliente: %v", err)
+		err := json.NewEncoder(w).Encode(msg)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
-	w.Header().Set("Content-type", "application/json")
-
-	b, err := json.Marshal(customers)
+	b, err := json.Marshal(c)
 	if err != nil {
 		log.Fatal(err)
 	}
 	w.Write(b)
+}
+
+func (s serv) getAllCustomers(w http.ResponseWriter, r *http.Request) {
+	customers, err := s.read.GetAllCustomers()
+	if err != nil {
+		w.Header().Set("Content-type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		err := json.NewEncoder(w).Encode(fmt.Sprintf("Sorry, something bad happened: %v", err))
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		w.Header().Set("Content-type", "application/json")
+		b, err := json.Marshal(customers)
+		if err != nil {
+			log.Fatal(err)
+		}
+		w.Write(b)
+	}
 }
 
 // // DeleteCustomers handles method "DELETE" to route /customer
