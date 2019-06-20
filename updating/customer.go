@@ -1,4 +1,4 @@
-package adding
+package updating
 
 // // Customer of the bank
 // type Customer struct {
