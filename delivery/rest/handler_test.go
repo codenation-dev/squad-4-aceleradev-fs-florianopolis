@@ -16,11 +16,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func makeFakeServices() (
-	serv, http.Handler,
-	// adding.Service, reading.Service,
+func makeFakeServices() http.Handler { // adding.Service, reading.Service,
 	// deleting.Service, updating.Service, http.Handler,
-) {
+
 	// set services
 	var adder adding.Service
 	var reader reading.Service
@@ -30,7 +28,7 @@ func makeFakeServices() (
 	// If have more than one storage types, make the case/switch here
 	db, _, err := sqlmock.New()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	s, err := postgres.NewStorage(db)
 	if err != nil {
@@ -49,22 +47,57 @@ func makeFakeServices() (
 		deleter,
 		updater,
 	)
+	return router
+}
 
-	serv := serv{add: adder, read: reader,
-		del: deleter, update: updater}
+func TestGetHome(t *testing.T) {
+	router := makeFakeServices()
+	srv := httptest.NewServer(router)
+	defer srv.Close()
+	url := fmt.Sprintf("%s%s", srv.URL, "/")
 
-	return serv, router
+	res, err := http.Get(url)
+	assert.Equal(t, http.StatusOK, res.StatusCode)
+	assert.NoError(t, err, "error in http.Get")
 }
 
 func TestGetAllCustomers(t *testing.T) {
-	_, router := makeFakeServices()
+	router := makeFakeServices()
 	srv := httptest.NewServer(router)
+	defer srv.Close()
 	url := fmt.Sprintf("%s%s", srv.URL, "/customer/all")
 
 	res, err := http.Get(url)
 	// BadRequest is the right one because it reads the handler but
 	// breaks in the call to the fake BD witch is the expected
+	//
 	assert.Equal(t, http.StatusBadRequest, res.StatusCode)
 	assert.NoError(t, err, "error in http.Get")
+}
+func TestUpdateCustomer(t *testing.T) {
+	router := makeFakeServices()
+	srv := httptest.NewServer(router)
+	defer srv.Close()
+	url := fmt.Sprintf("%s%s", srv.URL, "/customer?id=1")
 
+	req, err := http.NewRequest("PUT", url, nil)
+	assert.NoError(t, err, "error on http.NewRequest")
+	res, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err, "error on http.DefaultClient")
+	// BadRequest is the right choice because it reads the handler but
+	// breaks in the call to the fake BD witch is the expected
+	assert.Equal(t, http.StatusBadRequest, res.StatusCode)
+}
+
+func TestDeleteCustomerByID(t *testing.T) {
+	router := makeFakeServices()
+	srv := httptest.NewServer(router)
+	defer srv.Close()
+	url := fmt.Sprintf("%s%s", srv.URL, "/customer?id=1")
+	req, err := http.NewRequest("DELETE", url, nil)
+
+	assert.NoError(t, err, "error on http.NewRequest")
+	res, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err, "error on http.DefaultClient")
+	assert.Equal(t, http.StatusBadRequest, res.StatusCode)
 }

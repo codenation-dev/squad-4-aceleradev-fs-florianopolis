@@ -49,7 +49,7 @@ func getHome(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	err := json.NewEncoder(w).Encode("API Banco Uati")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }
 
@@ -58,7 +58,12 @@ func (s serv) updateCustomer(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
 	if err != nil {
-		panic(err)
+		w.WriteHeader(http.StatusBadRequest)
+		err = json.NewEncoder(w).Encode(fmt.Sprintf("Erro na solicitação: %v", err))
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
 	}
 
 	customer, err := s.read.GetCustomerByID(id)
@@ -66,36 +71,43 @@ func (s serv) updateCustomer(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		err = json.NewEncoder(w).Encode(fmt.Sprintf("Erro na solicitação: %v", err))
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 		return
 	}
 
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		panic(err)
+		w.WriteHeader(http.StatusBadRequest)
+		err = json.NewEncoder(w).Encode(fmt.Sprintf("Erro na solicitação: %v", err))
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
 	}
 	err = json.Unmarshal(b, &customer)
 	if err != nil {
-		panic(err)
+		w.WriteHeader(http.StatusBadRequest)
+		err = json.NewEncoder(w).Encode(fmt.Sprintf("Erro na solicitação: %v", err))
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
 	}
-	// updateCustomer := entity.Customer{
-	// 	Name: customer.Name, customer.Wage, customer.IsPublic, customer.SentWarning,
-	// }
 
 	err = s.update.UpdateCustomer(customer)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		err = json.NewEncoder(w).Encode(fmt.Sprintf("Erro na solicitação: %v", err))
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 		return
-	} else {
-		err = json.NewEncoder(w).Encode("Usuário modificado com sucesso")
-		if err != nil {
-			panic(err)
-		}
+	}
+
+	err = json.NewEncoder(w).Encode("Usuário modificado com sucesso")
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
@@ -103,22 +115,28 @@ func (s serv) deleteCustomerByID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
 	if err != nil {
-		panic(err)
+		w.WriteHeader(http.StatusBadRequest)
+		err = json.NewEncoder(w).Encode(fmt.Sprintf("Erro na solicitação: %v", err))
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
 	}
 	err = s.del.DeleteCustomerByID(id)
 
-	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		err = json.NewEncoder(w).Encode(fmt.Sprintf("Erro na solicitação: %v", err))
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
-	} else {
-		err = json.NewEncoder(w).Encode("Usuário deletado com sucesso")
-		if err != nil {
-			panic(err)
-		}
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode("Usuário deletado com sucesso")
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
@@ -135,7 +153,7 @@ func (s serv) addCustomer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode("Usuário adicionado com sucesso")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }
 
@@ -149,12 +167,12 @@ func (s serv) getCustomerByName(w http.ResponseWriter, r *http.Request) {
 		msg := fmt.Sprintf("Houve um problema na procura deste nome: %v", err)
 		err := json.NewEncoder(w).Encode(msg)
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 	} else {
 		b, err := json.Marshal(customers)
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 		w.Write(b)
 	}
@@ -166,7 +184,7 @@ func (s serv) getCustomer(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	// c := reading.Customer{ID: id}
 	c, err := s.read.GetCustomerByID(id)
@@ -175,12 +193,12 @@ func (s serv) getCustomer(w http.ResponseWriter, r *http.Request) {
 		msg := fmt.Sprintf("Houve um problema na procura deste cliente: %v", err)
 		err := json.NewEncoder(w).Encode(msg)
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 	} else {
 		b, err := json.Marshal(c)
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 		w.Write(b)
 	}
@@ -191,7 +209,7 @@ func (s serv) getAllCustomers(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.Header().Set("Content-type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		err := json.NewEncoder(w).Encode(fmt.Sprintf("Sorry, something bad happened: %v", err))
+		err := json.NewEncoder(w).Encode(fmt.Sprintf("Erro lendo o banco de dados: %v", err))
 		if err != nil {
 			log.Fatal(err)
 		}
