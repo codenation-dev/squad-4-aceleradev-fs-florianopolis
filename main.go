@@ -23,7 +23,7 @@ func main() {
 	var updater updating.Service
 
 	// If have more than one storage types, make the case/switch here
-	s, err := postgres.NewStorage()
+	s, err := postgres.NewStorage(postgres.Connect())
 	if err != nil {
 		log.Fatalf("could not set new storage: %v", err)
 	}

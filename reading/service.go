@@ -19,7 +19,7 @@ type Repository interface {
 type service struct {
 	bR Repository
 }
-
+ 
 // NewService creates a reading service with all dependencies
 func NewService(r Repository) Service {
 	return &service{r}
