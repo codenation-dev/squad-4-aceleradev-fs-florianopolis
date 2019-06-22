@@ -24,20 +24,24 @@ type Storage struct {
 	db *sql.DB
 }
 
-// NewStorage creates a new instance of Storage
-func NewStorage() (*Storage, error) {
+func Connect() *sql.DB {
 	var err error
-	s := new(Storage)
 	connString := fmt.Sprintf(fmt.Sprintf(
 		"user=%s password=%s host=%s port=%s dbname=%s sslmode=%s",
 		DB_USER, DB_PASSWORD, HOST, PORT, DB_NAME, SSLMODE,
 	))
 
 	db, err := sql.Open("postgres", connString)
-	s.db = db
 	if err != nil {
-		return nil, fmt.Errorf("could not connect to DB: %v", err)
+		panic(err)
 	}
+	return db
+}
+
+// NewStorage creates a new instance of Storage
+func NewStorage(db *sql.DB) (*Storage, error) {
+	s := new(Storage)
+	s.db = db
 	return s, nil
 }
 

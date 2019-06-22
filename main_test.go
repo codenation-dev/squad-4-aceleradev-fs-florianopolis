@@ -5,16 +5,15 @@ import (
 	"codenation/squad-4-aceleradev-fs-florianopolis/deleting"
 	"codenation/squad-4-aceleradev-fs-florianopolis/delivery/rest"
 	"codenation/squad-4-aceleradev-fs-florianopolis/reading"
-	"codenation/squad-4-aceleradev-fs-florianopolis/storage/postgres"
+	"codenation/squad-4-aceleradev-fs-florianopolis/storage/memory"
 	"codenation/squad-4-aceleradev-fs-florianopolis/updating"
-	"fmt"
-	"log"
-	"net/http"
+	"os"
 
-	_ "github.com/lib/pq" // postgres
+	"log"
+	"testing"
 )
 
-func main() {
+func TestMain(m *testing.M) {
 
 	// set services
 	var adder adding.Service
@@ -22,8 +21,13 @@ func main() {
 	var deleter deleting.Service
 	var updater updating.Service
 
+	// db, _, err := sqlmock.New()
+	// if err != nil {
+	// 	log.Fatalf("Error creating stub db: %v", err)
+	// }
+
 	// If have more than one storage types, make the case/switch here
-	s, err := postgres.NewStorage(postgres.Connect())
+	s, err := memory.NewStorage()
 	if err != nil {
 		log.Fatalf("could not set new storage: %v", err)
 	}
@@ -41,7 +45,9 @@ func main() {
 		updater,
 	)
 
-	fmt.Println("Server running ou port 3000")
-	log.Fatal(http.ListenAndServe(":3000", router))
+	// fmt.Println("Server running ou port 3000")
+	// log.Fatal(http.ListenAndServe(":3000", router))
 
+	code := m.Run()
+	os.Exit(code)
 }
