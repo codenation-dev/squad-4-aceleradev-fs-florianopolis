@@ -25,4 +25,4 @@ cliente
 old
 *.txt
 main
-./.vscode
+.vscode/
