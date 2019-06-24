@@ -2,12 +2,14 @@ package deleting
 
 // Service provides deleting methods
 type Service interface {
-	DeleteCustomerByID(ids ...int) error
+	DeleteCustomerByID(id int) error
+	DeleteUserByID(id int) error
 }
 
 // Repository provides access to DB
 type Repository interface {
 	DeleteCustomerByID(id int) error
+	DeleteUserByID(id int) error
 }
 
 type service struct {
@@ -19,13 +21,11 @@ func NewService(r Repository) Service {
 	return &service{r}
 }
 
-func (s *service) DeleteCustomerByID(ids ...int) error {
-	for _, id := range ids {
-		err := s.bR.DeleteCustomerByID(id)
-		//TODO: tratar erro aqui, na regra de negócio(?)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+func (s *service) DeleteCustomerByID(id int) error {
+	return s.bR.DeleteCustomerByID(id)
+
+}
+
+func (s *service) DeleteUserByID(id int) error {
+	return s.bR.DeleteUserByID(id)
 }
