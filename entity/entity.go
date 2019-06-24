@@ -8,3 +8,11 @@ type Customer struct {
 	IsPublic    int8    `json:"is_public"`
 	SentWarning string  `json:"sent_warning"` //TODO: Isso pode se tornar o ID da tabela warning
 }
+
+// User of the app
+type User struct {
+	ID    int    `json:"id"`
+	Login string `json:"login"`
+	Email string `json:"email"`
+	Pass  string `json:"pass"`
+}

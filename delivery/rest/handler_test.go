@@ -16,8 +16,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func makeFakeServices() http.Handler { // adding.Service, reading.Service,
-	// deleting.Service, updating.Service, http.Handler,
+func makeFakeServices() http.Handler {
 
 	// set services
 	var adder adding.Service
@@ -50,54 +49,51 @@ func makeFakeServices() http.Handler { // adding.Service, reading.Service,
 	return router
 }
 
-func TestGetHome(t *testing.T) {
-	router := makeFakeServices()
-	srv := httptest.NewServer(router)
-	defer srv.Close()
-	url := fmt.Sprintf("%s%s", srv.URL, "/")
+func TestHandler(t *testing.T) {
+	var tt = []struct {
+		name           string
+		path           string
+		method         string
+		expectedStatus int
+	}{
+		{"TestGetHome", "/", "GET", http.StatusOK},
 
-	res, err := http.Get(url)
-	assert.Equal(t, http.StatusOK, res.StatusCode)
-	assert.NoError(t, err, "error in http.Get")
-}
+		{"TestDeleteUserbyID", "/user?id=1", "DELETE", http.StatusBadRequest},
+		{"TestDeleteCustomerByID", "/customer?id=1", "DELETE", http.StatusBadRequest},
 
-func TestGetAllCustomers(t *testing.T) {
-	router := makeFakeServices()
-	srv := httptest.NewServer(router)
-	defer srv.Close()
-	url := fmt.Sprintf("%s%s", srv.URL, "/customer/all")
+		{"TestGetCustomerByID", "/customer?id=1", "GET", http.StatusBadRequest},
+		{"TestGetUserByID", "/user?id=1", "GET", http.StatusBadRequest},
 
-	res, err := http.Get(url)
-	// BadRequest is the right one because it reads the handler but
-	// breaks in the call to the fake BD witch is the expected
-	//
-	assert.Equal(t, http.StatusBadRequest, res.StatusCode)
-	assert.NoError(t, err, "error in http.Get")
-}
-func TestUpdateCustomer(t *testing.T) {
-	router := makeFakeServices()
-	srv := httptest.NewServer(router)
-	defer srv.Close()
-	url := fmt.Sprintf("%s%s", srv.URL, "/customer?id=1")
+		{"TestGetAllCustomers", "/customer/all", "GET", http.StatusBadRequest},
+		{"TestGetAllUsers", "/user/all", "GET", http.StatusBadRequest},
 
-	req, err := http.NewRequest("PUT", url, nil)
-	assert.NoError(t, err, "error on http.NewRequest")
-	res, err := http.DefaultClient.Do(req)
-	assert.NoError(t, err, "error on http.DefaultClient")
-	// BadRequest is the right choice because it reads the handler but
-	// breaks in the call to the fake BD witch is the expected
-	assert.Equal(t, http.StatusBadRequest, res.StatusCode)
-}
+		{"TestGetCustomerByName", "/customer?name=Teste", "GET", http.StatusBadRequest},
+		{"TestGetUserByEmail", "/user?email=teste@email", "GET", http.StatusBadRequest},
 
-func TestDeleteCustomerByID(t *testing.T) {
-	router := makeFakeServices()
-	srv := httptest.NewServer(router)
-	defer srv.Close()
-	url := fmt.Sprintf("%s%s", srv.URL, "/customer?id=1")
-	req, err := http.NewRequest("DELETE", url, nil)
+		{"TestUpdateCustomer", "/customer?id=1", "PUT", http.StatusBadRequest},
+		{"TestUpdateUser", "/user?id=1", "PUT", http.StatusBadRequest},
 
-	assert.NoError(t, err, "error on http.NewRequest")
-	res, err := http.DefaultClient.Do(req)
-	assert.NoError(t, err, "error on http.DefaultClient")
-	assert.Equal(t, http.StatusBadRequest, res.StatusCode)
+		{"TestAddCustomer", "/customer", "POST", http.StatusBadRequest},
+		{"TestAddUser", "/user", "POST", http.StatusBadRequest},
+	}
+
+	//TODO: Trocar estes StatusBadRequest por uma resposta mais informativa
+
+	for _, tc := range tt {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			router := makeFakeServices()
+			srv := httptest.NewServer(router)
+			defer srv.Close()
+
+			url := fmt.Sprintf("%s%s", srv.URL, tc.path)
+			req, err := http.NewRequest(tc.method, url, nil)
+			assert.NoError(t, err, "error on http.NewRequest")
+			res, err := http.DefaultClient.Do(req)
+			assert.NoError(t, err, "error on http.DefaultClient")
+			assert.Equal(t, tc.expectedStatus, res.StatusCode)
+
+		})
+	}
 }
