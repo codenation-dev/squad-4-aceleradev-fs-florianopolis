@@ -29,11 +29,15 @@ func Handler(
 	router := mux.NewRouter()
 	router.HandleFunc("/", getHome).Methods("GET")
 
+	// All
 	router.HandleFunc("/customer/all", s.getAllCustomers).Methods("GET")
 	router.HandleFunc("/user/all", s.getAllUsers).Methods("GET")
+	router.HandleFunc("/warning/all", s.getAllWarnings).Methods("GET")
 
+	// ByID
 	router.HandleFunc("/customer", s.getCustomerByID).Methods("GET").Queries("id", "{id}")
 	router.HandleFunc("/user", s.getUserByID).Methods("GET").Queries("id", "{id}")
+	router.HandleFunc("/warning", s.getWarningByID).Methods("GET").Queries("id", "{id}")
 
 	router.HandleFunc("/customer", s.getCustomerByName).Methods("GET").Queries("name", "{pattern}")
 	router.HandleFunc("/user", s.getUserByEmail).Methods("GET").Queries("email", "{pattern}")

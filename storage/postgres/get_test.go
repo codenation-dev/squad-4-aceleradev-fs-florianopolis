@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// All
 func TestGetAllCustomers(t *testing.T) {
 	t.Parallel()
 	db, mock, err := sqlmock.New()
@@ -38,6 +39,22 @@ func TestGetAllUsers(t *testing.T) {
 	// assert.Equal(t, twoRows, customers) //TODO: tem como testar o conteudo das rows?
 }
 
+func TestGetAllWarnings(t *testing.T) {
+	t.Parallel()
+	db, mock, err := sqlmock.New()
+	assert.NoError(t, err)
+
+	s := Storage{db}
+	query := `SELECT \* FROM warnings`
+
+	mock.ExpectQuery(query).WillReturnRows(userRows)
+	customers, err := s.GetAllWarnings()
+	assert.NoError(t, err)
+	assert.NotNil(t, customers)
+	// assert.Equal(t, twoRows, customers) //TODO: tem como testar o conteudo das rows?
+}
+
+// ByName
 func TestGetCustomersByName(t *testing.T) {
 	t.Parallel()
 	db, mock, err := sqlmock.New()
@@ -68,6 +85,7 @@ func TestGetUsersByEmail(t *testing.T) {
 	assert.NotNil(t, users) //TODO: incluir teste para quando não retornar colunas
 }
 
+// By ID
 func TestGetCustomerByID(t *testing.T) {
 	t.Parallel()
 
@@ -102,6 +120,25 @@ func TestGetUserByID(t *testing.T) {
 	s := Storage{db}
 
 	user, err := s.GetUserByID(1)
+	// assert.NoError(t, err) //TODO: comentado porque ainda não aprendi a popular a mock db
+	assert.NotNil(t, user)
+}
+
+func TestGetWarningByID(t *testing.T) {
+	t.Parallel()
+
+	db, mock, err := sqlmock.New()
+	assert.Nil(t, err, fmt.Sprintf("error when opening the mock db connection: %v", err))
+	defer db.Close()
+
+	id := int(1)
+	mock.ExpectQuery(`SELECT \* FROM warnings WHERE id=\$1`).
+		WithArgs(id).
+		WillReturnRows(userRows)
+
+	s := Storage{db}
+
+	user, err := s.GetWarningByID(1)
 	// assert.NoError(t, err) //TODO: comentado porque ainda não aprendi a popular a mock db
 	assert.NotNil(t, user)
 }

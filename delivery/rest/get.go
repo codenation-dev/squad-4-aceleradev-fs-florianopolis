@@ -19,8 +19,9 @@ func getHome(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s serv) getAllCustomers(w http.ResponseWriter, r *http.Request) {
-	customers, err := s.read.GetAllCustomers()
+// All
+func getAll(w http.ResponseWriter, r *http.Request, payload interface{}, err error) {
+
 	if err != nil {
 		w.Header().Set("Content-type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
@@ -30,12 +31,33 @@ func (s serv) getAllCustomers(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		w.Header().Set("Content-type", "application/json")
-		b, err := json.Marshal(customers)
+		b, err := json.Marshal(payload)
 		if err != nil {
 			log.Fatal(err)
 		}
 		w.Write(b)
 	}
+
+}
+
+func (s serv) getAllCustomers(w http.ResponseWriter, r *http.Request) {
+	customers, err := s.read.GetAllCustomers()
+	getAll(w, r, customers, err)
+	// if err != nil {
+	// 	w.Header().Set("Content-type", "application/json")
+	// 	w.WriteHeader(http.StatusBadRequest)
+	// 	err := json.NewEncoder(w).Encode(fmt.Sprintf("Erro lendo o banco de dados: %v", err))
+	// 	if err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// } else {
+	// 	w.Header().Set("Content-type", "application/json")
+	// 	b, err := json.Marshal(customers)
+	// 	if err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// 	w.Write(b)
+	// }
 }
 
 func (s serv) getAllUsers(w http.ResponseWriter, r *http.Request) {
@@ -57,6 +79,26 @@ func (s serv) getAllUsers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (s serv) getAllWarnings(w http.ResponseWriter, r *http.Request) {
+	warnings, err := s.read.GetAllWarnings()
+	if err != nil {
+		w.Header().Set("Content-type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		err := json.NewEncoder(w).Encode(fmt.Sprintf("Erro lendo o banco de dados: %v", err))
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		w.Header().Set("Content-type", "application/json")
+		b, err := json.Marshal(warnings)
+		if err != nil {
+			log.Fatal(err)
+		}
+		w.Write(b)
+	}
+}
+
+// ByName
 func (s serv) getCustomerByName(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	params := mux.Vars(r)
@@ -99,6 +141,7 @@ func (s serv) getUserByEmail(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//ByID
 func (s serv) getCustomerByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 
@@ -136,6 +179,31 @@ func (s serv) getUserByID(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		msg := fmt.Sprintf("Houve um problema na procura deste usuário: %v", err)
+		err := json.NewEncoder(w).Encode(msg)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		b, err := json.Marshal(user)
+		if err != nil {
+			log.Fatal(err)
+		}
+		w.Write(b)
+	}
+}
+
+func (s serv) getWarningByID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-type", "application/json")
+
+	params := mux.Vars(r)
+	id, err := strconv.Atoi(params["id"])
+	if err != nil {
+		log.Fatal(err)
+	}
+	user, err := s.read.GetWarningByID(id)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		msg := fmt.Sprintf("Houve um problema na procura desta mensagem: %v", err)
 		err := json.NewEncoder(w).Encode(msg)
 		if err != nil {
 			log.Fatal(err)

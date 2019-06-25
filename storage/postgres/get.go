@@ -5,6 +5,8 @@ import (
 	"fmt"
 )
 
+// ByID
+
 // GetCustomerByID read a customer from the DB, given the id
 func (s *Storage) GetCustomerByID(id int) (entity.Customer, error) {
 	c := entity.Customer{}
@@ -26,6 +28,19 @@ func (s *Storage) GetUserByID(id int) (entity.User, error) {
 	}
 	return u, err
 }
+
+// GetWarningByID read a warning from the DB, given the id
+func (s *Storage) GetWarningByID(id int) (entity.Warning, error) {
+	w := entity.Warning{}
+	query := "SELECT * FROM warnings WHERE id=$1"
+	err := s.db.QueryRow(query, id).Scan(&w.ID, &w.Dt, &w.Message, &w.FromCustomer, &w.SentTo)
+	if err != nil {
+		return entity.Warning{}, err
+	}
+	return w, err
+}
+
+//All
 
 // GetAllCustomers return all customers from the DB
 func (s *Storage) GetAllCustomers() ([]entity.Customer, error) {
@@ -61,6 +76,24 @@ func (s *Storage) GetAllUsers() ([]entity.User, error) {
 		users = append(users, u)
 	}
 	return users, nil
+}
+
+// GetAllWarnings return all customers from the DB
+func (s *Storage) GetAllWarnings() ([]entity.Warning, error) {
+	warnings := []entity.Warning{}
+	rows, err := s.db.Query("SELECT * FROM warnings")
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		w := entity.Warning{}
+		err := rows.Scan(&w.ID, &w.Dt, &w.Message, &w.FromCustomer, &w.SentTo)
+		if err != nil {
+			return nil, err
+		}
+		warnings = append(warnings, w)
+	}
+	return warnings, nil
 }
 
 // GetCustomerByName returns a slice of customers with the given pattern in the name column
