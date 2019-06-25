@@ -17,3 +17,19 @@ func (s *Storage) AddUser(u entity.User) error {
 		&u.Login, &u.Email, &u.Pass)
 	return err
 }
+
+// AddWarning inserts a new customer on the DB
+func (s *Storage) AddWarning(w entity.Warning) error {
+	_, err := s.db.Exec(`INSERT INTO warnings (dt, message, sent_to, from_customer)
+						VALUES ($1, $2, $3, $4)`,
+		&w.Dt, &w.Message, &w.SentTo, &w.FromCustomer)
+	return err
+}
+
+// // AddUser inserts a new customer on the DB
+// func (s *Storage) AddUser(u entity.User) error {
+// 	_, err := s.db.Exec(`INSERT INTO users (login, email, pass)
+// 						VALUES ($1, $2, $3)`,
+// 		&u.Login, &u.Email, &u.Pass)
+// 	return err
+// }

@@ -82,6 +82,7 @@ func TestHandler(t *testing.T) {
 
 		{"TestAddCustomer", "/customer", "POST", http.StatusBadRequest},
 		{"TestAddUser", "/user", "POST", http.StatusBadRequest},
+		{"TestAddWarning", "/warning", "POST", http.StatusBadRequest},
 	}
 
 	//TODO: Trocar estes StatusBadRequest por uma resposta mais informativa

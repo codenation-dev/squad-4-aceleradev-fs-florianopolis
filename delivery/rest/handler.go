@@ -48,6 +48,7 @@ func Handler(
 	// Post
 	router.HandleFunc("/customer", s.addCustomer).Methods("POST")
 	router.HandleFunc("/user", s.addUser).Methods("POST")
+	router.HandleFunc("/warning", s.addWarning).Methods("POST")
 
 	// Delete
 	router.HandleFunc("/customer", s.deleteCustomerByID).Methods("DELETE").Queries("id", "{id}")
