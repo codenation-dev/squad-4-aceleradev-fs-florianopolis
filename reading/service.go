@@ -14,6 +14,8 @@ type Service interface {
 
 	GetCustomerByName(pattern string) ([]entity.Customer, error)
 	GetUserByEmail(pattern string) ([]entity.User, error)
+	GetWarningByCustomer(pattern string) ([]entity.Warning, error)
+	GetWarningByUser(pattern string) ([]entity.Warning, error)
 }
 
 // Repository provides access to BD
@@ -28,6 +30,8 @@ type Repository interface {
 
 	GetCustomerByName(pattern string) ([]entity.Customer, error)
 	GetUserByEmail(pattern string) ([]entity.User, error)
+	GetWarningByCustomer(pattern string) ([]entity.Warning, error)
+	GetWarningByUser(pattern string) ([]entity.Warning, error)
 }
 
 type service struct {
@@ -72,6 +76,8 @@ func (s *service) GetWarningByID(id int) (entity.Warning, error) {
 	return s.bR.GetWarningByID(id)
 }
 
+// ByName
+
 // GetCustomerByName implements method
 func (s *service) GetCustomerByName(pattern string) ([]entity.Customer, error) {
 	return s.bR.GetCustomerByName(pattern)
@@ -80,4 +86,12 @@ func (s *service) GetCustomerByName(pattern string) ([]entity.Customer, error) {
 // GetUserByEmail implements method
 func (s *service) GetUserByEmail(pattern string) ([]entity.User, error) {
 	return s.bR.GetUserByEmail(pattern)
+}
+
+func (s *service) GetWarningByCustomer(pattern string) ([]entity.Warning, error) {
+	return s.bR.GetWarningByCustomer(pattern)
+}
+
+func (s *service) GetWarningByUser(pattern string) ([]entity.Warning, error) {
+	return s.bR.GetWarningByUser(pattern)
 }

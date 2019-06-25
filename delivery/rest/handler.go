@@ -39,8 +39,11 @@ func Handler(
 	router.HandleFunc("/user", s.getUserByID).Methods("GET").Queries("id", "{id}")
 	router.HandleFunc("/warning", s.getWarningByID).Methods("GET").Queries("id", "{id}")
 
+	// ByName
 	router.HandleFunc("/customer", s.getCustomerByName).Methods("GET").Queries("name", "{pattern}")
 	router.HandleFunc("/user", s.getUserByEmail).Methods("GET").Queries("email", "{pattern}")
+	router.HandleFunc("/warning", s.getWarningByCustomer).Methods("GET").Queries("customer", "{pattern}")
+	router.HandleFunc("/warning", s.getWarningByUser).Methods("GET").Queries("user", "{pattern}")
 
 	router.HandleFunc("/customer", s.addCustomer).Methods("POST")
 	router.HandleFunc("/user", s.addUser).Methods("POST")

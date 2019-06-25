@@ -39,7 +39,7 @@ func makeFakeServices() http.Handler {
 	deleter = deleting.NewService(s)
 	updater = updating.NewService(s)
 
-	// set uo HTTP server
+	// set up HTTP server
 	router := Handler(
 		adder,
 		reader,
@@ -71,6 +71,9 @@ func TestHandler(t *testing.T) {
 
 		{"TestGetCustomerByName", "/customer?name=Teste", "GET", http.StatusBadRequest},
 		{"TestGetUserByEmail", "/user?email=teste@email", "GET", http.StatusBadRequest},
+		// TODO: teste não funciona se uso espaço na query
+		{"TestGetWarningByCustomer", "/warning?customer=teste_customer", "GET", http.StatusBadRequest},
+		{"TestGetWarningByUser", "/warning?user=teste_user", "GET", http.StatusBadRequest},
 
 		{"TestUpdateCustomer", "/customer?id=1", "PUT", http.StatusBadRequest},
 		{"TestUpdateUser", "/user?id=1", "PUT", http.StatusBadRequest},

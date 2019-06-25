@@ -47,7 +47,7 @@ func TestGetAllWarnings(t *testing.T) {
 	s := Storage{db}
 	query := `SELECT \* FROM warnings`
 
-	mock.ExpectQuery(query).WillReturnRows(userRows)
+	mock.ExpectQuery(query).WillReturnRows(warningRows)
 	customers, err := s.GetAllWarnings()
 	assert.NoError(t, err)
 	assert.NotNil(t, customers)
@@ -55,7 +55,7 @@ func TestGetAllWarnings(t *testing.T) {
 }
 
 // ByName
-func TestGetCustomersByName(t *testing.T) {
+func TestGetCustomerByName(t *testing.T) {
 	t.Parallel()
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
@@ -70,7 +70,7 @@ func TestGetCustomersByName(t *testing.T) {
 	assert.NotNil(t, customers) //TODO: incluir teste para quando não retornar colunas
 }
 
-func TestGetUsersByEmail(t *testing.T) {
+func TestGetUserByEmail(t *testing.T) {
 	t.Parallel()
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
@@ -81,6 +81,36 @@ func TestGetUsersByEmail(t *testing.T) {
 	mock.ExpectQuery(query).WillReturnRows(userRows)
 
 	users, err := s.GetUserByEmail(pattern)
+	assert.NoError(t, err)
+	assert.NotNil(t, users) //TODO: incluir teste para quando não retornar colunas
+}
+
+func TestGetWarningByCustomer(t *testing.T) {
+	t.Parallel()
+	db, mock, err := sqlmock.New()
+	assert.NoError(t, err)
+	s := Storage{db}
+
+	pattern := "Test"
+	query := `SELECT \* FROM warnings WHERE from_customer LIKE`
+	mock.ExpectQuery(query).WillReturnRows(warningRows)
+
+	users, err := s.GetWarningByCustomer(pattern)
+	assert.NoError(t, err)
+	assert.NotNil(t, users) //TODO: incluir teste para quando não retornar colunas
+}
+
+func TestGetWarningByUser(t *testing.T) {
+	t.Parallel()
+	db, mock, err := sqlmock.New()
+	assert.NoError(t, err)
+	s := Storage{db}
+
+	pattern := "Test"
+	query := `SELECT \* FROM warnings WHERE sent_to LIKE`
+	mock.ExpectQuery(query).WillReturnRows(warningRows)
+
+	users, err := s.GetWarningByUser(pattern)
 	assert.NoError(t, err)
 	assert.NotNil(t, users) //TODO: incluir teste para quando não retornar colunas
 }
@@ -134,7 +164,7 @@ func TestGetWarningByID(t *testing.T) {
 	id := int(1)
 	mock.ExpectQuery(`SELECT \* FROM warnings WHERE id=\$1`).
 		WithArgs(id).
-		WillReturnRows(userRows)
+		WillReturnRows(warningRows)
 
 	s := Storage{db}
 

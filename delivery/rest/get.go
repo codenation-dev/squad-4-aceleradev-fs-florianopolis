@@ -20,7 +20,7 @@ func getHome(w http.ResponseWriter, r *http.Request) {
 }
 
 // All
-func getAll(w http.ResponseWriter, r *http.Request, payload interface{}, err error) {
+func getPayload(w http.ResponseWriter, r *http.Request, payload interface{}, err error) (http.ResponseWriter, *http.Request) {
 
 	if err != nil {
 		w.Header().Set("Content-type", "application/json")
@@ -37,12 +37,12 @@ func getAll(w http.ResponseWriter, r *http.Request, payload interface{}, err err
 		}
 		w.Write(b)
 	}
-
+	return w, r
 }
 
 func (s serv) getAllCustomers(w http.ResponseWriter, r *http.Request) {
 	customers, err := s.read.GetAllCustomers()
-	getAll(w, r, customers, err)
+	w, r = getPayload(w, r, customers, err)
 	// if err != nil {
 	// 	w.Header().Set("Content-type", "application/json")
 	// 	w.WriteHeader(http.StatusBadRequest)
@@ -139,6 +139,18 @@ func (s serv) getUserByEmail(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Write(b)
 	}
+}
+
+func (s *serv) getWarningByCustomer(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	payload, err := s.read.GetWarningByCustomer(params["pattern"])
+	w, r = getPayload(w, r, payload, err)
+}
+
+func (s *serv) getWarningByUser(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	payload, err := s.read.GetWarningByUser(params["pattern"])
+	w, r = getPayload(w, r, payload, err)
 }
 
 //ByID

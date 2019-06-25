@@ -22,6 +22,6 @@ type Warning struct {
 	ID           int    `json:"wid"`
 	Dt           string `json:"dt"` //TODO: usar datetime
 	Message      string `json:"msg"`
-	SentTo       string `json:"sent_to"`       //TODO: usar id do customer
-	FromCustomer string `json:"from_customer"` //TODO: usar id do user
+	SentTo       string `json:"sent_to"`       //TODO: usar id do user
+	FromCustomer string `json:"from_customer"` //TODO: usar id do customer
 }

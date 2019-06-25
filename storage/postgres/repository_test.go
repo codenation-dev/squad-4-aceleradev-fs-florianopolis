@@ -31,6 +31,14 @@ var mu = entity.User{ // mock customer
 	Pass:  "1234",
 }
 
+var warningRows = sqlmock.NewRows([]string{
+	"id", "dt", "message", "sent_to", "from_customer"}).
+	AddRow(1, "test dt", "test message", "id user", "id customer")
+
+var mw = entity.Warning{ // mock warning
+	1, "test dt", "test message", "id user", "id customer",
+}
+
 // TODO: Tem como fazer estes testes usando uma tt como essa abaixo?
 // // func TestExec(t *testing.T){
 // // 	var tt = []struct{

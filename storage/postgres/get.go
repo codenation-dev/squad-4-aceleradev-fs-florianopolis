@@ -96,6 +96,8 @@ func (s *Storage) GetAllWarnings() ([]entity.Warning, error) {
 	return warnings, nil
 }
 
+// ByName
+
 // GetCustomerByName returns a slice of customers with the given pattern in the name column
 func (s *Storage) GetCustomerByName(pattern string) ([]entity.Customer, error) {
 	customers := []entity.Customer{}
@@ -132,4 +134,42 @@ func (s *Storage) GetUserByEmail(pattern string) ([]entity.User, error) {
 		users = append(users, u)
 	}
 	return users, nil
+}
+
+// GetWarningByCustomer returns a slice of warnings with the given pattern in the sent_to column
+func (s *Storage) GetWarningByCustomer(pattern string) ([]entity.Warning, error) {
+	warnings := []entity.Warning{}
+	query := fmt.Sprintf("SELECT * FROM warnings WHERE from_customer LIKE '%%%s%%'", pattern)
+	rows, err := s.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		w := entity.Warning{}
+		err := rows.Scan(&w.ID, &w.Dt, &w.Message, &w.SentTo, &w.FromCustomer)
+		if err != nil {
+			return nil, err
+		}
+		warnings = append(warnings, w)
+	}
+	return warnings, nil
+}
+
+// GetWarningByUser returns a slice of warnings with the given pattern in the sent_to column
+func (s *Storage) GetWarningByUser(pattern string) ([]entity.Warning, error) {
+	warnings := []entity.Warning{}
+	query := fmt.Sprintf("SELECT * FROM warnings WHERE sent_to LIKE '%%%s%%'", pattern)
+	rows, err := s.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		w := entity.Warning{}
+		err := rows.Scan(&w.ID, &w.Dt, &w.Message, &w.SentTo, &w.FromCustomer)
+		if err != nil {
+			return nil, err
+		}
+		warnings = append(warnings, w)
+	}
+	return warnings, nil
 }
