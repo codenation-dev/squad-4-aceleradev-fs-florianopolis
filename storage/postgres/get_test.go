@@ -172,3 +172,22 @@ func TestGetWarningByID(t *testing.T) {
 	// assert.NoError(t, err) //TODO: comentado porque ainda não aprendi a popular a mock db
 	assert.NotNil(t, user)
 }
+
+func TestGetPublicByID(t *testing.T) {
+	t.Parallel()
+
+	db, mock, err := sqlmock.New()
+	assert.Nil(t, err, fmt.Sprintf("error when opening the mock db connection: %v", err))
+	defer db.Close()
+
+	id := int(1)
+	mock.ExpectQuery(`SELECT \* FROM public_funcs WHERE id=\$1`).
+		WithArgs(id).
+		WillReturnRows(publicRows)
+
+	s := Storage{db}
+
+	user, err := s.GetPublicByID(1)
+	// assert.NoError(t, err) //TODO: comentado porque ainda não aprendi a popular a mock db
+	assert.NotNil(t, user)
+}

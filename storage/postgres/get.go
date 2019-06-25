@@ -40,6 +40,17 @@ func (s *Storage) GetWarningByID(id int) (entity.Warning, error) {
 	return w, err
 }
 
+// GetPublicByID read a public_func from the DB, given the id
+func (s *Storage) GetPublicByID(id int) (entity.PublicFunc, error) {
+	p := entity.PublicFunc{}
+	query := "SELECT * FROM public_funcs WHERE id=$1"
+	err := s.db.QueryRow(query, id).Scan(&p.ID, &p.Name, &p.Wage, &p.Place)
+	if err != nil {
+		return entity.PublicFunc{}, err
+	}
+	return p, err
+}
+
 //All
 
 // GetAllCustomers return all customers from the DB

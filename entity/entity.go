@@ -25,3 +25,11 @@ type Warning struct {
 	SentTo       string `json:"sent_to"`       //TODO: usar id do user
 	FromCustomer string `json:"from_customer"` //TODO: usar id do customer
 }
+
+// PublicFunc models the public employee profile
+type PublicFunc struct {
+	ID    int     `json:"id"`
+	Name  string  `json:"name"`
+	Wage  float32 `json:"wage"`
+	Place string  `json:"place"` // Place of work
+}

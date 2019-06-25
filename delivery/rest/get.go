@@ -228,3 +228,29 @@ func (s serv) getWarningByID(w http.ResponseWriter, r *http.Request) {
 		w.Write(b)
 	}
 }
+
+func (s serv) getPublicByID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-type", "application/json")
+	w, r, id := validateID(w, r)
+	// params := mux.Vars(r)
+	// id, err := strconv.Atoi(params["id"])
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	user, err := s.read.GetPublicByID(id)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		msg := fmt.Sprintf("Houve um problema na procura deste funcionário público: %v", err)
+		err := json.NewEncoder(w).Encode(msg)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		b, err := json.Marshal(user)
+		if err != nil {
+			log.Fatal(err)
+		}
+		w.Write(b)
+	}
+}

@@ -65,6 +65,7 @@ func TestHandler(t *testing.T) {
 		{"TestGetCustomerByID", "/customer?id=1", "GET", http.StatusBadRequest},
 		{"TestGetUserByID", "/user?id=1", "GET", http.StatusBadRequest},
 		{"TestGetWarningByID", "/warning?id=1", "GET", http.StatusBadRequest},
+		{"TestGetPublicByID", "/public_func?id=1", "GET", http.StatusBadRequest},
 
 		{"TestGetAllCustomers", "/customer/all", "GET", http.StatusBadRequest},
 		{"TestGetAllUsers", "/user/all", "GET", http.StatusBadRequest},
