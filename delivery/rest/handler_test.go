@@ -76,6 +76,7 @@ func TestHandler(t *testing.T) {
 		// TODO: teste não funciona se uso espaço na query
 		{"TestGetWarningByCustomer", "/warning?customer=teste_customer", "GET", http.StatusBadRequest},
 		{"TestGetWarningByUser", "/warning?user=teste_user", "GET", http.StatusBadRequest},
+		{"TestGetPublicByWage", "/public_func?wage=1234.56", "GET", http.StatusBadRequest},
 
 		{"TestUpdateCustomer", "/customer?id=1", "PUT", http.StatusBadRequest},
 		{"TestUpdateUser", "/user?id=1", "PUT", http.StatusBadRequest},

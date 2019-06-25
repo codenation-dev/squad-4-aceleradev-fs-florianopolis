@@ -115,6 +115,21 @@ func TestGetWarningByUser(t *testing.T) {
 	assert.NotNil(t, users) //TODO: incluir teste para quando não retornar colunas
 }
 
+func TestGetPublicByWage(t *testing.T) {
+	t.Parallel()
+	db, mock, err := sqlmock.New()
+	assert.NoError(t, err)
+	s := Storage{db}
+
+	pattern := float32(1234.56)
+	query := `SELECT \* FROM public_funcs WHERE wage > \$1`
+	mock.ExpectQuery(query).WillReturnRows(publicRows)
+
+	publicFuncs, err := s.GetPublicByWage(pattern)
+	assert.NoError(t, err)
+	assert.NotNil(t, publicFuncs) //TODO: incluir teste para quando não retornar colunas
+}
+
 // By ID
 func TestGetCustomerByID(t *testing.T) {
 	t.Parallel()

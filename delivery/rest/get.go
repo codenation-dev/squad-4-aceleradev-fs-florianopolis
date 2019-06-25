@@ -153,6 +153,17 @@ func (s *serv) getWarningByUser(w http.ResponseWriter, r *http.Request) {
 	w, r = getPayload(w, r, payload, err)
 }
 
+func (s *serv) getPublicByWage(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	pattern, err := strconv.ParseFloat(params["pattern"], 32)
+	if err != nil {
+		w, r = getPayload(w, r, nil, err)
+		return
+	}
+	payload, err := s.read.GetPublicByWage(float32(pattern))
+	w, r = getPayload(w, r, payload, err)
+}
+
 //ByID
 func (s serv) getCustomerByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")

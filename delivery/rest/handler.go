@@ -40,11 +40,12 @@ func Handler(
 	router.HandleFunc("/warning", s.getWarningByID).Methods("GET").Queries("id", "{id}")
 	router.HandleFunc("/public_func", s.getPublicByID).Methods("GET").Queries("id", "{id}")
 
-	// Get ByName
+	// Get ByName - by pattern
 	router.HandleFunc("/customer", s.getCustomerByName).Methods("GET").Queries("name", "{pattern}")
 	router.HandleFunc("/user", s.getUserByEmail).Methods("GET").Queries("email", "{pattern}")
 	router.HandleFunc("/warning", s.getWarningByCustomer).Methods("GET").Queries("customer", "{pattern}")
 	router.HandleFunc("/warning", s.getWarningByUser).Methods("GET").Queries("user", "{pattern}")
+	router.HandleFunc("/public_func", s.getPublicByWage).Methods("GET").Queries("wage", "{pattern}")
 
 	// Post
 	router.HandleFunc("/customer", s.addCustomer).Methods("POST")

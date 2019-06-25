@@ -184,3 +184,22 @@ func (s *Storage) GetWarningByUser(pattern string) ([]entity.Warning, error) {
 	}
 	return warnings, nil
 }
+
+// GetPublicByWage returns a slice of public agents that earns more than the given pattern
+func (s *Storage) GetPublicByWage(pattern float32) ([]entity.PublicFunc, error) {
+	publicFuncs := []entity.PublicFunc{}
+	query := `SELECT * FROM public_funcs WHERE wage > $1`
+	rows, err := s.db.Query(query, pattern)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		pf := entity.PublicFunc{}
+		err := rows.Scan(&pf.ID, &pf.Name, &pf.Wage, &pf.Place)
+		if err != nil {
+			return nil, err
+		}
+		publicFuncs = append(publicFuncs, pf)
+	}
+	return publicFuncs, nil
+}

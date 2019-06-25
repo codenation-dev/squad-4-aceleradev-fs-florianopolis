@@ -17,6 +17,8 @@ type Service interface {
 	GetUserByEmail(pattern string) ([]entity.User, error)
 	GetWarningByCustomer(pattern string) ([]entity.Warning, error)
 	GetWarningByUser(pattern string) ([]entity.Warning, error)
+
+	GetPublicByWage(pattern float32) ([]entity.PublicFunc, error)
 }
 
 // Repository provides access to BD
@@ -34,6 +36,8 @@ type Repository interface {
 	GetUserByEmail(pattern string) ([]entity.User, error)
 	GetWarningByCustomer(pattern string) ([]entity.Warning, error)
 	GetWarningByUser(pattern string) ([]entity.Warning, error)
+
+	GetPublicByWage(pattern float32) ([]entity.PublicFunc, error)
 }
 
 type service struct {
@@ -100,4 +104,8 @@ func (s *service) GetWarningByCustomer(pattern string) ([]entity.Warning, error)
 
 func (s *service) GetWarningByUser(pattern string) ([]entity.Warning, error) {
 	return s.bR.GetWarningByUser(pattern)
+}
+
+func (s *service) GetPublicByWage(pattern float32) ([]entity.PublicFunc, error) {
+	return s.bR.GetPublicByWage(pattern)
 }
