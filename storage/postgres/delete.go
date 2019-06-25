@@ -11,3 +11,9 @@ func (s *Storage) DeleteUserByID(id int) error {
 	_, err := s.db.Exec(`DELETE FROM users WHERE id=$1`, id)
 	return err
 }
+
+// DeleteWarningByID delets a customer from the db
+func (s *Storage) DeleteWarningByID(id int) error {
+	_, err := s.db.Exec(`DELETE FROM warnings WHERE id=$1`, id)
+	return err
+}

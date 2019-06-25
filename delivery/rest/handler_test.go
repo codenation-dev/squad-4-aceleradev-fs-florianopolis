@@ -60,6 +60,7 @@ func TestHandler(t *testing.T) {
 
 		{"TestDeleteUserbyID", "/user?id=1", "DELETE", http.StatusBadRequest},
 		{"TestDeleteCustomerByID", "/customer?id=1", "DELETE", http.StatusBadRequest},
+		{"TestDeleteWarningByID", "/warning?id=1", "DELETE", http.StatusBadRequest},
 
 		{"TestGetCustomerByID", "/customer?id=1", "GET", http.StatusBadRequest},
 		{"TestGetUserByID", "/user?id=1", "GET", http.StatusBadRequest},
@@ -77,6 +78,7 @@ func TestHandler(t *testing.T) {
 
 		{"TestUpdateCustomer", "/customer?id=1", "PUT", http.StatusBadRequest},
 		{"TestUpdateUser", "/user?id=1", "PUT", http.StatusBadRequest},
+		{"TestUpdateWarning", "/warning?id=1", "PUT", http.StatusBadRequest},
 
 		{"TestAddCustomer", "/customer", "POST", http.StatusBadRequest},
 		{"TestAddUser", "/user", "POST", http.StatusBadRequest},

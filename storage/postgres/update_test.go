@@ -39,3 +39,19 @@ func TestUpdateUser(t *testing.T) {
 	err = s.UpdateUser(mu)
 	assert.Error(t, err, err)
 }
+
+func TestUpdateWaring(t *testing.T) {
+	t.Parallel()
+	db, mock, err := sqlmock.New()
+	assert.NoError(t, err)
+	s := Storage{db}
+	query := `UPDATE warnings
+			SET dt=\$1, message=\$2, sent_to=\$3, from_customer=\$4
+			WHERE id=\$5`
+	mock.ExpectExec(query).
+		WithArgs(mw.Dt, mw.Message, mw.SentTo, mw.FromCustomer, mw.ID).
+		WillReturnError(errors.New("could not update the warning"))
+	// WillReturnResult(sqlmock.NewResult(1, 1))
+	err = s.UpdateWarning(mw)
+	assert.Error(t, err, err)
+}
