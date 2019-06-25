@@ -26,6 +26,13 @@ func (s *Storage) AddWarning(w entity.Warning) error {
 	return err
 }
 
+// AddPublicFunc inserts a new customer on the DB
+func (s *Storage) AddPublicFunc(p entity.PublicFunc) error {
+	_, err := s.db.Exec(`INSERT INTO public_funcs (name, wage, place)
+						VALUES ($1, $2, $3)`, &p.Name, &p.Wage, &p.Place)
+	return err
+}
+
 // // AddUser inserts a new customer on the DB
 // func (s *Storage) AddUser(u entity.User) error {
 // 	_, err := s.db.Exec(`INSERT INTO users (login, email, pass)

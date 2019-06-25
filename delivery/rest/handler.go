@@ -51,11 +51,13 @@ func Handler(
 	router.HandleFunc("/customer", s.addCustomer).Methods("POST")
 	router.HandleFunc("/user", s.addUser).Methods("POST")
 	router.HandleFunc("/warning", s.addWarning).Methods("POST")
+	router.HandleFunc("/public_func", s.addPublicFunc).Methods("POST")
 
 	// Delete
 	router.HandleFunc("/customer", s.deleteCustomerByID).Methods("DELETE").Queries("id", "{id}")
 	router.HandleFunc("/user", s.deleteUserByID).Methods("DELETE").Queries("id", "{id}")
 	router.HandleFunc("/warning", s.deleteWarningByID).Methods("DELETE").Queries("id", "{id}")
+	router.HandleFunc("/public_func", s.deletePublicByID).Methods("DELETE").Queries("id", "{id}")
 
 	// Put
 	router.HandleFunc("/customer", s.updateCustomer).Methods("PUT").Queries("id", "{id}")

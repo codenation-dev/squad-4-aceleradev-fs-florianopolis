@@ -58,3 +58,20 @@ func (s serv) addWarning(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 }
+
+func (s serv) addPublicFunc(w http.ResponseWriter, r *http.Request) {
+	b, err := ioutil.ReadAll(r.Body)
+	publicFunc := entity.PublicFunc{}
+	err = json.Unmarshal(b, &publicFunc)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	s.add.AddPublicFunc(publicFunc) // TODO: tratar este possível erro?
+
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode("funcionário público adicionado com sucesso")
+	if err != nil {
+		log.Fatal(err)
+	}
+}

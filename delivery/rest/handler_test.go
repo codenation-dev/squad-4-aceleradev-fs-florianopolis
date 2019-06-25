@@ -61,11 +61,11 @@ func TestHandler(t *testing.T) {
 		{"TestDeleteUserbyID", "/user?id=1", "DELETE", http.StatusBadRequest},
 		{"TestDeleteCustomerByID", "/customer?id=1", "DELETE", http.StatusBadRequest},
 		{"TestDeleteWarningByID", "/warning?id=1", "DELETE", http.StatusBadRequest},
+		{"TestDeletePublicByID", "/public_func?id=1", "DELETE", http.StatusBadRequest},
 
 		{"TestGetCustomerByID", "/customer?id=1", "GET", http.StatusBadRequest},
 		{"TestGetUserByID", "/user?id=1", "GET", http.StatusBadRequest},
 		{"TestGetWarningByID", "/warning?id=1", "GET", http.StatusBadRequest},
-		{"TestGetPublicByID", "/public_func?id=1", "GET", http.StatusBadRequest},
 
 		{"TestGetAllCustomers", "/customer/all", "GET", http.StatusBadRequest},
 		{"TestGetAllUsers", "/user/all", "GET", http.StatusBadRequest},
@@ -85,6 +85,7 @@ func TestHandler(t *testing.T) {
 		{"TestAddCustomer", "/customer", "POST", http.StatusBadRequest},
 		{"TestAddUser", "/user", "POST", http.StatusBadRequest},
 		{"TestAddWarning", "/warning", "POST", http.StatusBadRequest},
+		{"TestAddPublicFunc", "/public_func", "POST", http.StatusBadRequest},
 	}
 
 	//TODO: Trocar estes StatusBadRequest por uma resposta mais informativa

@@ -55,6 +55,12 @@ func (s serv) deleteWarningByID(w http.ResponseWriter, r *http.Request) {
 	w, r = deleteIt(w, r, err)
 }
 
+func (s serv) deletePublicByID(w http.ResponseWriter, r *http.Request) {
+	w, r, id := validateID(w, r)
+	err := s.del.DeletePublicByID(id)
+	w, r = deleteIt(w, r, err)
+}
+
 func (s serv) deleteUserByID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
