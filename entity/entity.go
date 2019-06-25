@@ -16,3 +16,20 @@ type User struct {
 	Email string `json:"email"`
 	Pass  string `json:"pass"`
 }
+
+// Warning Models the warning
+type Warning struct {
+	ID           int    `json:"wid"`
+	Dt           string `json:"dt"` //TODO: usar datetime
+	Message      string `json:"msg"`
+	SentTo       string `json:"sent_to"`       //TODO: usar id do user
+	FromCustomer string `json:"from_customer"` //TODO: usar id do customer
+}
+
+// PublicFunc models the public employee profile
+type PublicFunc struct {
+	ID    int     `json:"id"`
+	Name  string  `json:"name"`
+	Wage  float32 `json:"wage"`
+	Place string  `json:"place"` // Place of work
+}

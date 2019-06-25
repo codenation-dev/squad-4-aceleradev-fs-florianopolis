@@ -57,3 +57,52 @@ func TestAddUser(t *testing.T) {
 	// assert.Equal(t, expLII, LII)
 	// assert.Equal(t, expRA, RA)
 }
+
+func TestAddWarning(t *testing.T) {
+	t.Parallel()
+
+	db, mock, err := sqlmock.New()
+	assert.Nil(t, err, fmt.Sprintf("error when opening the mock db connection: %v", err))
+	defer db.Close()
+
+	query := `INSERT INTO warnings \(dt, message, sent_to, from_customer\)
+	VALUES \(\$1, \$2, \$3, \$4\)`
+	expResult := sqlmock.NewResult(1, 1)
+	mock.ExpectExec(query).
+		WithArgs(mw.Dt, mw.Message, mw.SentTo, mw.FromCustomer).WillReturnError(nil).
+		WillReturnResult(expResult)
+
+	s := Storage{db}
+	err = s.AddWarning(mw)
+	assert.NoError(t, err, err)
+	// expLII, _ := expResult.LastInsertId()
+	// expRA, _ := expResult.RowsAffected()
+	// LII, _ := res.LastInsertId()
+	// RA, _ := res.RowsAffected()
+	// assert.Equal(t, expLII, LII)
+	// assert.Equal(t, expRA, RA)
+}
+
+func TestAddPublic(t *testing.T) {
+	t.Parallel()
+
+	db, mock, err := sqlmock.New()
+	assert.Nil(t, err, fmt.Sprintf("error when opening the mock db connection: %v", err))
+	defer db.Close()
+
+	query := `INSERT INTO public_funcs \(name, wage, place\) VALUES \(\$1, \$2, \$3\)`
+	expResult := sqlmock.NewResult(1, 1)
+	mock.ExpectExec(query).
+		WithArgs(mp.Name, mp.Wage, mp.Place).WillReturnError(nil).
+		WillReturnResult(expResult)
+
+	s := Storage{db}
+	err = s.AddPublicFunc(mp)
+	assert.NoError(t, err, err)
+	// expLII, _ := expResult.LastInsertId()
+	// expRA, _ := expResult.RowsAffected()
+	// LII, _ := res.LastInsertId()
+	// RA, _ := res.RowsAffected()
+	// assert.Equal(t, expLII, LII)
+	// assert.Equal(t, expRA, RA)
+}

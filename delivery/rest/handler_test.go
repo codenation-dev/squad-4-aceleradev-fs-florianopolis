@@ -39,7 +39,7 @@ func makeFakeServices() http.Handler {
 	deleter = deleting.NewService(s)
 	updater = updating.NewService(s)
 
-	// set uo HTTP server
+	// set up HTTP server
 	router := Handler(
 		adder,
 		reader,
@@ -60,21 +60,32 @@ func TestHandler(t *testing.T) {
 
 		{"TestDeleteUserbyID", "/user?id=1", "DELETE", http.StatusBadRequest},
 		{"TestDeleteCustomerByID", "/customer?id=1", "DELETE", http.StatusBadRequest},
+		{"TestDeleteWarningByID", "/warning?id=1", "DELETE", http.StatusBadRequest},
+		{"TestDeletePublicByID", "/public_func?id=1", "DELETE", http.StatusBadRequest},
 
 		{"TestGetCustomerByID", "/customer?id=1", "GET", http.StatusBadRequest},
 		{"TestGetUserByID", "/user?id=1", "GET", http.StatusBadRequest},
+		{"TestGetWarningByID", "/warning?id=1", "GET", http.StatusBadRequest},
 
 		{"TestGetAllCustomers", "/customer/all", "GET", http.StatusBadRequest},
 		{"TestGetAllUsers", "/user/all", "GET", http.StatusBadRequest},
+		{"TestGetAllWarnings", "/warning/all", "GET", http.StatusBadRequest},
 
 		{"TestGetCustomerByName", "/customer?name=Teste", "GET", http.StatusBadRequest},
 		{"TestGetUserByEmail", "/user?email=teste@email", "GET", http.StatusBadRequest},
+		// TODO: teste não funciona se uso espaço na query
+		{"TestGetWarningByCustomer", "/warning?customer=teste_customer", "GET", http.StatusBadRequest},
+		{"TestGetWarningByUser", "/warning?user=teste_user", "GET", http.StatusBadRequest},
+		{"TestGetPublicByWage", "/public_func?wage=1234.56", "GET", http.StatusBadRequest},
 
 		{"TestUpdateCustomer", "/customer?id=1", "PUT", http.StatusBadRequest},
 		{"TestUpdateUser", "/user?id=1", "PUT", http.StatusBadRequest},
+		{"TestUpdateWarning", "/warning?id=1", "PUT", http.StatusBadRequest},
 
 		{"TestAddCustomer", "/customer", "POST", http.StatusBadRequest},
 		{"TestAddUser", "/user", "POST", http.StatusBadRequest},
+		{"TestAddWarning", "/warning", "POST", http.StatusBadRequest},
+		{"TestAddPublicFunc", "/public_func", "POST", http.StatusBadRequest},
 	}
 
 	//TODO: Trocar estes StatusBadRequest por uma resposta mais informativa

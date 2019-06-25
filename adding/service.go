@@ -8,12 +8,16 @@ import (
 type Service interface {
 	AddCustomer(entity.Customer) error
 	AddUser(entity.User) error
+	AddWarning(entity.Warning) error
+	AddPublicFunc(entity.PublicFunc) error
 }
 
 // Repository provides access to customer repo
 type Repository interface {
 	AddCustomer(entity.Customer) error
 	AddUser(entity.User) error
+	AddWarning(entity.Warning) error
+	AddPublicFunc(entity.PublicFunc) error
 }
 
 type service struct { //TODO: não entendi ainda o porquê dessa struct
@@ -39,4 +43,12 @@ func (s *service) AddCustomer(customer entity.Customer) error {
 func (s *service) AddUser(user entity.User) error {
 	//TODO: some validation
 	return s.bR.AddUser(user)
+}
+
+func (s *service) AddWarning(warning entity.Warning) error {
+	return s.bR.AddWarning(warning)
+}
+
+func (s *service) AddPublicFunc(p entity.PublicFunc) error {
+	return s.bR.AddPublicFunc(p)
 }
