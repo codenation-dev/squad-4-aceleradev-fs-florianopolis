@@ -2,10 +2,10 @@ package rest
 
 import (
 	"codenation/squad-4-aceleradev-fs-florianopolis/adding"
-	"codenation/squad-4-aceleradev-fs-florianopolis/deleting"
-	"codenation/squad-4-aceleradev-fs-florianopolis/reading"
-	"codenation/squad-4-aceleradev-fs-florianopolis/storage/postgres"
-	"codenation/squad-4-aceleradev-fs-florianopolis/updating"
+	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/deleting"
+	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/reading"
+	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/storage/postgres"
+	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/updating"
 	"fmt"
 	"log"
 	"net/http"

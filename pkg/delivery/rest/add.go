@@ -1,12 +1,61 @@
 package rest
 
 import (
-	"codenation/squad-4-aceleradev-fs-florianopolis/entity"
+	"codenation/squad-4-aceleradev-fs-florianopolis/importing"
+	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 )
+
+func (s serv) importPublicFuncFile(w http.ResponseWriter, r *http.Request) {
+	publicFuncs, err := importing.ImportPublicFunc()
+	if err != nil {
+		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	for _, pf := range publicFuncs {
+		func(pf entity.PublicFunc) { // TODO: tem como fazer isso com goroutines?
+			err := s.add.AddPublicFunc(pf)
+			if err != nil {
+				log.Fatal(err)
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+		}(pf)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode("Arquivo de funcionários públicos importado com sucesso")
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (s serv) importCustomerFile(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("importCustomerFile")
+	customers, err := importing.ImportClientesCSV("clientes.csv")
+	if err != nil {
+		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	for _, customer := range customers {
+		err := s.add.AddCustomer(customer)
+		if err != nil {
+			log.Fatal(err)
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+	}
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode("Arquivo de clientes importado com sucesso")
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
 func (s serv) addCustomer(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadAll(r.Body)

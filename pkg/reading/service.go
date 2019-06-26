@@ -1,6 +1,6 @@
 package reading
 
-import "codenation/squad-4-aceleradev-fs-florianopolis/entity"
+import "codenation/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 
 // Service provides reading operations
 type Service interface {

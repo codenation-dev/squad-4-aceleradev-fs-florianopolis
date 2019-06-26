@@ -1,6 +1,6 @@
 package postgres
 
-import "codenation/squad-4-aceleradev-fs-florianopolis/entity"
+import "codenation/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 
 // AddCustomer inserts a new customer on the DB
 func (s *Storage) AddCustomer(c entity.Customer) error {
@@ -10,7 +10,7 @@ func (s *Storage) AddCustomer(c entity.Customer) error {
 	return err
 }
 
-// AddUser inserts a new customer on the DB
+// AddUser inserts a new user on the DB
 func (s *Storage) AddUser(u entity.User) error {
 	_, err := s.db.Exec(`INSERT INTO users (login, email, pass)
 						VALUES ($1, $2, $3)`,
@@ -18,7 +18,7 @@ func (s *Storage) AddUser(u entity.User) error {
 	return err
 }
 
-// AddWarning inserts a new customer on the DB
+// AddWarning inserts a new warning on the DB
 func (s *Storage) AddWarning(w entity.Warning) error {
 	_, err := s.db.Exec(`INSERT INTO warnings (dt, message, sent_to, from_customer)
 						VALUES ($1, $2, $3, $4)`,
@@ -26,7 +26,7 @@ func (s *Storage) AddWarning(w entity.Warning) error {
 	return err
 }
 
-// AddPublicFunc inserts a new customer on the DB
+// AddPublicFunc inserts a new public agent on the DB
 func (s *Storage) AddPublicFunc(p entity.PublicFunc) error {
 	_, err := s.db.Exec(`INSERT INTO public_funcs (name, wage, place)
 						VALUES ($1, $2, $3)`, &p.Name, &p.Wage, &p.Place)

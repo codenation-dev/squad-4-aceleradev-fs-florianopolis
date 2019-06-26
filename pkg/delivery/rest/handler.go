@@ -1,10 +1,10 @@
 package rest
 
 import (
-	"codenation/squad-4-aceleradev-fs-florianopolis/adding"
-	"codenation/squad-4-aceleradev-fs-florianopolis/deleting"
-	"codenation/squad-4-aceleradev-fs-florianopolis/reading"
-	"codenation/squad-4-aceleradev-fs-florianopolis/updating"
+	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/adding"
+	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/deleting"
+	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/reading"
+	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/updating"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -27,6 +27,7 @@ func Handler(
 	s := serv{add: add, read: read, del: del, update: update}
 
 	router := mux.NewRouter()
+
 	router.HandleFunc("/", getHome).Methods("GET")
 
 	// Get All
@@ -46,6 +47,10 @@ func Handler(
 	router.HandleFunc("/warning", s.getWarningByCustomer).Methods("GET").Queries("customer", "{pattern}")
 	router.HandleFunc("/warning", s.getWarningByUser).Methods("GET").Queries("user", "{pattern}")
 	router.HandleFunc("/public_func", s.getPublicByWage).Methods("GET").Queries("wage", "{pattern}")
+
+	// Import
+	router.HandleFunc("/customer/import", s.importCustomerFile).Methods("POST")      // TODO: posso fazer opção para escolher o arquivo
+	router.HandleFunc("/public_func/import", s.importPublicFuncFile).Methods("POST") // TODO: posso fazer opção para escolher o mês
 
 	// Post
 	router.HandleFunc("/customer", s.addCustomer).Methods("POST")

@@ -28,15 +28,18 @@ func readCSV(path string, job func([]string) bool, sep rune, hasHeader bool) {
 	if hasHeader {
 		r.Read()
 	}
+	counter := 0
 	for {
+		counter++
 		line, err := r.Read()
 		if err == io.EOF {
 			break
 		} else if err != nil {
 			log.Fatalf("Could not read csv file: %v", err)
 		}
-		fmt.Println("Reading CSV...")
-
+		if counter%100000 == 0 {
+			fmt.Println("Reading CSV...")
+		}
 		keepgoing := job(line)
 		if keepgoing != true {
 			break
@@ -55,6 +58,7 @@ func ImportClientesCSV(path string) ([]entity.Customer, error) {
 		return true
 	}
 	readCSV(path, job, ',', true)
+
 	return customers, nil
 }
 
@@ -82,7 +86,7 @@ func DownloadHTTPFile(path, filename string) (string, error) {
 
 // ImportPublicFunc import from the goverment site
 func ImportPublicFunc() ([]entity.PublicFunc, error) {
-	var indexName = 1
+	var indexName = 0
 	var indexIncome = 3
 
 	if _, err := os.Stat("file.rar"); os.IsNotExist(err) {
@@ -95,8 +99,11 @@ func ImportPublicFunc() ([]entity.PublicFunc, error) {
 	publicFuncs := []entity.PublicFunc{}
 
 	job := func(row []string) bool {
-		n := row[indexName]
-		ws := strings.Replace(row[indexIncome], ",", ".", 1)
+		var n, ws string
+
+		n = row[indexName]
+
+		ws = strings.Replace(row[indexIncome], ",", ".", 1)
 		wf, err := strconv.ParseFloat(ws, 32)
 		if err != nil {
 			log.Fatal(err)
@@ -109,11 +116,12 @@ func ImportPublicFunc() ([]entity.PublicFunc, error) {
 		return true
 	}
 
-	readCSV("Remuneracao_Abril_2019.txt", job, ';', true)
+	readCSV("Remuneracao.txt", job, ';', true) //TODO: Fazer dinâmico, pode escolher qual mês baixar (ou atual)
+	fmt.Println(publicFuncs[:10])
 	return publicFuncs, nil
 }
 
-func fetchPublicAgentsFile() error {
+func fetchPublicAgentsFile() error { //TODO: acrescentar opção para escolher qual mês baixar
 	filename := "Remuneracao_Abril_2019"
 	path := "http://www.transparencia.sp.gov.br/PortalTransparencia-Report/historico/"
 	destFolder := "."
@@ -134,3 +142,7 @@ func fetchPublicAgentsFile() error {
 	}
 	return nil
 }
+
+// func InsertRows(){
+
+// }

@@ -1,6 +1,6 @@
 package updating
 
-import "codenation/squad-4-aceleradev-fs-florianopolis/entity"
+import "codenation/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 
 // Service provides updating methods
 type Service interface {
