@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
 
 	"github.com/DATA-DOG/go-sqlmock"
 )

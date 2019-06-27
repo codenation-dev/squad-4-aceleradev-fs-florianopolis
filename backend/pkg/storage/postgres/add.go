@@ -1,6 +1,6 @@
 package postgres
 
-import "codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+import "codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
 
 // AddCustomer inserts a new customer on the DB
 func (s *Storage) AddCustomer(c entity.Customer) error {

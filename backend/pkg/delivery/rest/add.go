@@ -1,8 +1,8 @@
 package rest
 
 import (
-	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
-	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/importing"
+	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/importing"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
