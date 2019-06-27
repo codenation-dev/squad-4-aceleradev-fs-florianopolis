@@ -70,6 +70,39 @@ paths:
       summary: Adiciona um cliente ao BD
       tags:
       - customer
+  /customer/import:
+    post:
+      consumes:
+      - application/json
+      description: Download e importação de arquivo de funcionário público do estado
+        de SP
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            $ref: '#/definitions/string'
+            type: object
+        "400":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/string'
+            type: object
+        "404":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/string'
+            type: object
+      summary: Importa o arquivo de uncionários públicos
+      tags:
+      - public_func/import
   /user:
     post:
       consumes:

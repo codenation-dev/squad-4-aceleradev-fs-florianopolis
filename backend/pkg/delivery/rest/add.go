@@ -1,16 +1,28 @@
 package rest
 
 import (
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/importing"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/importing"
 )
 
-func (s serv) importPublicFuncFile(w http.ResponseWriter, r *http.Request) {
+// ImportPublicFuncFile godoc
+// @Summary Importa o arquivo de uncionários públicos
+// @Description Download e importação de arquivo de funcionário público do estado de SP
+// @Tags public_func/import
+// @Accept  json
+// @Produce  json
+// @Param id path int true "id"
+// @Success 200 {object} string "ok"
+// @Failure 400 {object} string "Not Found"
+// @Failure 404 {object} string "Bad Request"
+// @Router /customer/import [POST]
+func (s serv) ImportPublicFuncFile(w http.ResponseWriter, r *http.Request) {
 	publicFuncs, err := importing.ImportPublicFunc()
 	if err != nil {
 		log.Fatal(err)
@@ -19,7 +31,7 @@ func (s serv) importPublicFuncFile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// err = s.add.LoadPublicFuncFile()
-	// if err != nil {
+	// / if err != nil {
 	// 	log.Fatal(err)
 	// 	http.Error(w, err.Error(), http.StatusBadRequest)
 	// 	return
@@ -44,7 +56,7 @@ func (s serv) importPublicFuncFile(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s serv) importCustomerFile(w http.ResponseWriter, r *http.Request) {
+func (s serv) ImportCustomerFile(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("importCustomerFile")
 	customers, err := importing.ImportClientesCSV("clientes.csv")
 	if err != nil {
@@ -68,7 +80,7 @@ func (s serv) importCustomerFile(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// addCustomer godoc
+// AddCustomer godoc
 // @Summary Adiciona um cliente ao BD
 // @Description Adiciona um cliente ao BD
 // @Tags customer
@@ -79,7 +91,7 @@ func (s serv) importCustomerFile(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} Not Found
 // @Failure 404 {object} Bad Request
 // @Router /customer [POST]
-func (s serv) addCustomer(w http.ResponseWriter, r *http.Request) {
+func (s serv) AddCustomer(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadAll(r.Body)
 	c := entity.Customer{}
 	err = json.Unmarshal(b, &c)
@@ -96,7 +108,7 @@ func (s serv) addCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// addUser godoc
+// AddUser godoc
 // @Summary Adiciona um usuário ao BD
 // @Description Adiciona um usuário ao BD
 // @Tags user
@@ -124,7 +136,7 @@ func (s serv) addUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s serv) addWarning(w http.ResponseWriter, r *http.Request) {
+func (s serv) AddWarning(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadAll(r.Body)
 	warning := entity.Warning{}
 	err = json.Unmarshal(b, &warning)

@@ -2,7 +2,7 @@ package importing
 
 import (
 	"bufio"
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
 	"encoding/csv"
 	"fmt"
 	"io"

@@ -1,11 +1,11 @@
 package rest
 
 import (
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/adding"
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/deleting"
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/reading"
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/storage/postgres"
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/updating"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/adding"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/deleting"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/reading"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/storage/postgres"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/updating"
 	"fmt"
 	"log"
 	"net/http"
@@ -55,11 +55,11 @@ func MakeFakeServices() *mux.Router {
 }
 
 // import (
-// 	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/adding"
-// 	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/deleting"
-// 	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/reading"
-// 	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/storage/postgres"
-// 	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/updating"
+// 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/adding"
+// 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/deleting"
+// 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/reading"
+// 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/storage/postgres"
+// 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/updating"
 // 	"fmt"
 // 	"log"
 // 	"net/http"

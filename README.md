@@ -1,4 +1,4 @@
-# CLONAR DIRETAMENTE NO gopath/src/github.com
+## CLONAR DIRETAMENTE NO gopath/src/github.com
 assim fica com os nomes dos imports corretos, iguais ao da url do github
 
 

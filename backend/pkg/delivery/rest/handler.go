@@ -4,11 +4,12 @@
 package rest
 
 import (
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/adding"
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/deleting"
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/reading"
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/updating"
 	"net/http"
+
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/adding"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/deleting"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/reading"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/updating"
 
 	"github.com/gorilla/mux"
 )
@@ -31,7 +32,7 @@ func Handler(
 
 	router := mux.NewRouter().StrictSlash(true)
 
-	router.HandleFunc("/", getHome).Methods("GET")
+	router.HandleFunc("/a", getHome).Methods("GET")
 
 	// Get All
 	router.HandleFunc("/customer/all", s.getAllCustomers).Methods("GET")
@@ -52,13 +53,13 @@ func Handler(
 	router.HandleFunc("/public_func", s.getPublicByWage).Methods("GET").Queries("wage", "{pattern}")
 
 	// Import
-	router.HandleFunc("/customer/import", s.importCustomerFile).Methods("POST")      // TODO: posso fazer opção para escolher o arquivo
-	router.HandleFunc("/public_func/import", s.importPublicFuncFile).Methods("POST") // TODO: posso fazer opção para escolher o mês
+	router.HandleFunc("/customer/import", s.ImportCustomerFile).Methods("POST")      // TODO: posso fazer opção para escolher o arquivo
+	router.HandleFunc("/public_func/import", s.ImportPublicFuncFile).Methods("POST") // TODO: posso fazer opção para escolher o mês
 
 	// Post
-	router.HandleFunc("/customer", s.addCustomer).Methods("POST")
+	router.HandleFunc("/customer", s.AddCustomer).Methods("POST")
 	router.HandleFunc("/user", s.addUser).Methods("POST")
-	router.HandleFunc("/warning", s.addWarning).Methods("POST")
+	router.HandleFunc("/warning", s.AddWarning).Methods("POST")
 	router.HandleFunc("/public_func", s.addPublicFunc).Methods("POST")
 
 	// Delete
@@ -72,12 +73,19 @@ func Handler(
 	router.HandleFunc("/user", s.updateUser).Methods("PUT").Queries("id", "{id}")
 	router.HandleFunc("/warning", s.updateWarning).Methods("PUT").Queries("id", "{id}")
 
-	router.HandleFunc("/swagger.json", swagger).Methods("GET")
+	router.HandleFunc("/docs", swagger).Methods("GET")
 
 	return router
 }
 
 func swagger(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	http.ServeFile(w, r, "swagger.json")
+	http.ServeFile(w, r, "docs/swagger.json")
+
+	// w.Header().Set("Content-type", "application/json")
+	// w.WriteHeader(http.StatusOK)
+	// err := json.NewEncoder(w).Encode("API Banco Uati")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 }

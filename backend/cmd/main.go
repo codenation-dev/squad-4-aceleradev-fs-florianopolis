@@ -40,19 +40,21 @@
 // @authorizationUrl https://example.com/oauth/authorize
 // @scope.admin Grants read and write access to administrative information
 
+// Access-Control-Allow-*
 package main
 
 import (
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/adding"
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/deleting"
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/delivery/rest"
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/reading"
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/storage/postgres"
-	"codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/updating"
 	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/deleting"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/delivery/rest"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/reading"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/storage/postgres"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/updating"
+
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/adding"
 	_ "github.com/lib/pq" // postgres
 )
 
