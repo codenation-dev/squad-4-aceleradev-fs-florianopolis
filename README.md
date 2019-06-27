@@ -1,3 +1,9 @@
+# CLONAR DIRETAMENTE NO gopath/src/github.com
+assim fica com os nomes dos imports corretos, iguais ao da url do github
+
+
+
+
 # Gestão de clientes Banco Uati
 
 ## Objetivo
