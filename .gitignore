@@ -18,7 +18,7 @@
 clientes.csv
 file.rar
 main.py.old
-*.json
+# *.json
 cliente
 old
 *.txt
