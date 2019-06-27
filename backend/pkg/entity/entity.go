@@ -1,3 +1,4 @@
+// Package entity implements the models to the data
 package entity
 
 // Customer of the bank

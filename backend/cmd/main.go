@@ -1,46 +1,6 @@
-// @title Captação de Clientes Banco Uati
-// @version 0.1
-// @description Projeto final para o AceleraDev FullStack presencial CodeNation
-// @termsOfService http://terms.of.service
-
-// @contact.name API Support
-// @contact.url http://www.contact.url
-// @contact.email support@email.com
-
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-
-// @host localhost:3000
-// @BasePath /
-
-// @securityDefinitions.basic TODO: not implemented yet
-
-// @securityDefinitions.apikey ApiKeyAuth TODO: not implemented yet
-// @in header TODO: not implemented yet
-// @name Authorization TODO: not implemented yet
-
-// @securitydefinitions.oauth2.application OAuth2Application TODO: not implemented yet
-// @tokenUrl https://example.com/oauth/token
-// @scope.write Grants write access
-// @scope.admin Grants read and write access to administrative information
-
-// @securitydefinitions.oauth2.implicit OAuth2Implicit TODO: not implemented yet
-// @authorizationUrl https://example.com/oauth/authorize
-// @scope.write Grants write access
-// @scope.admin Grants read and write access to administrative information
-
-// @securitydefinitions.oauth2.password OAuth2Password TODO: not implemented yet
-// @tokenUrl https://example.com/oauth/token
-// @scope.read Grants read access
-// @scope.write Grants write access
-// @scope.admin Grants read and write access to administrative information
-
-// @securitydefinitions.oauth2.accessCode OAuth2AccessCode TODO: not implemented yet
-// @tokenUrl https://example.com/oauth/token
-// @authorizationUrl https://example.com/oauth/authorize
-// @scope.admin Grants read and write access to administrative information
-
-// Access-Control-Allow-*
+// Captação de clientes Banco Uati
+//
+// API para captação de prováveis clientes, buscando dados de fontes públicas
 package main
 
 import (
