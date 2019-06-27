@@ -1,22 +1,27 @@
 package rest
 
 import (
-	"codenation/squad-4-aceleradev-fs-florianopolis/adding"
-	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/deleting"
-	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/reading"
-	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/storage/postgres"
-	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/updating"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/adding"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/deleting"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/reading"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/storage/postgres"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/updating"
 	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
+	"github.com/gorilla/mux"
+
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/adams-sarah/test2doc/test"
+	"github.com/adams-sarah/test2doc/vars"
 	"github.com/stretchr/testify/assert"
 )
 
-func makeFakeServices() http.Handler {
+func MakeFakeServices() *mux.Router {
 
 	// set services
 	var adder adding.Service
@@ -47,6 +52,78 @@ func makeFakeServices() http.Handler {
 		updater,
 	)
 	return router
+}
+
+// import (
+// 	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/adding"
+// 	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/deleting"
+// 	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/reading"
+// 	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/storage/postgres"
+// 	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/updating"
+// 	"fmt"
+// 	"log"
+// 	"net/http"
+// 	"os"
+// 	"testing"
+
+// 	"github.com/gorilla/mux"
+// 	"github.com/stretchr/testify/assert"
+
+// 	"github.com/DATA-DOG/go-sqlmock"
+// 	"github.com/adams-sarah/test2doc/test"
+// 	"github.com/adams-sarah/test2doc/vars"
+// )
+
+// var srv *test.Server
+
+// func makeFakeServices() *mux.Router {
+
+// 	// set services
+// 	var adder adding.Service
+// 	var reader reading.Service
+// 	var deleter deleting.Service
+// 	var updater updating.Service
+
+// 	// If have more than one storage types, make the case/switch here
+// 	db, _, err := sqlmock.New()
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	s, err := postgres.NewStorage(db)
+// 	if err != nil {
+// 		log.Fatalf("could not set new storage: %v", err)
+// 	}
+
+// 	adder = adding.NewService(s)
+// 	reader = reading.NewService(s)
+// 	deleter = deleting.NewService(s)
+// 	updater = updating.NewService(s)
+
+// 	// set up HTTP server
+// 	router := Handler(
+// 		adder,
+// 		reader,
+// 		deleter,
+// 		updater,
+// 	)
+// 	return router
+// }
+
+func TestMain(m *testing.M) {
+	fakeRouter := MakeFakeServices()
+
+	extractor := vars.MakeGorillaMuxExtractor(fakeRouter)
+	test.RegisterURLVarExtractor(extractor)
+
+	srv, err := test.NewServer(fakeRouter)
+	if err != nil {
+		panic(err)
+	}
+
+	code := m.Run()
+	srv.Finish()
+	os.Exit(code)
+
 }
 
 func TestHandler(t *testing.T) {
@@ -94,8 +171,12 @@ func TestHandler(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-			router := makeFakeServices()
+			router := MakeFakeServices()
 			srv := httptest.NewServer(router)
+			// srv, err := test.NewServer(router)
+			// if err != nil {
+			// 	panic(err)
+			// }
 			defer srv.Close()
 
 			url := fmt.Sprintf("%s%s", srv.URL, tc.path)

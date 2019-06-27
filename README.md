@@ -21,3 +21,10 @@ A lista de clientes do banco Uati encontra-se no arquivo ``clientes.csv`` contid
 - Uma tela para listar e detalhar os alertas,  listar os envios de emails e para quem foi enviado, data, hora e outras funcionalidades que o grupo julgar interessantes;
 - Enviar um alerta através de e-mail quando um cliente se tornar um funcionário do banco;
 - Todas essas funcionalidades devem ser expostas para clientes que queiram integrar através de uma API.
+
+
+NOTES:
+
+docker start containder_id
+docker stop containder_id
+docker exec -ti containder_id psql -U postgres

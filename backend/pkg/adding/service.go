@@ -1,6 +1,6 @@
 package adding
 
-import "codenation/squad-4-aceleradev-fs-florianopolis/pkg/entity"
+import "codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
 
 // Service provides adding operations
 type Service interface {

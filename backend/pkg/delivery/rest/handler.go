@@ -1,11 +1,10 @@
 package rest
 
 import (
-	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/adding"
-	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/deleting"
-	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/reading"
-	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/updating"
-	"net/http"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/adding"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/deleting"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/reading"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/updating"
 
 	"github.com/gorilla/mux"
 )
@@ -23,7 +22,7 @@ func Handler(
 	read reading.Service,
 	del deleting.Service,
 	update updating.Service,
-) http.Handler {
+) *mux.Router {
 	s := serv{add: add, read: read, del: del, update: update}
 
 	router := mux.NewRouter()

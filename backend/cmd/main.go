@@ -1,12 +1,12 @@
 package main
 
 import (
-	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/adding"
-	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/deleting"
-	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/delivery/rest"
-	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/reading"
-	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/storage/postgres"
-	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/updating"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/adding"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/deleting"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/delivery/rest"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/reading"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/storage/postgres"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/updating"
 	"fmt"
 	"log"
 	"net/http"

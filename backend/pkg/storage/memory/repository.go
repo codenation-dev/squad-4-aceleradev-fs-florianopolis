@@ -1,7 +1,7 @@
 package memory
 
 import (
-	"codenation/squad-4-aceleradev-fs-florianopolis/pkg/entity"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
 	"errors"
 )
 
