@@ -1,3 +1,14 @@
+// @version 0.1.0
+// @title Uati API
+// @description TODO: add description here
+// @contact.email support@teamwork.com
+// @termsOfService https://www.teamwork.com/termsofservice
+// @license.name BSD
+// @license.url http://opensource.org/licenses/BSD-2-Clause
+// @host: localhost:3000
+// @BasePath /
+// @schemes http
+
 package main
 
 import (

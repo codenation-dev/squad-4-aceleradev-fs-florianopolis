@@ -1,8 +1,8 @@
 package rest
 
 import (
-	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/importing"
 	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/importing"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -68,6 +68,15 @@ func (s serv) importCustomerFile(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// @Title Add customer
+// @Description Add bank's customer Information
+// @Accept json
+// @Success 200 {object} string &quot;Success&quot;
+// @Failure 400 {object} string &quot;Bad Request&quot;
+// @Failure 401 {object} string &quot;Access denied&quot;
+// @Failure 404 {object} string &quot;Not Found&quot;
+// @Resource /customer
+// @Router /customer [post]
 func (s serv) addCustomer(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadAll(r.Body)
 	c := entity.Customer{}

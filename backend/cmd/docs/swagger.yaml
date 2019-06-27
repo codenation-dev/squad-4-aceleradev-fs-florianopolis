@@ -1,0 +1,42 @@
+basePath: /
+host: '{{.Host}}'
+info:
+  contact:
+    email: support@teamwork.com
+  description: 'TODO: add description here'
+  license:
+    name: BSD
+    url: http://opensource.org/licenses/BSD-2-Clause
+  termsOfService: https://www.teamwork.com/termsofservice
+  title: Uati API
+  version: 0.1.0
+paths:
+  /customer:
+    post:
+      consumes:
+      - application/json
+      description: Add bank's customer Information
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/string'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/string'
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/string'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/string'
+            type: object
+schemes:
+- http
+swagger: "2.0"

@@ -1,3 +1,6 @@
+// @SubApi [/users]
+// @SubApi Allows you access to different features of the users , login , get status etc [/users]
+
 package rest
 
 import (
@@ -5,6 +8,8 @@ import (
 	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/deleting"
 	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/reading"
 	"codenation/squad-4-aceleradev-fs-florianopolis/backend/pkg/updating"
+	"fmt"
+	"net/http"
 
 	"github.com/gorilla/mux"
 )
@@ -25,7 +30,7 @@ func Handler(
 ) *mux.Router {
 	s := serv{add: add, read: read, del: del, update: update}
 
-	router := mux.NewRouter()
+	router := mux.NewRouter().StrictSlash(true)
 
 	router.HandleFunc("/", getHome).Methods("GET")
 
@@ -68,5 +73,12 @@ func Handler(
 	router.HandleFunc("/user", s.updateUser).Methods("PUT").Queries("id", "{id}")
 	router.HandleFunc("/warning", s.updateWarning).Methods("PUT").Queries("id", "{id}")
 
+	router.HandleFunc("/swagger.json", swagger).Methods("GET")
+
 	return router
+}
+
+func swagger(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	http.ServeFile(w, r, "swagger.json")
 }
