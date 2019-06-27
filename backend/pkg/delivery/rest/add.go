@@ -17,15 +17,25 @@ func (s serv) importPublicFuncFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	// err = s.add.LoadPublicFuncFile()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// 	http.Error(w, err.Error(), http.StatusBadRequest)
+	// 	return
+	// }
+
+	// channel := make(chan int)
 	for _, pf := range publicFuncs {
-		func(pf entity.PublicFunc) { // TODO: tem como fazer isso com goroutines?
-			err := s.add.AddPublicFunc(pf)
-			if err != nil {
-				log.Fatal(err)
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
-			}
-		}(pf)
+		// go func(c chan int) { // TODO: tem como fazer isso com goroutines?
+		err := s.add.AddPublicFunc(pf) // TODO:melhorar velocidade dessa função
+		if err != nil {
+			log.Fatal(err)
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		// 	c <- 1
+		// }(channel)
 	}
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode("Arquivo de funcionários públicos importado com sucesso")
@@ -42,6 +52,7 @@ func (s serv) importCustomerFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
 	for _, customer := range customers {
 		err := s.add.AddCustomer(customer)
 		if err != nil {

@@ -8,6 +8,7 @@ type Service interface {
 	AddUser(entity.User) error
 	AddWarning(entity.Warning) error
 	AddPublicFunc(entity.PublicFunc) error
+	// LoadPublicFuncFile() error
 }
 
 // Repository provides access to customer repo
@@ -16,6 +17,7 @@ type Repository interface {
 	AddUser(entity.User) error
 	AddWarning(entity.Warning) error
 	AddPublicFunc(entity.PublicFunc) error
+	// LoadPublicFuncFile() error
 }
 
 type service struct { //TODO: não entendi ainda o porquê dessa struct
@@ -50,3 +52,7 @@ func (s *service) AddWarning(warning entity.Warning) error {
 func (s *service) AddPublicFunc(p entity.PublicFunc) error {
 	return s.bR.AddPublicFunc(p)
 }
+
+// func (s *service) LoadPublicFuncFile() error {
+// 	return s.bR.LoadPublicFuncFile()
+// }

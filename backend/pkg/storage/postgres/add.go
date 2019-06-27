@@ -33,10 +33,8 @@ func (s *Storage) AddPublicFunc(p entity.PublicFunc) error {
 	return err
 }
 
-// // AddUser inserts a new customer on the DB
-// func (s *Storage) AddUser(u entity.User) error {
-// 	_, err := s.db.Exec(`INSERT INTO users (login, email, pass)
-// 						VALUES ($1, $2, $3)`,
-// 		&u.Login, &u.Email, &u.Pass)
+// func (s *Storage) LoadPublicFuncFile() error {
+// 	_, err := s.db.Exec(`LOAD DATA INFILE 'Remuneracao.txt' INTO TABLE public_funcs
+// 						FIELDS TERMINATED BY ';'`)
 // 	return err
 // }
