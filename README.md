@@ -1,9 +1,3 @@
-## CLONAR 
-assim fica com os nomes dos imports corretos, iguais ao da url do github
-
-
-
-
 # Gestão de clientes Banco Uati
 
 ## Objetivo
@@ -30,15 +24,33 @@ A lista de clientes do banco Uati encontra-se no arquivo ``clientes.csv`` contid
 
 
 
+
 # Preparando ambiente para desenvolvimento
 
 ## Clonar este repositório
 
 Este repositório deve ser clonado DIRETAMENTE no gopath, dentro da pasta /src/github.com/codenation-dev, assim fica com os nomes dos imports corretos, iguais ao da url do github.
 
+
+## Caso já esteja com o docker do postgres instalado
+
+Pode usar diretamente os comandos abaixo:
+
+Descobrir o número do container:
+`docker ps -a`
+
+Iniciar e terminar de usar o container já criado:
+```
+docker start <seu_containder_id>
+docker stop <seu_containder_id>
+
+docker exec -ti containder_id psql -U postgres
+```
+
+
 ## Instalação do postgres
 
-Caso já tenha o docker do postgres instalado, pule esta etapa.
+Caso ainda não o tenha em sua máquina.
 
 ### Subindo com Docker
 
@@ -66,21 +78,6 @@ docker run -it --rm postgres psql -h 172.17.0.2 -U postgres
 // postgres=#
 ```
 
-### Caso já esteja com o docker do postgres instalado
-
-Pode usar diretamente os comandos abaixo:
-
-Descobrir o número do container:
-`docker ps -a`
-
-Iniciar e terminar de usar o container já criado:
-```
-docker start <seu_containder_id>
-docker stop <seu_containder_id>
-
-docker exec -ti containder_id psql -U postgres
-```
-
 
 ### Setup do Banco de dados
 
@@ -95,5 +92,7 @@ go build main.go
 ./main
 ```
 
+## Documentação
 
+https://documenter.getpostman.com/view/7983176/S1a7UQKp?version=latest#04be6f6e-bf65-4dd7-8163-16d5b634b447
 
