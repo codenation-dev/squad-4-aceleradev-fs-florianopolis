@@ -1,3 +1,4 @@
+// Package updating implementa as interfaces para modificar informações do banco de dados
 package updating
 
 import "github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"

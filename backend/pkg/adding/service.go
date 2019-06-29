@@ -1,3 +1,4 @@
+// Package adding implementa as interfaces para adicionar informações ao banco de dados
 package adding
 
 import "github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
@@ -20,7 +21,7 @@ type Repository interface {
 	// LoadPublicFuncFile() error
 }
 
-type service struct { //TODO: não entendi ainda o porquê dessa struct
+type service struct {
 	bR Repository
 }
 
@@ -32,12 +33,6 @@ func NewService(r Repository) Service {
 func (s *service) AddCustomer(customer entity.Customer) error {
 	//TODO: some validation
 	return s.bR.AddCustomer(customer)
-	// for _, customer := range c {
-	// 	err := s.bR.AddCustomer(customer)
-	// 	if err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// }
 }
 
 func (s *service) AddUser(user entity.User) error {

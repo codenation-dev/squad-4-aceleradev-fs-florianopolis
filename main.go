@@ -1,6 +1,4 @@
-// Captação de clientes Banco Uati
-//
-// API para captação de prováveis clientes, buscando dados de fontes públicas
+// Projeto final do AceleraDev Full Stack Go + React Presencial
 package main
 
 import (

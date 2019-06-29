@@ -1,4 +1,4 @@
-// Package entity implements the models to the data
+// Package entity implements the models to structure the data
 package entity
 
 // Customer of the bank
@@ -19,7 +19,7 @@ type User struct {
 	Pass  string `json:"pass"`
 }
 
-// Warning Models the warning
+// Warning models the warnings sent to users about the customers
 type Warning struct {
 	ID           int    `json:"wid"`
 	Dt           string `json:"dt"` //TODO: usar datetime
@@ -28,7 +28,7 @@ type Warning struct {
 	FromCustomer string `json:"from_customer"` //TODO: usar id do customer
 }
 
-// PublicFunc models the public employee profile
+// PublicFunc models the public employee profile with relevant informations
 type PublicFunc struct {
 	ID    int     `json:"id"`
 	Name  string  `json:"name"`

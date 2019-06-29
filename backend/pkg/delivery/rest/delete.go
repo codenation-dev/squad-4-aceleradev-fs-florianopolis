@@ -43,25 +43,25 @@ func validateID(w http.ResponseWriter, r *http.Request) (http.ResponseWriter, *h
 }
 
 // Se funcionar, passar as que faltam para usar o deleteIt
-func (s serv) deleteCustomerByID(w http.ResponseWriter, r *http.Request) {
+func (s Serv) deleteCustomerByID(w http.ResponseWriter, r *http.Request) {
 	w, r, id := validateID(w, r)
 	err := s.del.DeleteCustomerByID(id)
 	w, r = deleteIt(w, r, err)
 }
 
-func (s serv) deleteWarningByID(w http.ResponseWriter, r *http.Request) {
+func (s Serv) deleteWarningByID(w http.ResponseWriter, r *http.Request) {
 	w, r, id := validateID(w, r)
 	err := s.del.DeleteWarningByID(id)
 	w, r = deleteIt(w, r, err)
 }
 
-func (s serv) deletePublicByID(w http.ResponseWriter, r *http.Request) {
+func (s Serv) deletePublicByID(w http.ResponseWriter, r *http.Request) {
 	w, r, id := validateID(w, r)
 	err := s.del.DeletePublicByID(id)
 	w, r = deleteIt(w, r, err)
 }
 
-func (s serv) deleteUserByID(w http.ResponseWriter, r *http.Request) {
+func (s Serv) deleteUserByID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
 	if err != nil {

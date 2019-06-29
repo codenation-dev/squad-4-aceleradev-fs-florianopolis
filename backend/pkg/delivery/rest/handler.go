@@ -1,11 +1,7 @@
-// @SubApi [/users]
-// @SubApi Allows you access to different features of the users , login , get status etc [/users]
-
+// Package rest implementa os endpoints da API Rest.
 package rest
 
 import (
-	"net/http"
-
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/adding"
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/deleting"
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/reading"
@@ -14,7 +10,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type serv struct {
+type Serv struct {
 	add    adding.Service
 	read   reading.Service
 	del    deleting.Service
@@ -28,11 +24,11 @@ func Handler(
 	del deleting.Service,
 	update updating.Service,
 ) *mux.Router {
-	s := serv{add: add, read: read, del: del, update: update}
+	s := Serv{add: add, read: read, del: del, update: update}
 
 	router := mux.NewRouter().StrictSlash(true)
 
-	router.HandleFunc("/a", getHome).Methods("GET")
+	router.HandleFunc("/", getHome).Methods("GET")
 
 	// Get All
 	router.HandleFunc("/customer/all", s.getAllCustomers).Methods("GET")
@@ -73,19 +69,19 @@ func Handler(
 	router.HandleFunc("/user", s.updateUser).Methods("PUT").Queries("id", "{id}")
 	router.HandleFunc("/warning", s.updateWarning).Methods("PUT").Queries("id", "{id}")
 
-	router.HandleFunc("/docs", swagger).Methods("GET")
+	// router.HandleFunc("/docs", swagger).Methods("GET")
 
 	return router
 }
 
-func swagger(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	http.ServeFile(w, r, "docs/swagger.json")
+// func swagger(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/json")
+// 	http.ServeFile(w, r, "docs/swagger.json")
 
-	// w.Header().Set("Content-type", "application/json")
-	// w.WriteHeader(http.StatusOK)
-	// err := json.NewEncoder(w).Encode("API Banco Uati")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-}
+// 	// w.Header().Set("Content-type", "application/json")
+// 	// w.WriteHeader(http.StatusOK)
+// 	// err := json.NewEncoder(w).Encode("API Banco Uati")
+// 	// if err != nil {
+// 	// 	log.Fatal(err)
+// 	// }
+// }

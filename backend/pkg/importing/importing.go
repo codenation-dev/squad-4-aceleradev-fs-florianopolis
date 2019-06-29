@@ -1,8 +1,9 @@
+// Package importing implementa funções necessárias à importação dos
+// dados tanto de clientes quanto de funcionários públicos.
 package importing
 
 import (
 	"bufio"
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
 	"encoding/csv"
 	"fmt"
 	"io"
@@ -11,6 +12,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
 
 	"github.com/mholt/archiver"
 )
@@ -142,7 +145,3 @@ func fetchPublicAgentsFile() error { //TODO: acrescentar opção para escolher q
 	}
 	return nil
 }
-
-// func InsertRows(){
-
-// }

@@ -40,7 +40,7 @@ func getPayload(w http.ResponseWriter, r *http.Request, payload interface{}, err
 	return w, r
 }
 
-func (s serv) getAllCustomers(w http.ResponseWriter, r *http.Request) {
+func (s Serv) getAllCustomers(w http.ResponseWriter, r *http.Request) {
 	customers, err := s.read.GetAllCustomers()
 	w, r = getPayload(w, r, customers, err)
 	// if err != nil {
@@ -60,7 +60,7 @@ func (s serv) getAllCustomers(w http.ResponseWriter, r *http.Request) {
 	// }
 }
 
-func (s serv) getAllUsers(w http.ResponseWriter, r *http.Request) {
+func (s Serv) getAllUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := s.read.GetAllUsers()
 	if err != nil {
 		w.Header().Set("Content-type", "application/json")
@@ -79,7 +79,7 @@ func (s serv) getAllUsers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s serv) getAllWarnings(w http.ResponseWriter, r *http.Request) {
+func (s Serv) getAllWarnings(w http.ResponseWriter, r *http.Request) {
 	warnings, err := s.read.GetAllWarnings()
 	if err != nil {
 		w.Header().Set("Content-type", "application/json")
@@ -99,7 +99,7 @@ func (s serv) getAllWarnings(w http.ResponseWriter, r *http.Request) {
 }
 
 // ByName
-func (s serv) getCustomerByName(w http.ResponseWriter, r *http.Request) {
+func (s Serv) getCustomerByName(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	params := mux.Vars(r)
 	//TODO: validar pattern para o modelo da codenation
@@ -120,7 +120,7 @@ func (s serv) getCustomerByName(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s serv) getUserByEmail(w http.ResponseWriter, r *http.Request) {
+func (s Serv) getUserByEmail(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	params := mux.Vars(r)
 	//TODO: validar pattern para o modelo da codenation
@@ -141,19 +141,19 @@ func (s serv) getUserByEmail(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *serv) getWarningByCustomer(w http.ResponseWriter, r *http.Request) {
+func (s *Serv) getWarningByCustomer(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	payload, err := s.read.GetWarningByCustomer(params["pattern"])
 	w, r = getPayload(w, r, payload, err)
 }
 
-func (s *serv) getWarningByUser(w http.ResponseWriter, r *http.Request) {
+func (s *Serv) getWarningByUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	payload, err := s.read.GetWarningByUser(params["pattern"])
 	w, r = getPayload(w, r, payload, err)
 }
 
-func (s *serv) getPublicByWage(w http.ResponseWriter, r *http.Request) {
+func (s *Serv) getPublicByWage(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	pattern, err := strconv.ParseFloat(params["pattern"], 32)
 	if err != nil {
@@ -165,7 +165,7 @@ func (s *serv) getPublicByWage(w http.ResponseWriter, r *http.Request) {
 }
 
 //ByID
-func (s serv) getCustomerByID(w http.ResponseWriter, r *http.Request) {
+func (s Serv) getCustomerByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 
 	params := mux.Vars(r)
@@ -190,7 +190,7 @@ func (s serv) getCustomerByID(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s serv) getUserByID(w http.ResponseWriter, r *http.Request) {
+func (s Serv) getUserByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 
 	params := mux.Vars(r)
@@ -215,7 +215,7 @@ func (s serv) getUserByID(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s serv) getWarningByID(w http.ResponseWriter, r *http.Request) {
+func (s Serv) getWarningByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 
 	params := mux.Vars(r)
@@ -240,7 +240,7 @@ func (s serv) getWarningByID(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s serv) getPublicByID(w http.ResponseWriter, r *http.Request) {
+func (s Serv) getPublicByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	w, r, id := validateID(w, r)
 	// params := mux.Vars(r)

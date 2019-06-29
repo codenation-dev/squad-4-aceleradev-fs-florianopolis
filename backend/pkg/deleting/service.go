@@ -1,3 +1,4 @@
+// Package deleting implementa as interfaces para deletar informações do banco de dados
 package deleting
 
 // Service provides deleting methods

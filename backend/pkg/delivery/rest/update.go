@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func (s serv) updateCustomer(w http.ResponseWriter, r *http.Request) {
+func (s Serv) updateCustomer(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
@@ -69,7 +69,7 @@ func (s serv) updateCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s serv) updateUser(w http.ResponseWriter, r *http.Request) {
+func (s Serv) updateUser(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
@@ -128,7 +128,7 @@ func (s serv) updateUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (s serv) updateWarning(w http.ResponseWriter, r *http.Request) {
+func (s Serv) updateWarning(w http.ResponseWriter, r *http.Request) {
 	w, r, id := validateID(w, r)
 
 	// params := mux.Vars(r)

@@ -1,4 +1,4 @@
-## CLONAR DIRETAMENTE NO gopath/src/github.com/codenation-dev
+## CLONAR 
 assim fica com os nomes dos imports corretos, iguais ao da url do github
 
 
@@ -29,8 +29,71 @@ A lista de clientes do banco Uati encontra-se no arquivo ``clientes.csv`` contid
 - Todas essas funcionalidades devem ser expostas para clientes que queiram integrar através de uma API.
 
 
-NOTES:
 
-docker start containder_id
-docker stop containder_id
+# Preparando ambiente para desenvolvimento
+
+## Clonar este repositório
+
+Este repositório deve ser clonado DIRETAMENTE no gopath, dentro da pasta /src/github.com/codenation-dev, assim fica com os nomes dos imports corretos, iguais ao da url do github.
+
+## Instalação do postgres
+
+Caso já tenha o docker do postgres instalado, pule esta etapa.
+
+### Subindo com Docker
+
+```
+docker pull postgres
+docker volume create pgdata
+docker run --name postgres -e POSTGRES_PASSWORD=12345 -v
+pgdata:/var/lib/postgresql/data -d postgres
+```
+
+### POSTGRESQL CLIENT
+
+Para gerenciar nosso postgres podemos usar o psql:
+
+Vamos descobrir o IP de nosso server postgres
+
+```
+docker inspect postgres | grep IPAddress
+// Output:
+// "SecondaryIPAddresses": null,
+// "IPAddress": "172.17.0.2",
+
+docker run -it --rm postgres psql -h 172.17.0.2 -U postgres
+// Output:
+// postgres=#
+```
+
+### Caso já esteja com o docker do postgres instalado
+
+Pode usar diretamente os comandos abaixo:
+
+Descobrir o número do container:
+`docker ps -a`
+
+Iniciar e terminar de usar o container já criado:
+```
+docker start <seu_containder_id>
+docker stop <seu_containder_id>
+
 docker exec -ti containder_id psql -U postgres
+```
+
+
+### Setup do Banco de dados
+
+Dentro da linha do psql `postgres=#` colar o conteúdo do arquivo 'squad-4-aceleradev-fs-florianopolis/backend/cmd/data/setupDB/setupDB.sql'.
+
+### Iniciar a aplicação
+
+Dentro da pasta 'squad-4-aceleradev-fs-florianopolis', digitar:
+
+```
+go build main.go
+./main
+```
+
+
+
