@@ -72,7 +72,11 @@ func (s Serv) AddCustomer(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	s.add.AddCustomer(c)
+	err = s.add.AddCustomer(c)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode("Cliente adicionado com sucesso")
@@ -100,7 +104,11 @@ func (s Serv) addUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	s.add.AddUser(u)
+	err = s.add.AddUser(u)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode("Usuário adicionado com sucesso")
@@ -117,7 +125,11 @@ func (s Serv) AddWarning(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	s.add.AddWarning(warning) // TODO: tratar este possível erro?
+	err = s.add.AddWarning(warning)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode("Aviso adicionado com sucesso")
@@ -134,7 +146,11 @@ func (s Serv) addPublicFunc(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	s.add.AddPublicFunc(publicFunc) // TODO: tratar este possível erro?
+	err = s.add.AddPublicFunc(publicFunc)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode("funcionário público adicionado com sucesso")

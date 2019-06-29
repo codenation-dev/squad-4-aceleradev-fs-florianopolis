@@ -1,6 +1,8 @@
 package postgres
 
-import "github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+import (
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+)
 
 // AddCustomer inserts a new customer on the DB
 func (s *Storage) AddCustomer(c entity.Customer) error {
@@ -20,7 +22,7 @@ func (s *Storage) AddUser(u entity.User) error {
 
 // AddWarning inserts a new warning on the DB
 func (s *Storage) AddWarning(w entity.Warning) error {
-	_, err := s.db.Exec(`INSERT INTO warnings (dt, message, sent_to, from_customer)
+	_, err := s.db.Exec(`INSERT INTO warnings (dt, msg, sent_to, from_customer)
 						VALUES ($1, $2, $3, $4)`,
 		&w.Dt, &w.Message, &w.SentTo, &w.FromCustomer)
 	return err

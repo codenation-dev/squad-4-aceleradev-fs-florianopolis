@@ -21,7 +21,7 @@ type User struct {
 
 // Warning models the warnings sent to users about the customers
 type Warning struct {
-	ID           int    `json:"wid"`
+	ID           int    `json:"id"`
 	Dt           string `json:"dt"` //TODO: usar datetime
 	Message      string `json:"msg"`
 	SentTo       string `json:"sent_to"`       //TODO: usar id do user
