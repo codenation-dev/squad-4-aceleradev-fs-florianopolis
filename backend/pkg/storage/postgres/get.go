@@ -1,8 +1,9 @@
 package postgres
 
 import (
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
 	"fmt"
+
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
 )
 
 // ByID
@@ -112,8 +113,12 @@ func (s *Storage) GetAllWarnings() ([]entity.Warning, error) {
 // GetCustomerByName returns a slice of customers with the given pattern in the name column
 func (s *Storage) GetCustomerByName(pattern string) ([]entity.Customer, error) {
 	customers := []entity.Customer{}
-	query := fmt.Sprintf("SELECT * FROM customers WHERE name LIKE '%%%s%%'", pattern)
-	rows, err := s.db.Query(query)
+	// query := fmt.Sprintf("SELECT * FROM customers WHERE name LIKE '%%%s%%'", pattern)
+	query := `SELECT * FROM customers WHERE name LIKE $1`
+	fmt.Println(pattern)
+	// pat := fmt.Sprintf()
+	// fmt.Println(pat)
+	rows, err := s.db.Query(query, "%"+pattern+"%")
 	if err != nil {
 		return nil, err
 	}

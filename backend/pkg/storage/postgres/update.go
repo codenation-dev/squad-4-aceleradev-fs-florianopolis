@@ -1,8 +1,9 @@
 package postgres
 
 import (
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
 	"fmt"
+
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
 )
 
 // UpdateCustomer replace some data mantaining the same id
@@ -30,7 +31,7 @@ func (s *Storage) UpdateUser(u entity.User) error {
 // UpdateWarning replace some data mantaining the same id
 func (s *Storage) UpdateWarning(w entity.Warning) error {
 	_, err := s.db.Exec(`UPDATE warnings
-						SET dt=$1, message=$2, sent_to=$3, from_customer=$4
+						SET dt=$1, msg=$2, sent_to=$3, from_customer=$4
 						WHERE id=$5`, &w.Dt, &w.Message, &w.SentTo, &w.FromCustomer, &w.ID)
 	if err != nil {
 		return fmt.Errorf("could not update the warning: %v", err)

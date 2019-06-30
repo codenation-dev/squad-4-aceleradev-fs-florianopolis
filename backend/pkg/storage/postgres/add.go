@@ -1,6 +1,9 @@
 package postgres
 
 import (
+	"fmt"
+	"log"
+
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
 )
 
@@ -29,14 +32,33 @@ func (s *Storage) AddWarning(w entity.Warning) error {
 }
 
 // AddPublicFunc inserts a new public agent on the DB
-func (s *Storage) AddPublicFunc(p entity.PublicFunc) error {
-	_, err := s.db.Exec(`INSERT INTO public_funcs (name, wage, place)
-						VALUES ($1, $2, $3)`, &p.Name, &p.Wage, &p.Place)
+func (s *Storage) AddPublicFunc(pp ...entity.PublicFunc) error {
+	var query = `INSERT INTO public_funcs (name, wage, place) VALUES `
+	var vals = []interface{}{}
+	batch := 20000
+	i := 0
+	for _, p := range pp {
+		inc := fmt.Sprintf("($%v, $%v, $%v), ", (1 + (i * 3)), (2 + (i * 3)), (3 + (i * 3)))
+		i++
+		query += inc
+		vals = append(vals, p.Name, p.Wage, p.Place)
+		if i%batch == 0 && i != 0 {
+			q := query[0 : len(query)-2]
+			_, err := s.db.Exec(q, vals...)
+			if err != nil {
+				log.Fatalf("Erro na função AddPublicFunc 1", err)
+			}
+			query = `INSERT INTO public_funcs (name, wage, place) VALUES `
+			vals = []interface{}{}
+			i = 0
+		}
+	}
+	q := query[0 : len(query)-2]
+
+	_, err := s.db.Exec(q, vals...)
+	if err != nil {
+		log.Fatalf("Erro na função AddPublicFunc 2", err)
+	}
+
 	return err
 }
-
-// func (s *Storage) LoadPublicFuncFile() error {
-// 	_, err := s.db.Exec(`LOAD DATA INFILE 'Remuneracao.txt' INTO TABLE public_funcs
-// 						FIELDS TERMINATED BY ';'`)
-// 	return err
-// }

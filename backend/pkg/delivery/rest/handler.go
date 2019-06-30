@@ -69,19 +69,5 @@ func Handler(
 	router.HandleFunc("/user", s.updateUser).Methods("PUT").Queries("id", "{id}")
 	router.HandleFunc("/warning", s.updateWarning).Methods("PUT").Queries("id", "{id}")
 
-	// router.HandleFunc("/docs", swagger).Methods("GET")
-
 	return router
 }
-
-// func swagger(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json")
-// 	http.ServeFile(w, r, "docs/swagger.json")
-
-// 	// w.Header().Set("Content-type", "application/json")
-// 	// w.WriteHeader(http.StatusOK)
-// 	// err := json.NewEncoder(w).Encode("API Banco Uati")
-// 	// if err != nil {
-// 	// 	log.Fatal(err)
-// 	// }
-// }

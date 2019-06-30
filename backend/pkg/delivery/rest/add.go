@@ -2,7 +2,6 @@ package rest
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -20,17 +19,17 @@ func (s Serv) ImportPublicFuncFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for _, pf := range publicFuncs {
-		// go func(c chan int) { // TODO: tem como fazer isso com goroutines?
-		err := s.add.AddPublicFunc(pf) // TODO:melhorar velocidade dessa função
-		if err != nil {
-			log.Fatal(err)
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		// 	c <- 1
-		// }(channel)
+	// for _, pf := range publicFuncs {
+	// go func(c chan int) { // TODO: tem como fazer isso com goroutines?
+	err = s.add.AddPublicFunc(publicFuncs...) // TODO:melhorar velocidade dessa função
+	if err != nil {
+		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
+	// 	c <- 1
+	// }(channel)
+	// }
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode("Arquivo de funcionários públicos importado com sucesso")
 	if err != nil {
@@ -40,8 +39,7 @@ func (s Serv) ImportPublicFuncFile(w http.ResponseWriter, r *http.Request) {
 
 // ImportCustomerFile importa o arquivo 'clientes.csv'
 func (s Serv) ImportCustomerFile(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("importCustomerFile")
-	customers, err := importing.ImportClientesCSV("clientes.csv")
+	customers, err := importing.ImportClientesCSV("backend/cmd/data/clientes.csv")
 	if err != nil {
 		log.Fatal(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -140,13 +138,13 @@ func (s Serv) AddWarning(w http.ResponseWriter, r *http.Request) {
 
 func (s Serv) addPublicFunc(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadAll(r.Body)
-	publicFunc := entity.PublicFunc{}
-	err = json.Unmarshal(b, &publicFunc)
+	publicFuncs := []entity.PublicFunc{}
+	err = json.Unmarshal(b, &publicFuncs)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = s.add.AddPublicFunc(publicFunc)
+	err = s.add.AddPublicFunc(publicFuncs...)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

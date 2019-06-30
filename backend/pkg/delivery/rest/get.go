@@ -103,7 +103,7 @@ func (s Serv) getCustomerByName(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	params := mux.Vars(r)
 	//TODO: validar pattern para o modelo da codenation
-	customers, err := s.read.GetCustomerByName(params["name"])
+	customers, err := s.read.GetCustomerByName(params["pattern"])
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		msg := fmt.Sprintf("Houve um problema na procura deste cliente: %v", err)
@@ -124,7 +124,7 @@ func (s Serv) getUserByEmail(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	params := mux.Vars(r)
 	//TODO: validar pattern para o modelo da codenation
-	users, err := s.read.GetUserByEmail(params["email"])
+	users, err := s.read.GetUserByEmail(params["pattern"])
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		msg := fmt.Sprintf("Houve um problema na procura deste usuario: %v", err)

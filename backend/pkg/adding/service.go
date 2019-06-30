@@ -8,7 +8,7 @@ type Service interface {
 	AddCustomer(entity.Customer) error
 	AddUser(entity.User) error
 	AddWarning(entity.Warning) error
-	AddPublicFunc(entity.PublicFunc) error
+	AddPublicFunc(...entity.PublicFunc) error
 	// LoadPublicFuncFile() error
 }
 
@@ -17,7 +17,7 @@ type Repository interface {
 	AddCustomer(entity.Customer) error
 	AddUser(entity.User) error
 	AddWarning(entity.Warning) error
-	AddPublicFunc(entity.PublicFunc) error
+	AddPublicFunc(...entity.PublicFunc) error
 	// LoadPublicFuncFile() error
 }
 
@@ -44,8 +44,8 @@ func (s *service) AddWarning(warning entity.Warning) error {
 	return s.bR.AddWarning(warning)
 }
 
-func (s *service) AddPublicFunc(p entity.PublicFunc) error {
-	return s.bR.AddPublicFunc(p)
+func (s *service) AddPublicFunc(pp ...entity.PublicFunc) error {
+	return s.bR.AddPublicFunc(pp...)
 }
 
 // func (s *service) LoadPublicFuncFile() error {
