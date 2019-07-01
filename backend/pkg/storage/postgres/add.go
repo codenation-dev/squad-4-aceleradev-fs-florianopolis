@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/utils"
 )
 
 // AddCustomer inserts a new customer on the DB
@@ -17,7 +18,12 @@ func (s *Storage) AddCustomer(c entity.Customer) error {
 
 // AddUser inserts a new user on the DB
 func (s *Storage) AddUser(u entity.User) error {
-	_, err := s.db.Exec(`INSERT INTO users (login, email, pass)
+	bPass, err := utils.Bcrypt(u.Pass)
+	if err != nil {
+		return err
+	}
+	u.Pass = string(bPass)
+	_, err = s.db.Exec(`INSERT INTO users (login, email, pass)
 						VALUES ($1, $2, $3)`,
 		&u.Login, &u.Email, &u.Pass)
 	return err

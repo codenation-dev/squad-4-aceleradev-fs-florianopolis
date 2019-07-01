@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/utils"
+
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/importing"
 )
@@ -102,6 +104,13 @@ func (s Serv) addUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	// bPass, err := utils.Bcrypt(u.Pass)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// u.Pass = string(bPass)
+	
 	err = s.add.AddUser(u)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -115,6 +124,7 @@ func (s Serv) addUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// AddWarning handles the route to add a new warning to the db
 func (s Serv) AddWarning(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadAll(r.Body)
 	warning := entity.Warning{}
@@ -152,6 +162,38 @@ func (s Serv) addPublicFunc(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode("funcionário público adicionado com sucesso")
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+// Login handles the authorization to the user
+func (s *Serv) Login(w http.ResponseWriter, r *http.Request) {
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err)
+	}
+	var user entity.User
+	err = json.Unmarshal(b, &user)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	password := user.Pass
+	users, err := s.read.GetUserByEmail(user.Email)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	user = users[0]
+	err = utils.IsPassword(user.Pass, password)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(user)
 	if err != nil {
 		log.Fatal(err)
 	}

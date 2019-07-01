@@ -69,5 +69,6 @@ func Handler(
 	router.HandleFunc("/user", s.updateUser).Methods("PUT").Queries("id", "{id}")
 	router.HandleFunc("/warning", s.updateWarning).Methods("PUT").Queries("id", "{id}")
 
+	router.HandleFunc("/login", s.Login).Methods("POST")
 	return router
 }
