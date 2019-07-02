@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Serv implements the struct to inject the dependencies
 type Serv struct {
 	add    adding.Service
 	read   reading.Service
@@ -57,6 +58,7 @@ func Handler(
 	router.HandleFunc("/user", s.Middleware(s.addUser)).Methods("POST")
 	router.HandleFunc("/warning", s.Middleware(s.AddWarning)).Methods("POST")
 	router.HandleFunc("/public_func", s.Middleware(s.addPublicFunc)).Methods("POST")
+	router.HandleFunc("/email", s.Middleware(s.sendEmail)).Methods("POST").Queries("user", "{userEmail}")
 
 	// Delete
 	router.HandleFunc("/customer", s.Middleware(s.deleteCustomerByID)).Methods("DELETE").Queries("id", "{id}")

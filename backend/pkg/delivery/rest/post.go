@@ -2,15 +2,62 @@ package rest
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 
+	"github.com/gorilla/mux"
+
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/emailserv"
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/utils"
 
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/importing"
 )
+
+func (s *Serv) sendEmail(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	email := params["userEmail"]
+	fmt.Println(params)
+	user, err := s.read.GetUserByEmail(email)
+	if err != nil {
+		err := json.NewEncoder(w).Encode("Usuário não encontrado")
+		if err != nil {
+			log.Fatalf("Error in json.NewEncoder: %v", err)
+		}
+		// w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	publicFuncs := []entity.PublicFunc{}
+	err = json.NewDecoder(r.Body).Decode(&publicFuncs)
+	if err != nil {
+		err := json.NewEncoder(w).Encode("Corpo do email inválido")
+		if err != nil {
+			log.Fatalf("Error in json.NewDecoder: %v", err)
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = emailserv.Send(publicFuncs, user)
+	if err != nil {
+		err := json.NewEncoder(w).Encode("Erro no envio do email")
+		if err != nil {
+			log.Fatalf("Error in json.NewDecoder: %v", err)
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode("Email enviado com sucesso")
+	if err != nil {
+		log.Fatalf("Error in json.NewDecoder: %v", err)
+	}
+	// w.WriteHeader(http.StatusBadRequest)
+	return
+}
 
 // ImportPublicFuncFile - Download e importação de arquivo de funcionário público do estado de SP
 func (s Serv) ImportPublicFuncFile(w http.ResponseWriter, r *http.Request) {
@@ -21,17 +68,13 @@ func (s Serv) ImportPublicFuncFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// for _, pf := range publicFuncs {
-	// go func(c chan int) { // TODO: tem como fazer isso com goroutines?
-	err = s.add.AddPublicFunc(publicFuncs...) // TODO:melhorar velocidade dessa função
+	err = s.add.AddPublicFunc(publicFuncs...)
 	if err != nil {
 		log.Fatal(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	// 	c <- 1
-	// }(channel)
-	// }
+
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode("Arquivo de funcionários públicos importado com sucesso")
 	if err != nil {

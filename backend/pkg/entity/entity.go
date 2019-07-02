@@ -14,9 +14,10 @@ type Customer struct {
 // User of the app
 type User struct {
 	ID    int    `json:"id"`
-	Login string `json:"login"`
+	Login string `json:"login"` // TODO: retirar login, já implementei tudo com o email
 	Email string `json:"email"`
 	Pass  string `json:"pass"`
+	// TODO: implementar uma opção de quais avisos receber (ex: salarios acima de 100k, estado de SP...)
 }
 
 // Warning models the warnings sent to users about the customers
