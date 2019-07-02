@@ -1,17 +1,11 @@
 package utils
 
 import (
+	"encoding/json"
+	"net/http"
+
 	"golang.org/x/crypto/bcrypt"
 )
-
-// func SignIn(user entity.User)(entity.User error){
-// 	password := user.Pass
-// 	user, err :=
-// 	!= nil {
-// 		return user, err
-// 	}
-// 	err =
-// }
 
 func Bcrypt(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -19,4 +13,13 @@ func Bcrypt(password string) ([]byte, error) {
 
 func IsPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
+func Message(status bool, message string) map[string]interface{} {
+	return map[string]interface{}{"status": status, "message": message}
+}
+
+func Respond(w http.ResponseWriter, data map[string]interface{}) {
+	w.Header().Add("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(data)
 }

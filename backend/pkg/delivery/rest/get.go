@@ -124,7 +124,7 @@ func (s Serv) getUserByEmail(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	params := mux.Vars(r)
 	//TODO: validar pattern para o modelo da codenation
-	users, err := s.read.GetUserByEmail(params["pattern"])
+	user, err := s.read.GetUserByEmail(params["pattern"])
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		msg := fmt.Sprintf("Houve um problema na procura deste usuario: %v", err)
@@ -133,7 +133,7 @@ func (s Serv) getUserByEmail(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 	} else {
-		b, err := json.Marshal(users)
+		b, err := json.Marshal(user)
 		if err != nil {
 			log.Fatal(err)
 		}

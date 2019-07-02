@@ -134,22 +134,22 @@ func (s *Storage) GetCustomerByName(pattern string) ([]entity.Customer, error) {
 }
 
 // GetUserByEmail returns a slice of customers with the given pattern in the name column
-func (s *Storage) GetUserByEmail(pattern string) ([]entity.User, error) {
-	users := []entity.User{}
-	query := fmt.Sprintf("SELECT * FROM users WHERE email LIKE '%%%s%%'", pattern)
-	rows, err := s.db.Query(query)
-	if err != nil {
-		return nil, err
-	}
-	for rows.Next() {
-		u := entity.User{}
-		err := rows.Scan(&u.ID, &u.Login, &u.Email, &u.Pass)
-		if err != nil {
-			return nil, err
-		}
-		users = append(users, u)
-	}
-	return users, nil
+func (s *Storage) GetUserByEmail(pattern string) (entity.User, error) {
+	u := entity.User{}
+	query := "SELECT * FROM users WHERE email = $1"
+	err := s.db.QueryRow(query, pattern).Scan(&u.ID, &u.Login, &u.Email, &u.Pass)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// for rows.Next() {
+	// 	u := entity.User{}
+	// 	err := rows.Scan(&u.ID, &u.Login, &u.Email, &u.Pass)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	users = append(users, u)
+	// }
+	return u, err
 }
 
 // GetWarningByCustomer returns a slice of warnings with the given pattern in the sent_to column

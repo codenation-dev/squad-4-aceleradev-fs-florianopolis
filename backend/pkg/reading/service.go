@@ -14,7 +14,7 @@ type Service interface {
 	GetPublicByID(id int) (entity.PublicFunc, error)
 
 	GetCustomerByName(pattern string) ([]entity.Customer, error)
-	GetUserByEmail(pattern string) ([]entity.User, error)
+	GetUserByEmail(pattern string) (entity.User, error)
 	GetWarningByCustomer(pattern string) ([]entity.Warning, error)
 	GetWarningByUser(pattern string) ([]entity.Warning, error)
 
@@ -33,7 +33,7 @@ type Repository interface {
 	GetPublicByID(id int) (entity.PublicFunc, error)
 
 	GetCustomerByName(pattern string) ([]entity.Customer, error)
-	GetUserByEmail(pattern string) ([]entity.User, error)
+	GetUserByEmail(pattern string) (entity.User, error)
 	GetWarningByCustomer(pattern string) ([]entity.Warning, error)
 	GetWarningByUser(pattern string) ([]entity.Warning, error)
 
@@ -94,7 +94,7 @@ func (s *service) GetCustomerByName(pattern string) ([]entity.Customer, error) {
 }
 
 // GetUserByEmail implements method
-func (s *service) GetUserByEmail(pattern string) ([]entity.User, error) {
+func (s *service) GetUserByEmail(pattern string) (entity.User, error) {
 	return s.bR.GetUserByEmail(pattern)
 }
 

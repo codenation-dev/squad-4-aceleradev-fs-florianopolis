@@ -31,44 +31,44 @@ func Handler(
 	router.HandleFunc("/", getHome).Methods("GET")
 
 	// Get All
-	router.HandleFunc("/customer/all", s.getAllCustomers).Methods("GET")
-	router.HandleFunc("/user/all", s.getAllUsers).Methods("GET")
-	router.HandleFunc("/warning/all", s.getAllWarnings).Methods("GET")
+	router.HandleFunc("/customer/all", s.Middleware(s.getAllCustomers)).Methods("GET")
+	router.HandleFunc("/user/all", s.Middleware(s.getAllUsers)).Methods("GET")
+	router.HandleFunc("/warning/all", s.Middleware(s.getAllWarnings)).Methods("GET")
 
 	// Get ByID
-	router.HandleFunc("/customer", s.getCustomerByID).Methods("GET").Queries("id", "{id}")
-	router.HandleFunc("/user", s.getUserByID).Methods("GET").Queries("id", "{id}")
-	router.HandleFunc("/warning", s.getWarningByID).Methods("GET").Queries("id", "{id}")
-	router.HandleFunc("/public_func", s.getPublicByID).Methods("GET").Queries("id", "{id}")
+	router.HandleFunc("/customer", s.Middleware(s.getCustomerByID)).Methods("GET").Queries("id", "{id}")
+	router.HandleFunc("/user", s.Middleware(s.getUserByID)).Methods("GET").Queries("id", "{id}")
+	router.HandleFunc("/warning", s.Middleware(s.getWarningByID)).Methods("GET").Queries("id", "{id}")
+	router.HandleFunc("/public_func", s.Middleware(s.getPublicByID)).Methods("GET").Queries("id", "{id}")
 
 	// Get ByName - by pattern
-	router.HandleFunc("/customer", s.getCustomerByName).Methods("GET").Queries("name", "{pattern}")
-	router.HandleFunc("/user", s.getUserByEmail).Methods("GET").Queries("email", "{pattern}")
-	router.HandleFunc("/warning", s.getWarningByCustomer).Methods("GET").Queries("customer", "{pattern}")
-	router.HandleFunc("/warning", s.getWarningByUser).Methods("GET").Queries("user", "{pattern}")
-	router.HandleFunc("/public_func", s.getPublicByWage).Methods("GET").Queries("wage", "{pattern}")
+	router.HandleFunc("/customer", s.Middleware(s.getCustomerByName)).Methods("GET").Queries("name", "{pattern}")
+	router.HandleFunc("/user", s.Middleware(s.getUserByEmail)).Methods("GET").Queries("email", "{pattern}")
+	router.HandleFunc("/warning", s.Middleware(s.getWarningByCustomer)).Methods("GET").Queries("customer", "{pattern}")
+	router.HandleFunc("/warning", s.Middleware(s.getWarningByUser)).Methods("GET").Queries("user", "{pattern}")
+	router.HandleFunc("/public_func", s.Middleware(s.getPublicByWage)).Methods("GET").Queries("wage", "{pattern}")
 
 	// Import
-	router.HandleFunc("/customer/import", s.ImportCustomerFile).Methods("POST")      // TODO: posso fazer opção para escolher o arquivo
-	router.HandleFunc("/public_func/import", s.ImportPublicFuncFile).Methods("POST") // TODO: posso fazer opção para escolher o mês
+	router.HandleFunc("/customer/import", s.Middleware(s.ImportCustomerFile)).Methods("POST")      // TODO: posso fazer opção para escolher o arquivo
+	router.HandleFunc("/public_func/import", s.Middleware(s.ImportPublicFuncFile)).Methods("POST") // TODO: posso fazer opção para escolher o mês
 
 	// Post
-	router.HandleFunc("/customer", s.AddCustomer).Methods("POST")
-	router.HandleFunc("/user", s.addUser).Methods("POST")
-	router.HandleFunc("/warning", s.AddWarning).Methods("POST")
-	router.HandleFunc("/public_func", s.addPublicFunc).Methods("POST")
+	router.HandleFunc("/customer", s.Middleware(s.AddCustomer)).Methods("POST")
+	router.HandleFunc("/user", s.Middleware(s.addUser)).Methods("POST")
+	router.HandleFunc("/warning", s.Middleware(s.AddWarning)).Methods("POST")
+	router.HandleFunc("/public_func", s.Middleware(s.addPublicFunc)).Methods("POST")
 
 	// Delete
-	router.HandleFunc("/customer", s.deleteCustomerByID).Methods("DELETE").Queries("id", "{id}")
-	router.HandleFunc("/user", s.deleteUserByID).Methods("DELETE").Queries("id", "{id}")
-	router.HandleFunc("/warning", s.deleteWarningByID).Methods("DELETE").Queries("id", "{id}")
-	router.HandleFunc("/public_func", s.deletePublicByID).Methods("DELETE").Queries("id", "{id}")
+	router.HandleFunc("/customer", s.Middleware(s.deleteCustomerByID)).Methods("DELETE").Queries("id", "{id}")
+	router.HandleFunc("/user", s.Middleware(s.deleteUserByID)).Methods("DELETE").Queries("id", "{id}")
+	router.HandleFunc("/warning", s.Middleware(s.deleteWarningByID)).Methods("DELETE").Queries("id", "{id}")
+	router.HandleFunc("/public_func", s.Middleware(s.deletePublicByID)).Methods("DELETE").Queries("id", "{id}")
 
 	// Put
-	router.HandleFunc("/customer", s.updateCustomer).Methods("PUT").Queries("id", "{id}")
-	router.HandleFunc("/user", s.updateUser).Methods("PUT").Queries("id", "{id}")
-	router.HandleFunc("/warning", s.updateWarning).Methods("PUT").Queries("id", "{id}")
+	router.HandleFunc("/customer", s.Middleware(s.updateCustomer)).Methods("PUT").Queries("id", "{id}")
+	router.HandleFunc("/user", s.Middleware(s.updateUser)).Methods("PUT").Queries("id", "{id}")
+	router.HandleFunc("/warning", s.Middleware(s.updateWarning)).Methods("PUT").Queries("id", "{id}")
 
-	router.HandleFunc("/login", s.Login).Methods("POST")
+	router.HandleFunc("/login", s.SignIn).Methods("POST")
 	return router
 }

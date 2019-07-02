@@ -110,7 +110,7 @@ func (s Serv) addUser(w http.ResponseWriter, r *http.Request) {
 	// 	panic(err)
 	// }
 	// u.Pass = string(bPass)
-	
+
 	err = s.add.AddUser(u)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -180,12 +180,11 @@ func (s *Serv) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	password := user.Pass
-	users, err := s.read.GetUserByEmail(user.Email)
+	user, err = s.read.GetUserByEmail(user.Email)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
-	user = users[0]
 	err = utils.IsPassword(user.Pass, password)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
