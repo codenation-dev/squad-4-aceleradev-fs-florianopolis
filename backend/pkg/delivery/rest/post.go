@@ -2,7 +2,6 @@ package rest
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -19,14 +18,12 @@ import (
 func (s *Serv) sendEmail(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	email := params["userEmail"]
-	fmt.Println(params)
 	user, err := s.read.GetUserByEmail(email)
 	if err != nil {
 		err := json.NewEncoder(w).Encode("Usuário não encontrado")
 		if err != nil {
 			log.Fatalf("Error in json.NewEncoder: %v", err)
 		}
-		// w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
@@ -37,7 +34,6 @@ func (s *Serv) sendEmail(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatalf("Error in json.NewDecoder: %v", err)
 		}
-		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -47,7 +43,6 @@ func (s *Serv) sendEmail(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatalf("Error in json.NewDecoder: %v", err)
 		}
-		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -55,7 +50,6 @@ func (s *Serv) sendEmail(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalf("Error in json.NewDecoder: %v", err)
 	}
-	// w.WriteHeader(http.StatusBadRequest)
 	return
 }
 
@@ -128,17 +122,7 @@ func (s Serv) AddCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// AddUser godoc
-// @Summary Adiciona um usuário ao BD
-// @Description Adiciona um usuário ao BD
-// @Tags user
-// @Accept  json
-// @Produce  json
-// @Param id path int true "id"
-// @Success 200 {object} entity.User
-// @Failure 400 {object} URL não encontrada
-// @Failure 404 {object} Erro na solicitação
-// @Router /user [POST]
+// AddUser implements the route to add an user to the table
 func (s Serv) addUser(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadAll(r.Body)
 	u := entity.User{}
@@ -147,12 +131,6 @@ func (s Serv) addUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	// bPass, err := utils.Bcrypt(u.Pass)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// u.Pass = string(bPass)
 
 	err = s.add.AddUser(u)
 	if err != nil {
