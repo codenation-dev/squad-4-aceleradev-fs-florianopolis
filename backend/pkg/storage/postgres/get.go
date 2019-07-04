@@ -3,51 +3,51 @@ package postgres
 import (
 	"fmt"
 
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/model"
 )
 
 // ByID
 
 // GetCustomerByID read a customer from the DB, given the id
-func (s *Storage) GetCustomerByID(id int) (entity.Customer, error) {
-	c := entity.Customer{}
+func (s *Storage) GetCustomerByID(id int) (model.Customer, error) {
+	c := model.Customer{}
 	query := "SELECT * FROM customers WHERE id=$1"
 	err := s.db.QueryRow(query, id).Scan(&c.ID, &c.Name, &c.Wage, &c.IsPublic, &c.SentWarning)
 	if err != nil {
-		return entity.Customer{}, err
+		return model.Customer{}, err
 	}
 	return c, err
 }
 
 // GetUserByID read a customer from the DB, given the id
-func (s *Storage) GetUserByID(id int) (entity.User, error) {
-	u := entity.User{}
+func (s *Storage) GetUserByID(id int) (model.User, error) {
+	u := model.User{}
 	query := "SELECT * FROM users WHERE id=$1"
 	err := s.db.QueryRow(query, id).Scan(&u.ID, &u.Email, &u.Pass)
 	if err != nil {
-		return entity.User{}, err
+		return model.User{}, err
 	}
 	return u, err
 }
 
 // GetWarningByID read a warning from the DB, given the id
-func (s *Storage) GetWarningByID(id int) (entity.Warning, error) {
-	w := entity.Warning{}
+func (s *Storage) GetWarningByID(id int) (model.Warning, error) {
+	w := model.Warning{}
 	query := "SELECT * FROM warnings WHERE id=$1"
 	err := s.db.QueryRow(query, id).Scan(&w.ID, &w.Dt, &w.Message, &w.FromCustomer, &w.SentTo)
 	if err != nil {
-		return entity.Warning{}, err
+		return model.Warning{}, err
 	}
 	return w, err
 }
 
 // GetPublicByID read a public_func from the DB, given the id
-func (s *Storage) GetPublicByID(id int) (entity.PublicFunc, error) {
-	p := entity.PublicFunc{}
+func (s *Storage) GetPublicByID(id int) (model.PublicFunc, error) {
+	p := model.PublicFunc{}
 	query := "SELECT * FROM public_funcs WHERE id=$1"
 	err := s.db.QueryRow(query, id).Scan(&p.ID, &p.Name, &p.Wage, &p.Place)
 	if err != nil {
-		return entity.PublicFunc{}, err
+		return model.PublicFunc{}, err
 	}
 	return p, err
 }
@@ -55,14 +55,14 @@ func (s *Storage) GetPublicByID(id int) (entity.PublicFunc, error) {
 //All
 
 // GetAllCustomers return all customers from the DB
-func (s *Storage) GetAllCustomers() ([]entity.Customer, error) {
-	customers := []entity.Customer{}
+func (s *Storage) GetAllCustomers() ([]model.Customer, error) {
+	customers := []model.Customer{}
 	rows, err := s.db.Query("SELECT * FROM customers")
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		c := entity.Customer{}
+		c := model.Customer{}
 		err := rows.Scan(&c.ID, &c.Name, &c.Wage, &c.IsPublic, &c.SentWarning)
 		if err != nil {
 			return nil, err
@@ -73,14 +73,14 @@ func (s *Storage) GetAllCustomers() ([]entity.Customer, error) {
 }
 
 // GetAllUsers return all customers from the DB
-func (s *Storage) GetAllUsers() ([]entity.User, error) {
-	users := []entity.User{}
+func (s *Storage) GetAllUsers() ([]model.User, error) {
+	users := []model.User{}
 	rows, err := s.db.Query("SELECT * FROM users")
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		u := entity.User{}
+		u := model.User{}
 		err := rows.Scan(&u.ID, &u.Email, &u.Pass)
 		if err != nil {
 			return nil, err
@@ -91,14 +91,14 @@ func (s *Storage) GetAllUsers() ([]entity.User, error) {
 }
 
 // GetAllWarnings return all customers from the DB
-func (s *Storage) GetAllWarnings() ([]entity.Warning, error) {
-	warnings := []entity.Warning{}
+func (s *Storage) GetAllWarnings() ([]model.Warning, error) {
+	warnings := []model.Warning{}
 	rows, err := s.db.Query("SELECT * FROM warnings")
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		w := entity.Warning{}
+		w := model.Warning{}
 		err := rows.Scan(&w.ID, &w.Dt, &w.Message, &w.FromCustomer, &w.SentTo)
 		if err != nil {
 			return nil, err
@@ -111,8 +111,8 @@ func (s *Storage) GetAllWarnings() ([]entity.Warning, error) {
 // ByName
 
 // GetCustomerByName returns a slice of customers with the given pattern in the name column
-func (s *Storage) GetCustomerByName(pattern string) ([]entity.Customer, error) {
-	customers := []entity.Customer{}
+func (s *Storage) GetCustomerByName(pattern string) ([]model.Customer, error) {
+	customers := []model.Customer{}
 	// query := fmt.Sprintf("SELECT * FROM customers WHERE name LIKE '%%%s%%'", pattern)
 	query := `SELECT * FROM customers WHERE name LIKE $1`
 	fmt.Println(pattern)
@@ -123,7 +123,7 @@ func (s *Storage) GetCustomerByName(pattern string) ([]entity.Customer, error) {
 		return nil, err
 	}
 	for rows.Next() {
-		c := entity.Customer{}
+		c := model.Customer{}
 		err := rows.Scan(&c.ID, &c.Name, &c.Wage, &c.IsPublic, &c.SentWarning)
 		if err != nil {
 			return nil, err
@@ -134,15 +134,15 @@ func (s *Storage) GetCustomerByName(pattern string) ([]entity.Customer, error) {
 }
 
 // GetUserByEmail returns a slice of customers with the given pattern in the name column
-func (s *Storage) GetUserByEmail(pattern string) (entity.User, error) {
-	u := entity.User{}
+func (s *Storage) GetUserByEmail(pattern string) (model.User, error) {
+	u := model.User{}
 	query := "SELECT * FROM users WHERE email = $1"
 	err := s.db.QueryRow(query, pattern).Scan(&u.ID, &u.Email, &u.Pass)
 	// if err != nil {
 	// 	return nil, err
 	// }
 	// for rows.Next() {
-	// 	u := entity.User{}
+	// 	u := model.User{}
 	// 	err := rows.Scan(&u.ID, &u.Login, &u.Email, &u.Pass)
 	// 	if err != nil {
 	// 		return nil, err
@@ -153,15 +153,15 @@ func (s *Storage) GetUserByEmail(pattern string) (entity.User, error) {
 }
 
 // GetWarningByCustomer returns a slice of warnings with the given pattern in the sent_to column
-func (s *Storage) GetWarningByCustomer(pattern string) ([]entity.Warning, error) {
-	warnings := []entity.Warning{}
+func (s *Storage) GetWarningByCustomer(pattern string) ([]model.Warning, error) {
+	warnings := []model.Warning{}
 	query := fmt.Sprintf("SELECT * FROM warnings WHERE from_customer LIKE '%%%s%%'", pattern)
 	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		w := entity.Warning{}
+		w := model.Warning{}
 		err := rows.Scan(&w.ID, &w.Dt, &w.Message, &w.SentTo, &w.FromCustomer)
 		if err != nil {
 			return nil, err
@@ -172,15 +172,15 @@ func (s *Storage) GetWarningByCustomer(pattern string) ([]entity.Warning, error)
 }
 
 // GetWarningByUser returns a slice of warnings with the given pattern in the sent_to column
-func (s *Storage) GetWarningByUser(pattern string) ([]entity.Warning, error) {
-	warnings := []entity.Warning{}
+func (s *Storage) GetWarningByUser(pattern string) ([]model.Warning, error) {
+	warnings := []model.Warning{}
 	query := fmt.Sprintf("SELECT * FROM warnings WHERE sent_to LIKE '%%%s%%'", pattern)
 	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		w := entity.Warning{}
+		w := model.Warning{}
 		err := rows.Scan(&w.ID, &w.Dt, &w.Message, &w.SentTo, &w.FromCustomer)
 		if err != nil {
 			return nil, err
@@ -191,15 +191,15 @@ func (s *Storage) GetWarningByUser(pattern string) ([]entity.Warning, error) {
 }
 
 // GetPublicByWage returns a slice of public agents that earns more than the given pattern
-func (s *Storage) GetPublicByWage(pattern float32) ([]entity.PublicFunc, error) {
-	publicFuncs := []entity.PublicFunc{}
+func (s *Storage) GetPublicByWage(pattern float32) ([]model.PublicFunc, error) {
+	publicFuncs := []model.PublicFunc{}
 	query := `SELECT * FROM public_funcs WHERE wage > $1`
 	rows, err := s.db.Query(query, pattern)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		pf := entity.PublicFunc{}
+		pf := model.PublicFunc{}
 		err := rows.Scan(&pf.ID, &pf.Name, &pf.Wage, &pf.Place)
 		if err != nil {
 			return nil, err

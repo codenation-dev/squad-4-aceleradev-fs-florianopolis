@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/model"
 
 	"github.com/DATA-DOG/go-sqlmock"
 )
@@ -12,7 +12,7 @@ var customerRows = sqlmock.NewRows([]string{
 
 // var twoRows = rows.AddRow(2, "test name 2", 123456.78, 0, "")
 
-var mc = entity.Customer{ // mock customer
+var mc = model.Customer{ // mock customer
 	ID:          1,
 	Name:        "TEST NAME",
 	Wage:        1234.56,
@@ -24,7 +24,7 @@ var userRows = sqlmock.NewRows([]string{
 	"id", "login", "email", "pass"}).
 	AddRow(1, "test login", "test@email.com", "1234")
 
-var mu = entity.User{ // mock customer
+var mu = model.User{ // mock customer
 	ID:    1,
 	Login: "TEST login",
 	Email: "test@email.com",
@@ -35,7 +35,7 @@ var warningRows = sqlmock.NewRows([]string{
 	"id", "dt", "message", "sent_to", "from_customer"}).
 	AddRow(1, "test dt", "test message", "id user", "id customer")
 
-var mw = entity.Warning{ // mock warning
+var mw = model.Warning{ // mock warning
 	1, "test dt", "test message", "id user", "id customer",
 }
 
@@ -43,7 +43,7 @@ var publicRows = sqlmock.NewRows([]string{
 	"id", "name", "wage", "place"}).
 	AddRow(1, "test name", 1234.56, "test place")
 
-var mp = entity.PublicFunc{ // mock public_func
+var mp = model.PublicFunc{ // mock public_func
 	1, "test name", 23456.78, "test place",
 }
 

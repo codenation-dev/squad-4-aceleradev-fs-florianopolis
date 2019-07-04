@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/utils"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/model"
 )
 
 // AddCustomer inserts a new customer on the DB
-func (s *Storage) AddCustomer(c entity.Customer) error {
+func (s *Storage) AddCustomer(c model.Customer) error {
 	_, err := s.db.Exec(`INSERT INTO customers (name, wage, is_public, sent_warning)
 						VALUES ($1, $2, $3, $4)`,
 		&c.Name, &c.Wage, &c.IsPublic, &c.SentWarning)
@@ -19,8 +18,8 @@ func (s *Storage) AddCustomer(c entity.Customer) error {
 }
 
 // AddUser inserts a new user on the DB
-func (s *Storage) AddUser(u entity.User) error {
-	bPass, err := utils.Bcrypt(u.Pass)
+func (s *Storage) AddUser(u model.User) error {
+	bPass, err := model.Bcrypt(u.Pass)
 	if err != nil {
 		return err
 	}
@@ -32,7 +31,7 @@ func (s *Storage) AddUser(u entity.User) error {
 }
 
 // AddWarning inserts a new warning on the DB
-func (s *Storage) AddWarning(w entity.Warning) error {
+func (s *Storage) AddWarning(w model.Warning) error {
 	_, err := s.db.Exec(`INSERT INTO warnings (dt, msg, sent_to, from_customer)
 						VALUES ($1, $2, $3, $4)`,
 		&w.Dt, &w.Message, &w.SentTo, &w.FromCustomer)
@@ -40,7 +39,7 @@ func (s *Storage) AddWarning(w entity.Warning) error {
 }
 
 // AddPublicFunc inserts a new public agent on the DB
-func (s *Storage) AddPublicFunc(pp ...entity.PublicFunc) error {
+func (s *Storage) AddPublicFunc(pp ...model.PublicFunc) error {
 	var query = `INSERT INTO public_funcs (name, wage, place) VALUES `
 	var vals = []interface{}{}
 	batch := 20000

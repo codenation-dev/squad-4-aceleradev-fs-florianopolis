@@ -4,7 +4,7 @@ package adding
 import (
 	"fmt"
 
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/model"
 )
 
 // ErrDuplicate is used when data already exists
@@ -14,19 +14,19 @@ func ErrDuplicate(data string) error {
 
 // Service provides adding operations
 type Service interface {
-	AddCustomer(entity.Customer) error
-	AddUser(entity.User) error
-	AddWarning(entity.Warning) error
-	AddPublicFunc(...entity.PublicFunc) error
+	AddCustomer(model.Customer) error
+	AddUser(model.User) error
+	AddWarning(model.Warning) error
+	AddPublicFunc(...model.PublicFunc) error
 	// LoadPublicFuncFile() error
 }
 
 // Repository provides access to customer repo
 type Repository interface {
-	AddCustomer(entity.Customer) error
-	AddUser(entity.User) error
-	AddWarning(entity.Warning) error
-	AddPublicFunc(...entity.PublicFunc) error
+	AddCustomer(model.Customer) error
+	AddUser(model.User) error
+	AddWarning(model.Warning) error
+	AddPublicFunc(...model.PublicFunc) error
 	// LoadPublicFuncFile() error
 }
 
@@ -39,22 +39,22 @@ func NewService(r Repository) Service {
 	return &service{r}
 }
 
-func (s *service) AddCustomer(c entity.Customer) error {
+func (s *service) AddCustomer(c model.Customer) error {
 	//TODO: some validation
-	c.Name = entity.FormatString(c.Name)
+	c.Name = model.FormatString(c.Name)
 	return s.bR.AddCustomer(c)
 }
 
-func (s *service) AddUser(user entity.User) error {
+func (s *service) AddUser(user model.User) error {
 	//TODO: some validation
 	return s.bR.AddUser(user)
 }
 
-func (s *service) AddWarning(warning entity.Warning) error {
+func (s *service) AddWarning(warning model.Warning) error {
 	return s.bR.AddWarning(warning)
 }
 
-func (s *service) AddPublicFunc(pp ...entity.PublicFunc) error {
+func (s *service) AddPublicFunc(pp ...model.PublicFunc) error {
 	return s.bR.AddPublicFunc(pp...)
 }
 

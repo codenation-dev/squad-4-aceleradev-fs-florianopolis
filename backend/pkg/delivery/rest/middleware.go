@@ -2,15 +2,15 @@ package rest
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/utils"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/model"
 	"github.com/dgrijalva/jwt-go"
 )
 
-var jwtKey = []byte("my_super_secret_password")
+var jwtKey = []byte("Don't_Panic")
 
 // Claims makes the struct to deal with the JWT auth
 type Claims struct {
@@ -20,26 +20,25 @@ type Claims struct {
 
 // SignIn handles the login control to the API
 func (s *Serv) SignIn(w http.ResponseWriter, r *http.Request) {
-	var user entity.User
+	var user model.User
 
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		model.ErrorResponse(w, fmt.Errorf("dados inválidos: %v", err), http.StatusBadRequest)
 		return
 	}
 
 	receivedPassword := user.Pass
 
 	user, err = s.read.GetUserByEmail(user.Email)
-
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		model.ErrorResponse(w, fmt.Errorf("dados inválidos: %v", err), http.StatusUnauthorized)
 		return
 	}
 
-	err = utils.IsPassword(user.Pass, receivedPassword)
+	err = model.IsPassword(user.Pass, receivedPassword)
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
+		model.ErrorResponse(w, fmt.Errorf("dados inválidos: %v", err), http.StatusUnauthorized)
 		return
 	}
 	expirationTime := time.Now().Add(5 * time.Minute)
@@ -70,10 +69,10 @@ func (s *Serv) Middleware(handler func(w http.ResponseWriter, r *http.Request)) 
 		c, err := r.Cookie("token")
 		if err != nil {
 			if err == http.ErrNoCookie {
-				w.WriteHeader(http.StatusUnauthorized)
+				model.ErrorResponse(w, fmt.Errorf("acesso não autorizado"), http.StatusUnauthorized)
 				return
 			}
-			w.WriteHeader(http.StatusBadRequest)
+			model.ErrorResponse(w, fmt.Errorf("dados inválidos: %v", err), http.StatusBadRequest)
 			return
 		}
 
@@ -86,15 +85,15 @@ func (s *Serv) Middleware(handler func(w http.ResponseWriter, r *http.Request)) 
 			return jwtKey, nil
 		})
 		if !tkn.Valid {
-			w.WriteHeader(http.StatusUnauthorized)
+			model.ErrorResponse(w, fmt.Errorf("acesso não autorizado"), http.StatusUnauthorized)
 			return
 		}
 		if err != nil {
 			if err == jwt.ErrSignatureInvalid {
-				w.WriteHeader(http.StatusUnauthorized)
+				model.ErrorResponse(w, fmt.Errorf("acesso não autorizado"), http.StatusUnauthorized)
 				return
 			}
-			w.WriteHeader(http.StatusBadRequest)
+			model.ErrorResponse(w, fmt.Errorf("dados inválidos: %v", err), http.StatusBadRequest)
 			return
 		}
 
@@ -109,7 +108,7 @@ func (s *Serv) Middleware(handler func(w http.ResponseWriter, r *http.Request)) 
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 		tokenString, err := token.SignedString(jwtKey)
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			model.ErrorResponse(w, fmt.Errorf("erro interno: %v", err), http.StatusInternalServerError)
 			return
 		}
 

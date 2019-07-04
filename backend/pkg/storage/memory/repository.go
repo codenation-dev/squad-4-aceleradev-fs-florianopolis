@@ -3,19 +3,19 @@ package memory
 import (
 	"errors"
 
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/model"
 )
 
 // Storage keeps data in memory
 type Storage struct {
-	customers   []entity.Customer
-	warnings    []entity.Warning
-	users       []entity.User
-	publicFuncs []entity.PublicFunc
+	customers   []model.Customer
+	warnings    []model.Warning
+	users       []model.User
+	publicFuncs []model.PublicFunc
 }
 
-func (m *Storage) AddCustomer(c entity.Customer) error {
-	newC := entity.Customer{
+func (m *Storage) AddCustomer(c model.Customer) error {
+	newC := model.Customer{
 		ID:          len(m.customers) + 1,
 		Name:        c.Name,
 		Wage:        c.Wage,
@@ -26,8 +26,8 @@ func (m *Storage) AddCustomer(c entity.Customer) error {
 	return nil
 }
 
-func (m *Storage) GetCustomerById(id int) (entity.Customer, error) {
-	var customer entity.Customer
+func (m *Storage) GetCustomerById(id int) (model.Customer, error) {
+	var customer model.Customer
 
 	for _, c := range m.customers {
 		if c.ID == id {
@@ -37,7 +37,7 @@ func (m *Storage) GetCustomerById(id int) (entity.Customer, error) {
 	return customer, errors.New("customer not found")
 }
 
-func (m *Storage) GetAllCustomers() ([]entity.Customer, error) {
+func (m *Storage) GetAllCustomers() ([]model.Customer, error) {
 	return m.customers, nil
 }
 
@@ -50,16 +50,16 @@ func (m *Storage) GetAllCustomers() ([]entity.Customer, error) {
 // 	"time"
 
 // 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/adding"
-// 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+// 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/model"
 // )
 
 // // Storage implements the struct of the repo
 // type Storage struct {
-// 	customers []entity.Customer
+// 	customers []model.Customer
 // }
 
 // // CreateCustomer saves a new customer to repo
-// func (m *Storage) CreateCustomer(c entity.Customer) error {
+// func (m *Storage) CreateCustomer(c model.Customer) error {
 
 // 	for _, savedCustomer := range m.customers {
 // 		if savedCustomer.Name == c.Name {

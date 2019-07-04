@@ -14,7 +14,7 @@ sent_warning TEXT -- Tem como usar isso para guardar os id dos users que receber
 
 CREATE TABLE IF NOT EXISTS public_funcs (
 id SERIAL,
-name VARCHAR(30),
+name TEXT,
 wage NUMERIC(10,2),
 place TEXT 
 );

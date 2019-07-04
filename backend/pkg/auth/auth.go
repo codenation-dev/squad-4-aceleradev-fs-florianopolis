@@ -22,7 +22,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-// func SignIn(receivedPassword string, user entity.User)(entity.User error){
+// func SignIn(receivedPassword string, user model.User)(model.User error){
 // 	user, err :=
 // 	!= nil {
 // 		return user, err
@@ -42,7 +42,7 @@ type Claims struct {
 
 // }
 
-// func SignIn(user entity.User) (entity.User, error) {
+// func SignIn(user model.User) (model.User, error) {
 // 	password := user.Pass
 
 // }

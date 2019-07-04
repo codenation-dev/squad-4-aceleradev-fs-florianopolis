@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/smtp"
 
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/model"
 )
 
 // Send the email to the user with the body received as a paramater
-func Send(body interface{}, user entity.User) error {
+func Send(body interface{}, user model.User) error {
 	from := "banco.uati.squad.4@gmail.com"
 	pass := "bancouatisquad4"
 

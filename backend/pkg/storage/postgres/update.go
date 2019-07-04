@@ -3,11 +3,11 @@ package postgres
 import (
 	"fmt"
 
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/model"
 )
 
 // UpdateCustomer replace some data mantaining the same id
-func (s *Storage) UpdateCustomer(c entity.Customer) error {
+func (s *Storage) UpdateCustomer(c model.Customer) error {
 	_, err := s.db.Exec(`UPDATE customers
 						SET name=$1, wage=$2, is_public=$3, sent_warning=$4
 						WHERE id=$5`, &c.Name, &c.Wage, &c.IsPublic, &c.SentWarning, &c.ID)
@@ -18,7 +18,7 @@ func (s *Storage) UpdateCustomer(c entity.Customer) error {
 }
 
 // UpdateUser replace some data mantaining the same id
-func (s *Storage) UpdateUser(u entity.User) error {
+func (s *Storage) UpdateUser(u model.User) error {
 	_, err := s.db.Exec(`UPDATE users
 						SET email=$1, pass=$2
 						WHERE id=$3`, &u.Email, &u.Pass, &u.ID)
@@ -29,7 +29,7 @@ func (s *Storage) UpdateUser(u entity.User) error {
 }
 
 // UpdateWarning replace some data mantaining the same id
-func (s *Storage) UpdateWarning(w entity.Warning) error {
+func (s *Storage) UpdateWarning(w model.Warning) error {
 	_, err := s.db.Exec(`UPDATE warnings
 						SET dt=$1, msg=$2, sent_to=$3, from_customer=$4
 						WHERE id=$5`, &w.Dt, &w.Message, &w.SentTo, &w.FromCustomer, &w.ID)

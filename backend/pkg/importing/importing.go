@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/model"
 
 	"github.com/mholt/archiver"
 )
@@ -51,11 +51,11 @@ func readCSV(path string, job func([]string) bool, sep rune, hasHeader bool) {
 }
 
 // ImportClientesCSV imports the data from clientes.csv file
-func ImportClientesCSV(path string) ([]entity.Customer, error) {
-	var customers []entity.Customer
+func ImportClientesCSV(path string) ([]model.Customer, error) {
+	var customers []model.Customer
 
 	job := func(row []string) bool {
-		customers = append(customers, entity.Customer{
+		customers = append(customers, model.Customer{
 			Name: row[0],
 		})
 		return true
@@ -88,7 +88,7 @@ func DownloadHTTPFile(path, filename string) (string, error) {
 }
 
 // ImportPublicFunc import from the goverment site
-func ImportPublicFunc() ([]entity.PublicFunc, error) {
+func ImportPublicFunc() ([]model.PublicFunc, error) {
 	var indexName = 0
 	var indexIncome = 3
 
@@ -99,7 +99,7 @@ func ImportPublicFunc() ([]entity.PublicFunc, error) {
 		}
 	}
 
-	publicFuncs := []entity.PublicFunc{}
+	publicFuncs := []model.PublicFunc{}
 
 	job := func(row []string) bool {
 		var n, ws string
@@ -111,7 +111,7 @@ func ImportPublicFunc() ([]entity.PublicFunc, error) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		publicFuncs = append(publicFuncs, entity.PublicFunc{
+		publicFuncs = append(publicFuncs, model.PublicFunc{
 			Name:  n,
 			Wage:  float32(wf),
 			Place: "São Paulo",
