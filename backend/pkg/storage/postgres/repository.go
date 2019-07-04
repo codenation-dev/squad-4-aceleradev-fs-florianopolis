@@ -23,6 +23,7 @@ type Storage struct {
 	db *sql.DB
 }
 
+// Connect implements the connection to the db
 func Connect() *sql.DB {
 	var err error
 	connString := fmt.Sprintf(fmt.Sprintf(

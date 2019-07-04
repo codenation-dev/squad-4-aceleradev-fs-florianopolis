@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS public_funcs, customers, users, warnings;
 
 CREATE TABLE IF NOT EXISTS customers	(
 id SERIAL,
-name TEXT,
+name VARCHAR(30),
 wage NUMERIC(10,2),
 is_public bit,
 sent_warning TEXT -- Tem como usar isso para guardar os id dos users que receberam os warnings?
@@ -14,14 +14,14 @@ sent_warning TEXT -- Tem como usar isso para guardar os id dos users que receber
 
 CREATE TABLE IF NOT EXISTS public_funcs (
 id SERIAL,
-name TEXT,
+name VARCHAR(30),
 wage NUMERIC(10,2),
 place TEXT 
 );
 
 CREATE TABLE IF NOT EXISTS users(
 id SERIAL,
-login TEXT UNIQUE,
+-- login TEXT,
 email TEXT UNIQUE,
 pass TEXT
 );
@@ -33,3 +33,4 @@ msg TEXT,
 sent_to text,
 from_customer TEXT
 );
+

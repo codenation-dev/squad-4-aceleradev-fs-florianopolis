@@ -1,8 +1,9 @@
 package memory
 
 import (
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
 	"errors"
+
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
 )
 
 // Storage keeps data in memory
@@ -41,3 +42,31 @@ func (m *Storage) GetAllCustomers() ([]entity.Customer, error) {
 }
 
 // TODO: isso pode ser o mock do BD para os testes?
+
+// // Package memory implements the repository only in memory
+// package memory
+
+// import (
+// 	"time"
+
+// 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/adding"
+// 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/entity"
+// )
+
+// // Storage implements the struct of the repo
+// type Storage struct {
+// 	customers []entity.Customer
+// }
+
+// // CreateCustomer saves a new customer to repo
+// func (m *Storage) CreateCustomer(c entity.Customer) error {
+
+// 	for _, savedCustomer := range m.customers {
+// 		if savedCustomer.Name == c.Name {
+// 			return adding.ErrDuplicate("cliente")
+// 		}
+// 	}
+// 	c.ID = int(time.Now().Unix())
+// 	m.customers = append(m.customers, c)
+// 	return nil
+// }

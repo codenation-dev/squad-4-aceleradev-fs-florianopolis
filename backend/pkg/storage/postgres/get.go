@@ -23,7 +23,7 @@ func (s *Storage) GetCustomerByID(id int) (entity.Customer, error) {
 func (s *Storage) GetUserByID(id int) (entity.User, error) {
 	u := entity.User{}
 	query := "SELECT * FROM users WHERE id=$1"
-	err := s.db.QueryRow(query, id).Scan(&u.ID, &u.Login, &u.Email, &u.Pass)
+	err := s.db.QueryRow(query, id).Scan(&u.ID, &u.Email, &u.Pass)
 	if err != nil {
 		return entity.User{}, err
 	}
@@ -81,7 +81,7 @@ func (s *Storage) GetAllUsers() ([]entity.User, error) {
 	}
 	for rows.Next() {
 		u := entity.User{}
-		err := rows.Scan(&u.ID, &u.Login, &u.Email, &u.Pass)
+		err := rows.Scan(&u.ID, &u.Email, &u.Pass)
 		if err != nil {
 			return nil, err
 		}
@@ -137,7 +137,7 @@ func (s *Storage) GetCustomerByName(pattern string) ([]entity.Customer, error) {
 func (s *Storage) GetUserByEmail(pattern string) (entity.User, error) {
 	u := entity.User{}
 	query := "SELECT * FROM users WHERE email = $1"
-	err := s.db.QueryRow(query, pattern).Scan(&u.ID, &u.Login, &u.Email, &u.Pass)
+	err := s.db.QueryRow(query, pattern).Scan(&u.ID, &u.Email, &u.Pass)
 	// if err != nil {
 	// 	return nil, err
 	// }

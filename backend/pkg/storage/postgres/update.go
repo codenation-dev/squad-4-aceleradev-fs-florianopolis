@@ -20,8 +20,8 @@ func (s *Storage) UpdateCustomer(c entity.Customer) error {
 // UpdateUser replace some data mantaining the same id
 func (s *Storage) UpdateUser(u entity.User) error {
 	_, err := s.db.Exec(`UPDATE users
-						SET login=$1, email=$2, pass=$3
-						WHERE id=$4`, &u.Login, &u.Email, &u.Pass, &u.ID)
+						SET email=$1, pass=$2
+						WHERE id=$3`, &u.Email, &u.Pass, &u.ID)
 	if err != nil {
 		return fmt.Errorf("could not update the user: %v", err)
 	}

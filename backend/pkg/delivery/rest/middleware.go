@@ -31,6 +31,7 @@ func (s *Serv) SignIn(w http.ResponseWriter, r *http.Request) {
 	receivedPassword := user.Pass
 
 	user, err = s.read.GetUserByEmail(user.Email)
+
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

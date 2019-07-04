@@ -55,7 +55,7 @@ func Handler(
 
 	// Post
 	router.HandleFunc("/customer", s.Middleware(s.AddCustomer)).Methods("POST")
-	router.HandleFunc("/user", s.Middleware(s.addUser)).Methods("POST")
+	router.HandleFunc("/user", s.addUser).Methods("POST") // without middleware
 	router.HandleFunc("/warning", s.Middleware(s.AddWarning)).Methods("POST")
 	router.HandleFunc("/public_func", s.Middleware(s.addPublicFunc)).Methods("POST")
 	router.HandleFunc("/email", s.Middleware(s.sendEmail)).Methods("POST").Queries("user", "{userEmail}")

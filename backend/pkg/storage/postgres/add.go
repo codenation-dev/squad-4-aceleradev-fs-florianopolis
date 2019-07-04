@@ -13,6 +13,8 @@ func (s *Storage) AddCustomer(c entity.Customer) error {
 	_, err := s.db.Exec(`INSERT INTO customers (name, wage, is_public, sent_warning)
 						VALUES ($1, $2, $3, $4)`,
 		&c.Name, &c.Wage, &c.IsPublic, &c.SentWarning)
+	fmt.Println(c, err)
+
 	return err
 }
 
@@ -23,9 +25,9 @@ func (s *Storage) AddUser(u entity.User) error {
 		return err
 	}
 	u.Pass = string(bPass)
-	_, err = s.db.Exec(`INSERT INTO users (login, email, pass)
-						VALUES ($1, $2, $3)`,
-		&u.Login, &u.Email, &u.Pass)
+	_, err = s.db.Exec(`INSERT INTO users (email, pass)
+						VALUES ($1, $2)`,
+		&u.Email, &u.Pass)
 	return err
 }
 
@@ -44,6 +46,8 @@ func (s *Storage) AddPublicFunc(pp ...entity.PublicFunc) error {
 	batch := 20000
 	i := 0
 	for _, p := range pp {
+		// we cannot use the '?' in the query because limitations of the driver
+		// so we used the '$1, $2, $3...' notation
 		inc := fmt.Sprintf("($%v, $%v, $%v), ", (1 + (i * 3)), (2 + (i * 3)), (3 + (i * 3)))
 		i++
 		query += inc
@@ -52,8 +56,9 @@ func (s *Storage) AddPublicFunc(pp ...entity.PublicFunc) error {
 			q := query[0 : len(query)-2]
 			_, err := s.db.Exec(q, vals...)
 			if err != nil {
-				log.Fatalf("Erro na função AddPublicFunc 1", err)
+				log.Fatalf("error executing batch:", err)
 			}
+			// restart the vars to a new batch
 			query = `INSERT INTO public_funcs (name, wage, place) VALUES `
 			vals = []interface{}{}
 			i = 0
@@ -63,7 +68,7 @@ func (s *Storage) AddPublicFunc(pp ...entity.PublicFunc) error {
 
 	_, err := s.db.Exec(q, vals...)
 	if err != nil {
-		log.Fatalf("Erro na função AddPublicFunc 2", err)
+		log.Fatalf("error executing the remaining batch", err)
 	}
 
 	return err
