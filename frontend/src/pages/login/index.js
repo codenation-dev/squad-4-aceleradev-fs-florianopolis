@@ -15,8 +15,6 @@ class Login extends Component {
                 <label htmlFor="inputEmail">Username</label>
                 <input
                     name="username"
-                    onChange={() => {}}
-                    value={''}
                     className="form-control"
                     placeholder="Username"
                     required
@@ -27,8 +25,6 @@ class Login extends Component {
                 <label htmlFor="inputPassword">Password</label>
                 <input
                     name="password"
-                    onChange={() => {}}
-                    value={''}
                     type="password"
                     className="form-control"
                     placeholder="Password"
