@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/rs/cors"
+
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/deleting"
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/delivery/rest"
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/reading"
@@ -44,6 +46,7 @@ func main() {
 	)
 
 	fmt.Println("Server running ou port 3000")
-	log.Fatal(http.ListenAndServe(":3000", router))
+	r := cors.Default().Handler(router)
+	log.Fatal(http.ListenAndServe(":3000", r))
 
 }
