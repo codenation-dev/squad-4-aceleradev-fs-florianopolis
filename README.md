@@ -32,8 +32,7 @@ Caso ainda não o tenha em sua máquina.
 ```
 docker pull postgres
 docker volume create pgdata
-docker run --name postgres -e POSTGRES_PASSWORD=12345 -v
-pgdata:/var/lib/postgresql/data -d postgres
+docker run --name postgres -e POSTGRES_PASSWORD=12345 -v pgdata:/var/lib/postgresql/data -d postgres
 ```
 
 ### POSTGRESQL CLIENT
