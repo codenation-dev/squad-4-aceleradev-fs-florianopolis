@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 	"github.com/mholt/archiver"
 )
 

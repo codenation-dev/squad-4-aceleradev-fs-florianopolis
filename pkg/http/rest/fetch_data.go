@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/service/reading"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/reading"
 )
 
 func compareCustomerPublicFunc(tpl *template.Template) http.HandlerFunc {

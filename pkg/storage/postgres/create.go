@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 )
 
 // CreateUser inserts a new user on the DB

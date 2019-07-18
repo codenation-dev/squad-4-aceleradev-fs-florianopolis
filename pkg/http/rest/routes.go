@@ -8,11 +8,11 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/entity"
-	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/service/adding"
-	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/service/deleting"
-	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/service/reading"
-	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/service/updating"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/adding"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/deleting"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/reading"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/updating"
 
 	"github.com/gorilla/mux"
 )

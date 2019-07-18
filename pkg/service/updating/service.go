@@ -1,6 +1,6 @@
 package updating
 
-import "github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/entity"
+import "github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 
 type Service interface {
 	ChangePassword(u entity.User) error

@@ -4,7 +4,7 @@ package reading
 import (
 	"fmt"
 
-	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 )
 
 // Service implements the business rules

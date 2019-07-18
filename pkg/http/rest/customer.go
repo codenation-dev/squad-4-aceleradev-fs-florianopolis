@@ -5,7 +5,7 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/service/reading"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/reading"
 )
 
 func getAllCustomer(tpl *template.Template) http.HandlerFunc {

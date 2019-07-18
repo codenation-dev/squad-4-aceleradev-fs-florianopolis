@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/importing"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/importing"
 
-	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 )
 
 func (s *Storage) fetchPublicFuncData(uf, year, month string) error {
