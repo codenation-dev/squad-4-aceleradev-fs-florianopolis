@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <style>
+        html, body {
+            padding: 0;
+            border: 0;
+            margin: 0;
+        }
+
+        body, form {
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: center;
+            align-items: center;
+        }
+        input {
+            width: 60vw;
+            font-size: 5rem;
+            color: blue;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Login</h1>
+<form method="post" action="/login/process">
+    <input type="text" name="email" placeholder="email" required autofocus>
+    <input type="password" name="pass" placeholder="senha" required>
+    <input type="submit">
+</form>
+<p class="link"><a href="/user">Cadastrar novo usuário</a></p>
+
+
+</body>
+</html>

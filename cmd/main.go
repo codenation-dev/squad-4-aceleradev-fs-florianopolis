@@ -1,0 +1,40 @@
+package main
+
+import (
+	"fmt"
+	"html/template"
+	"log"
+	"net/http"
+
+	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/http/rest"
+	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/service/adding"
+	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/service/deleting"
+	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/service/reading"
+	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/service/updating"
+	"github.com/gbletsch/squad-4-aceleradev-fs-florianopolis/pkg/storage/postgres"
+	"github.com/gorilla/mux"
+)
+
+func main() {
+	router := setup()
+	apiPort := ":3000"
+	fmt.Printf("API running on port%s\n", apiPort)
+	if err := http.ListenAndServe(apiPort, router); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func setup() *mux.Router {
+
+	tpl := template.Must(template.ParseGlob("../frontend/templates/*.html"))
+
+	repo := postgres.NewStorage()
+
+	adder := adding.NewService(repo)
+	reader := reading.NewService(repo)
+	updater := updating.NewService(repo)
+	deleter := deleting.NewService(repo)
+
+	router := rest.NewRouter(adder, reader, updater, deleter, tpl)
+	return router
+}
