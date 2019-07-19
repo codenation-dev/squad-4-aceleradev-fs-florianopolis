@@ -76,16 +76,3 @@ func (s *Storage) UpdateUser(u entity.User) error {
 	}
 	return nil
 }
-
-// DeleteUser deletes a customer from the db
-func (s *Storage) DeleteUser(email string) error {
-	res, err := s.db.Exec(`DELETE FROM users WHERE id=$1`, email)
-	rowsAffected, _ := res.RowsAffected()
-	if rowsAffected == 0 {
-		err = entity.ErrUserNotFound
-	}
-	if err != nil {
-		return err
-	}
-	return nil
-}

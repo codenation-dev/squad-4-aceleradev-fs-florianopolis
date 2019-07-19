@@ -1,10 +1,10 @@
 package rest
 
 import (
+	"encoding/json"
 	"fmt"
-	"html/template"
+	"io/ioutil"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/reading"
@@ -21,37 +21,21 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-// func loginProcess(reader reading.Service, tpl *template.Template) http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		receivedUser := entity.User{}
-// 		receivedUser.Email = r.FormValue("email")
-// 		receivedUser.Password = r.FormValue("pass")
-
-// 		existingUser, err := reader.GetUser(receivedUser.Email)
-// 		if err != nil {
-// 			http.Error(w, entity.ErrUnauthorized.Error(), http.StatusUnauthorized)
-// 			return
-// 		}
-
-// 		err = entity.IsPassword(existingUser.Password, receivedUser.Password)
-// 		if err != nil {
-// 			http.Error(w, entity.ErrUnauthorized.Error(), http.StatusUnauthorized)
-// 			return
-// 		}
-
-// 		tpl.ExecuteTemplate(w, "options.html", nil)
-
-// 	}
-// }
-
 // SignIn handles the login control to the API
-func signin(reader reading.Service, tpl *template.Template) http.HandlerFunc {
+func login(reader reading.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// var user entity.User
-
 		receivedUser := entity.User{}
-		receivedUser.Email = r.FormValue("email")
-		receivedUser.Password = r.FormValue("pass")
+		b, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, entity.ErrUnauthorized.Error(), http.StatusUnauthorized)
+			return
+		}
+		err = json.Unmarshal(b, &receivedUser)
+		if err != nil {
+			http.Error(w, entity.ErrUnauthorized.Error(), http.StatusUnauthorized)
+			return
+		}
 
 		existingUser, err := reader.GetUser(receivedUser.Email)
 		if err != nil {
@@ -81,60 +65,31 @@ func signin(reader reading.Service, tpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		// var resp = map[string]interface{}{"status": false, "message": "logged in"}
-		// resp["token"] = tokenString //Store the token in the response
-		// resp["user"] = receivedUser.Email
-
-		// json.NewEncoder(w).Encode(resp)
-
 		http.SetCookie(w, &http.Cookie{
 			Name:    "token",
 			Value:   tokenString,
 			Expires: expirationTime,
 		})
-		c, err := r.Cookie("token")
-		fmt.Println(err, c)
-
-		tpl.ExecuteTemplate(w, "options.html", nil)
+		fmt.Fprint(w, "login efetuado com sucesso")
 	}
 }
-
-// func loggingMiddleware(next http.Handler) http.Handler {
-//     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//         // Do stuff here
-//         log.Println(r.RequestURI)
-//         // Call the next handler, which can be another middleware in the chain, or the final handler.
-//         next.ServeHTTP(w, r)
-//     })
-// }
 
 // Middleware handles the authorization to use the API
 func authorize(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		var header = r.Header.Get("x-access-token") //Grab the token from the header
-
-		header = strings.TrimSpace(header)
-		fmt.Println("header:", header)
-
-		listExcluded := []string{"/", "/login", "/login/process", "/user", "/user/process"}
-
-		for _, path := range listExcluded {
-			if r.RequestURI == path {
-				next.ServeHTTP(w, r)
-				return
-			}
+		if r.RequestURI == "/" || r.RequestURI == "/login" {
+			next.ServeHTTP(w, r)
+			return
+		} else if r.RequestURI == "/user" && r.Method == http.MethodPost {
+			next.ServeHTTP(w, r)
+			return
 		}
-		// for _, c := range r.Cookies() {
-		// 	fmt.Println(c.Name)
-		// }
 
 		c, err := r.Cookie("token")
-		// fmt.Println(err, c)
 		if err != nil {
 			if err == http.ErrNoCookie {
-				http.Error(w, "merda de cookie", http.StatusUnauthorized)
-				// http.Error(w, entity.ErrUnauthorized.Error(), http.StatusUnauthorized)
+				http.Error(w, entity.ErrUnauthorized.Error(), http.StatusUnauthorized)
 				return
 			}
 			http.Error(w, entity.ErrUnauthorized.Error(), http.StatusInternalServerError)

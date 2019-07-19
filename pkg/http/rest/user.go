@@ -1,12 +1,18 @@
 package rest
 
 import (
-	"html/template"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/adding"
+
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/deleting"
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/reading"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/updating"
 	"github.com/gorilla/mux"
 )
 
@@ -19,38 +25,64 @@ func getUser(reader reading.Service) http.HandlerFunc {
 			respondWithError(w, http.StatusBadRequest, err)
 			return
 		}
-		respondWithJSON(w, http.StatusOK, u)
+		fmt.Fprint(w, u)
 	}
 }
 
-func addUser(tpl *template.Template) http.HandlerFunc {
+func addUser(adder adding.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		tpl.ExecuteTemplate(w, "new_user.html", nil)
+		assertError := func(err error) {
+			if err != nil {
+				http.Error(w, fmt.Sprintf("erro ao adicionar usuário (%s)", err.Error()), http.StatusBadRequest)
+				return
+			}
+		}
+
+		b, err := ioutil.ReadAll(r.Body)
+		assertError(err)
+
+		newUser := entity.User{}
+		err = json.Unmarshal(b, &newUser)
+		assertError(err)
+
+		err = adder.AddUser(newUser)
+		assertError(err)
+
+		fmt.Fprint(w, "usuário adicionado com sucesso")
 	}
 }
 
-func addUserProcess(adder adding.Service, tpl *template.Template) http.HandlerFunc {
+func deleteUser(deleter deleting.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// u := entity.User{}
-		// b, _ := ioutil.ReadAll(r.Body)
-		// err := json.Unmarshal(b, &u)
-		// if err != nil {
-		// 	respondWithError(w, http.StatusUnprocessableEntity, entity.ErrUnmarshal)
-		// 	return
-		// }
-		user := entity.User{}
-		// _ = r.ParseForm()
-		// fmt.Println(r.Form)
-
-		user.Email = r.FormValue("email")
-		user.Password = r.FormValue("pass")
-		err := adder.AddUser(user)
+		params := mux.Vars(r)
+		err := deleter.DeleteUser(params["email"])
 		if err != nil {
 			respondWithError(w, http.StatusBadRequest, err)
 			return
 		}
-
-		tpl.ExecuteTemplate(w, "login.html", nil)
+		fmt.Fprint(w, "usuário deletado com sucesso")
 	}
+}
 
+func updateUser(updater updating.Service) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		user := entity.User{}
+		b, err := ioutil.ReadAll(r.Body)
+
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, errors.New("erro no ioutil"))
+			return
+		}
+		err = json.Unmarshal(b, &user)
+		if err != nil {
+			respondWithError(w, http.StatusUnprocessableEntity, entity.ErrUnmarshal)
+			return
+		}
+		err = updater.ChangePassword(user)
+		if err != nil {
+			respondWithError(w, http.StatusBadRequest, err)
+			return
+		}
+		fmt.Fprint(w, "usuário modificado com sucesso")
+	}
 }

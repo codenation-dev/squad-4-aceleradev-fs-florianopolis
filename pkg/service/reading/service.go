@@ -14,6 +14,7 @@ type Service interface {
 	GetAllCustomers(tableName string) ([]entity.Customer, error)
 
 	CompareCustomerPublicFunc(uf, month, year, company string) ([]entity.PublicFunc, error)
+	GetPublicFuncByWage(uf, year, month, wage string) ([]entity.PublicFunc, error)
 }
 
 // Repository implements the interface to deal with the storage
@@ -23,6 +24,7 @@ type Repository interface {
 	ReadAllCustomers(tableName string) ([]entity.Customer, error)
 
 	CompareCustomerPublicFunc(funcTableName, customerTableName string) ([]entity.PublicFunc, error)
+	ReadPublicFuncByWage(tableName, wage string) ([]entity.PublicFunc, error)
 }
 
 type service struct {
@@ -48,7 +50,16 @@ func (s *service) GetAllCustomers(company string) ([]entity.Customer, error) {
 }
 
 func (s *service) CompareCustomerPublicFunc(uf, month, year, company string) ([]entity.PublicFunc, error) {
-	funcTableName := fmt.Sprintf("public_func_%s_%s_%s", uf, year, month)
+	funcTableName := makeTablename(uf, year, month)
 	customerTableName := company
 	return s.bR.CompareCustomerPublicFunc(funcTableName, customerTableName)
+}
+
+func (s *service) GetPublicFuncByWage(uf, year, month, wage string) ([]entity.PublicFunc, error) {
+	tableName := makeTablename(uf, year, month)
+	return s.bR.ReadPublicFuncByWage(tableName, wage)
+}
+
+func makeTablename(uf, year, month string) string {
+	return fmt.Sprintf("public_func_%s_%s_%s", uf, year, month)
 }

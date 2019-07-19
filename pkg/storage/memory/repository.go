@@ -4,14 +4,17 @@ import (
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 )
 
+// Storage mock db
 type Storage struct {
 	Users []entity.User
 }
 
+// NewStorage implements a new mock storage
 func NewStorage() *Storage {
 	return new(Storage)
 }
 
+// ReadUser reads user from mock db
 func (m *Storage) ReadUser(email string) (entity.User, error) {
 	for _, u := range m.Users {
 		if u.Email == email {

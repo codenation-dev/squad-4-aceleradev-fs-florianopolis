@@ -2,22 +2,17 @@ package rest
 
 import (
 	"fmt"
-	"html/template"
 	"net/http"
 
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/reading"
+	"github.com/gorilla/mux"
 )
 
-func getAllCustomer(tpl *template.Template) http.HandlerFunc {
+func getAllCustomer(reader reading.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		tpl.ExecuteTemplate(w, "list_customer.html", nil)
-	}
-}
+		params := mux.Vars(r)
 
-func processGetAllCustomer(tpl *template.Template, reader reading.Service) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		company := r.FormValue("company")
-		customers, err := reader.GetAllCustomers(company)
+		customers, err := reader.GetAllCustomers(params["company"])
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

@@ -2,30 +2,28 @@ package rest
 
 import (
 	"fmt"
-	"html/template"
 	"net/http"
+
+	"github.com/gorilla/mux"
 
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/reading"
 )
 
-func readAllPublicFunc(tpl *template.Template) http.HandlerFunc {
+func readAllPublicFunc(reader reading.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		tpl.ExecuteTemplate(w, "list_public_func.html", nil)
-	}
-}
 
-func processReadAllPublicFunc(tpl *template.Template, reader reading.Service) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		uf := r.FormValue("uf")
-		year := r.FormValue("year")
-		month := r.FormValue("month")
+		params := mux.Vars(r)
 
-		publicFuncs, err := reader.GetAllPublicFunc(uf, year, month)
+		// uf := r.FormValue("uf")
+		// year := r.FormValue("year")
+		// month := r.FormValue("month")
+
+		publicFuncs, err := reader.GetAllPublicFunc(params["uf"], params["year"], params["month"])
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, fmt.Sprintf("erro ao ler todos os dados (%s)", err.Error()), http.StatusInternalServerError)
 			return
 		}
-		fmt.Fprint(w, publicFuncs)
+		fmt.Fprint(w, publicFuncs[:10]) // LIMITADO A 10 PARA TESTES
 	}
 
 }

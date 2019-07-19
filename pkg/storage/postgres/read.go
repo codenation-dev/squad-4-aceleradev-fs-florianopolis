@@ -63,7 +63,7 @@ func (s *Storage) fetchCustomerData(company string) error {
 // ReadAllCustomers return all customers from the DB
 func (s *Storage) ReadAllCustomers(company string) ([]entity.Customer, error) {
 	customers := []entity.Customer{}
-	query := fmt.Sprintf("SELECT name FROM %s", company)
+	query := fmt.Sprintf("SELECT name FROM %s", company) //limite usado em testes
 	rows, err := s.db.Query(query)
 	if err != nil {
 		if err.Error() == fmt.Sprintf(`pq: relation "%s" does not exist`, company) {
@@ -129,4 +129,16 @@ func (s *Storage) CompareCustomerPublicFunc(funcTableName, customerTableName str
 		names = append(names, c.Name)
 	}
 	return s.readPublicFuncByList(funcTableName, "short_name", names)
+}
+
+// ReadPublicFuncByWage reads data from all public funcs above given wage
+func (s *Storage) ReadPublicFuncByWage(tableName, wage string) ([]entity.PublicFunc, error) {
+	query := fmt.Sprintf(`SELECT complete_name, short_name, wage, departament, function
+				FROM %s
+				WHERE wage > $1`, tableName)
+	rows, err := s.db.Query(query, wage)
+	if err != nil {
+		return nil, err
+	}
+	return scanRowsPublicFunc(rows)
 }
