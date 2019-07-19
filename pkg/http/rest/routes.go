@@ -17,10 +17,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// NewRouter implements handlers to all routes
 func NewRouter(adder adding.Service, reader reading.Service, updater updating.Service, deleter deleting.Service, tpl *template.Template) *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 	router.Handle("/login", login(tpl)).Methods(http.MethodGet)
-	router.Handle("/login/process", loginProcess(reader, tpl)).Methods(http.MethodPost)
+	router.Handle("/login/process", signin(reader, tpl)).Methods(http.MethodPost)
 	router.Handle("/", getIndex()).Methods(http.MethodGet)
 
 	router.Handle("/user/{email}", getUser(reader)).Methods(http.MethodGet)
@@ -32,12 +33,13 @@ func NewRouter(adder adding.Service, reader reading.Service, updater updating.Se
 	router.Handle("/public_func/all", readAllPublicFunc(tpl)).Methods(http.MethodGet)
 	router.Handle("/public_func/all/process", processReadAllPublicFunc(tpl, reader)).Methods(http.MethodPost)
 
-	router.Handle("/customer/all", getAllCustomer(tpl)).Methods(http.MethodGet)
-	router.Handle("/customer/all/process", processGetAllCustomer(tpl, reader)).Methods(http.MethodPost)
+	router.Handle("/customer/all", authorize(getAllCustomer(tpl))).Methods(http.MethodGet)
+	router.Handle("/customer/all/process", authorize(processGetAllCustomer(tpl, reader))).Methods(http.MethodPost)
 
 	router.Handle("/fetch/data/compare_customer_x_public_func", compareCustomerPublicFunc(tpl)).Methods(http.MethodGet)
 	router.Handle("/fetch/data/compare_customer_x_public_func/process", processCompareCustomerPublicFunc(tpl, reader)).Methods(http.MethodPost)
 
+	// router.Use(authorize)
 	return router
 }
 
@@ -50,29 +52,6 @@ func getIndex() http.HandlerFunc {
 func login(tpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tpl.ExecuteTemplate(w, "login.html", nil)
-	}
-}
-
-func loginProcess(reader reading.Service, tpl *template.Template) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		receivedUser := entity.User{}
-		receivedUser.Email = r.FormValue("email")
-		receivedUser.Password = r.FormValue("pass")
-
-		existingUser, err := reader.GetUser(receivedUser.Email)
-		if err != nil {
-			http.Error(w, entity.ErrUnauthorized.Error(), http.StatusUnauthorized)
-			return
-		}
-
-		err = entity.IsPassword(existingUser.Password, receivedUser.Password)
-		if err != nil {
-			http.Error(w, entity.ErrUnauthorized.Error(), http.StatusUnauthorized)
-			return
-		}
-
-		tpl.ExecuteTemplate(w, "options.html", nil)
-
 	}
 }
 
