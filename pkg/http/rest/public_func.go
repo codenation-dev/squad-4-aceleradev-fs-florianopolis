@@ -18,12 +18,14 @@ func readAllPublicFunc(reader reading.Service) http.HandlerFunc {
 		// year := r.FormValue("year")
 		// month := r.FormValue("month")
 
-		publicFuncs, err := reader.GetAllPublicFunc(params["uf"], params["year"], params["month"])
+		// publicFuncs, err := reader.GetAllPublicFunc(params["uf"], params["year"], params["month"])
+		_, err := reader.GetAllPublicFunc(params["uf"], params["year"], params["month"])
 		if err != nil {
 			http.Error(w, fmt.Sprintf("erro ao ler todos os dados (%s)", err.Error()), http.StatusInternalServerError)
 			return
 		}
-		fmt.Fprint(w, publicFuncs[:10]) // LIMITADO A 10 PARA TESTES
+		// fmt.Fprint(w, publicFuncs[:10]) // LIMITADO A 10 PARA TESTES
+		fmt.Fprint(w, err)
 	}
 
 }

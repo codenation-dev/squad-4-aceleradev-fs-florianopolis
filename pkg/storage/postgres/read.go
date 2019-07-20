@@ -14,14 +14,20 @@ import (
 func (s *Storage) fetchPublicFuncData(uf, year, month string) error {
 	tableName := fmt.Sprintf("public_func_%s_%s_%s", uf, year, month)
 	err := s.createPublicFuncTable(tableName)
+	fmt.Println("c***********", err)
+
 	if err != nil {
 		return err
 	}
 	publicFuncs, err := importing.FetchPublicAgentsFile(uf, month, year)
+	fmt.Println("d***********", err)
+
 	if err != nil {
 		return err
 	}
 	err = s.CreatePublicFunc(tableName, publicFuncs...)
+	fmt.Println("e***********", err)
+
 	if err != nil {
 		return err
 	}
@@ -34,17 +40,33 @@ func (s *Storage) ReadAllPublicFunc(uf, year, month string) ([]entity.PublicFunc
 
 	query := fmt.Sprintf(`SELECT  complete_name, short_name, wage, departament, function FROM %s`, tableName)
 	rows, err := s.db.Query(query)
+
+	fmt.Println("f***************", err)
 	if err != nil {
 		if err.Error() == `pq: relation "public_func_sp_2019_abril" does not exist` {
 			err = s.fetchPublicFuncData(uf, year, month)
+			fmt.Println("g***************")
 			if err != nil {
 				log.Fatal(err)
 			}
 			return s.ReadAllPublicFunc(uf, year, month)
 		} else {
+
 			return nil, err
 		}
+	} else {
+		var count int
+		_ = s.db.QueryRow(fmt.Sprintf("select count (*) from %s", tableName)).Scan(&count)
+		if count == 0 {
+			err = s.fetchPublicFuncData(uf, year, month)
+			fmt.Println("g***************")
+			if err != nil {
+				log.Fatal(err)
+			}
+			return s.ReadAllPublicFunc(uf, year, month)
+		}
 	}
+
 	return scanRowsPublicFunc(rows)
 }
 

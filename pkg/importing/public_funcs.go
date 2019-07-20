@@ -2,7 +2,6 @@ package importing
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -14,19 +13,22 @@ import (
 // FetchPublicAgentsFile import data from the goverment site
 func FetchPublicAgentsFile(uf, month, year string) ([]entity.PublicFunc, error) {
 	var downloadFrom string
-	switch uf {
-	case "sp":
-		downloadFrom = fmt.Sprintf("http://www.transparencia.sp.gov.br/PortalTransparencia-Report/historico/remuneracao_%s_%s.rar", month, year)
-	default:
-		return nil, entity.ErrDownloadingFile
-	}
+	// switch uf {
+	// case "sp":
+	downloadFrom = fmt.Sprintf("http://www.transparencia.sp.gov.br/PortalTransparencia-Report/historico/remuneracao_%s_%s.rar", month, year)
+	// default:
+	// 	return nil, entity.ErrDownloadingFile
+	// }
 
 	filename := fmt.Sprintf("%s_%s_%s", uf, year, month)
 	splited := strings.Split(downloadFrom, ".")
 	extension := splited[len(splited)-1]
 	downloadedFile := fmt.Sprintf("%s/%s.%s", entity.CacheFolder, filename, extension)
 
-	if _, err := os.Stat(downloadedFile); err != nil {
+	_, err := os.Stat(downloadedFile)
+	fmt.Println("b***********", err)
+
+	if err != nil {
 		err = downloadHTTPFile(downloadFrom, downloadedFile)
 		if err != nil {
 			return nil, err
@@ -34,15 +36,17 @@ func FetchPublicAgentsFile(uf, month, year string) ([]entity.PublicFunc, error) 
 	}
 
 	decompressedFile := fmt.Sprintf("%s/%s.txt", entity.CacheFolder, filename)
-	if _, err := os.Stat(decompressedFile); err != nil {
-		log.Fatal(err)
+	_, err = os.Stat(decompressedFile)
+	fmt.Println("a******", err)
 
-		if uf == "sp" {
-			err := os.Remove(entity.CacheFolder + "/Remuneracao.txt")
-			if err != nil {
-				return nil, err
-			}
-		}
+	if err != nil {
+		// if uf == "sp" {
+		// 	err := os.Remove(entity.CacheFolder + "/Remuneracao.txt")
+
+		// 	if err != nil {
+		// 		return nil, err
+		// 	}
+		// }
 		err := archiver.Unarchive(downloadedFile, entity.CacheFolder+"/")
 		if err != nil {
 			return nil, err
@@ -51,8 +55,6 @@ func FetchPublicAgentsFile(uf, month, year string) ([]entity.PublicFunc, error) 
 	if uf == "sp" {
 
 		_, err := os.Stat(entity.CacheFolder + "/Remuneracao.txt")
-		log.Fatal(err)
-
 		if err == nil {
 			err := os.Rename(entity.CacheFolder+"/Remuneracao.txt", decompressedFile)
 			if err != nil {

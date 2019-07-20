@@ -8,7 +8,7 @@ import (
 // CreatePublicFuncTable inserts a new table if it do not exists and import the file
 func (s *Storage) createPublicFuncTable(tableName string) error {
 	// tableName := fmt.Sprintf("public_func_%s_%s_%s", uf, year, month)
-	query := fmt.Sprintf(`CREATE TABLE %s (
+	query := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s (
 		id SERIAL primary key,
 		complete_name VARCHAR(255),
 		short_name VARCHAR(30),
