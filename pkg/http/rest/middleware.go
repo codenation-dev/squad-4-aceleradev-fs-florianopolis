@@ -24,6 +24,7 @@ type Claims struct {
 // SignIn handles the login control to the API
 func login(reader reading.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// var user entity.User
 		receivedUser := entity.User{}
 		b, err := ioutil.ReadAll(r.Body)
 		if err != nil {

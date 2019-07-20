@@ -1,29 +1,3 @@
-.DS_STORE
-node_modules
-scripts/flow/*/.flowconfig
-*~
-*.pyc
-.grunt
-_SpecRunner.html
-__benchmarks__
-build/
-remote-repo/
-coverage/
-.module-cache
-fixtures/dom/public/react-dom.js
-fixtures/dom/public/react.js
-test/the-files-to-test.generated.js
-*.log*
-chrome-user-data
-*.sublime-project
-*.sublime-workspace
-.idea
-*.iml
-.vscode
-*.swp
-*.swo
-
-
 # Binaries for programs and plugins
 *.exe
 *.exe~
@@ -40,10 +14,30 @@ chrome-user-data
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-*.txt
-*.rar
-*.csv
 
-cmd/data/downloaded/SP_2019_Abril.txt
-cmd/data/downloaded/SP_2019_Abril.rar
-cmd/data/downloaded/clientes.csv
+clientes.csv
+file.rar
+main.py.old
+# *.json
+cliente
+old
+*.txt
+main
+
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
+/frontend/node_modules
+
+# testing
+/frontend/coverage
+
+# production
+/frontend/build
+
+# misc
+frontend/.DS_Store
+frontend/.env
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
