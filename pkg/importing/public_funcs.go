@@ -2,6 +2,7 @@ package importing
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -14,7 +15,7 @@ import (
 func FetchPublicAgentsFile(uf, month, year string) ([]entity.PublicFunc, error) {
 	var downloadFrom string
 	switch uf {
-	case "SP":
+	case "sp":
 		downloadFrom = fmt.Sprintf("http://www.transparencia.sp.gov.br/PortalTransparencia-Report/historico/remuneracao_%s_%s.rar", month, year)
 	default:
 		return nil, entity.ErrDownloadingFile
@@ -34,7 +35,9 @@ func FetchPublicAgentsFile(uf, month, year string) ([]entity.PublicFunc, error) 
 
 	decompressedFile := fmt.Sprintf("%s/%s.txt", entity.CacheFolder, filename)
 	if _, err := os.Stat(decompressedFile); err != nil {
-		if uf == "SP" {
+		log.Fatal(err)
+
+		if uf == "sp" {
 			err := os.Remove(entity.CacheFolder + "/Remuneracao.txt")
 			if err != nil {
 				return nil, err
@@ -45,8 +48,11 @@ func FetchPublicAgentsFile(uf, month, year string) ([]entity.PublicFunc, error) 
 			return nil, err
 		}
 	}
-	if uf == "SP" {
+	if uf == "sp" {
+
 		_, err := os.Stat(entity.CacheFolder + "/Remuneracao.txt")
+		log.Fatal(err)
+
 		if err == nil {
 			err := os.Rename(entity.CacheFolder+"/Remuneracao.txt", decompressedFile)
 			if err != nil {
@@ -61,7 +67,7 @@ func FetchPublicAgentsFile(uf, month, year string) ([]entity.PublicFunc, error) 
 
 func parseData(uf, month, year string) ([]entity.PublicFunc, error) {
 	switch uf {
-	case "SP":
+	case "sp":
 		filename := fmt.Sprintf("%s_%s_%s", uf, year, month)
 		decompressedFile := fmt.Sprintf("%s/%s.txt", entity.CacheFolder, filename)
 		return parseSPData(decompressedFile)

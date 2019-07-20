@@ -1,6 +1,8 @@
 package importing
 
 import (
+	"fmt"
+
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 )
 
@@ -22,6 +24,6 @@ func fetchUatiData() ([]entity.Customer, error) {
 		return true
 	}
 	readCSV(path, job, ',', true)
-
+	fmt.Println(customers)
 	return customers, nil
 }

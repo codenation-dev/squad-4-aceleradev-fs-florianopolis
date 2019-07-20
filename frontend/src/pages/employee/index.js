@@ -26,7 +26,7 @@ const Employee = () => {
     const [orgao, setOrgao] = useState('');
     const [valor, setValor] = useState(0);
     const [employeeList, setEmployeeList] = useState([]);
-
+/*
     useEffect(() => {
         const fetchData = async () => {
             const result = await listEmployee(nome, cargo, orgao);
@@ -34,7 +34,7 @@ const Employee = () => {
         };
       
         fetchData();        
-    }, [nome, cargo, orgao, valor]);
+    }, [nome, cargo, orgao, valor]);*/
 
     return (
         <div className="container">
