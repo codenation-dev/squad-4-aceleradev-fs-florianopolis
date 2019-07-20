@@ -1,12 +1,43 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
+import {register, login} from '../../services/loginService'
 import "./style.css"
 
-class Login extends Component {
-    constructor(props) {
-        super(props)
+const Login = (props) => {   
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('')
+
+    const registerUser = (evt) => {
+        evt.preventDefault();
+
+        const doRegister = async () => {
+            try {
+                await register(username, password)
+                await login(username, password);
+                props.history.push("/");
+              } catch (ex) {
+                alert(ex.message);
+              }            
+        };
+      
+        return doRegister();                 
     }
 
-    render = () => (
+    const loginUser = (evt) => {
+        evt.preventDefault();
+
+        const doLogin = async () => {
+            try {
+                await login(username, password);
+                props.history.push("/");
+              } catch (ex) {
+                alert(ex.message);
+              }            
+        };
+      
+        return doLogin();                 
+    }
+
+    return (
         <form className="form-signin">
             <div className="title">
                 <h1>Login / Register</h1>
@@ -17,6 +48,8 @@ class Login extends Component {
                     name="username"
                     className="form-control"
                     placeholder="Username"
+                    value={username}
+                    onChange={e => setUsername(e.target.value)}
                     required
                 />
                 <input
@@ -24,13 +57,15 @@ class Login extends Component {
                     type="password"
                     className="form-control"
                     placeholder="Password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
                     required
                 />
             </div>
     
             <div className="buttons">
-                <button className="button register" type="submit">Register</button>
-                <button className="button login" type="submit">Login</button>
+                <button className="button register" onClick={(evt) => registerUser(evt)}>Register</button>
+                <button className="button login" onClick={(evt) => loginUser(evt)}>Login</button>
             </div>
         </form>
     )

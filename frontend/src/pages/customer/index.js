@@ -22,7 +22,13 @@ const Customer = () => {
     const [customerList, setCustomerList] = useState([]);
 
     useEffect(() => {
-        setCustomerList(listCustomer(nome))
+        const fetchData = async () => {
+            const result = await listCustomer(nome);
+            console.log(result);
+            setCustomerList(result.data)
+        };
+      
+        fetchData();     
     }, [nome]);
 
     return (

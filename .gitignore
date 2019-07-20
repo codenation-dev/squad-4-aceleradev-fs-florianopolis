@@ -42,4 +42,5 @@ frontend/.env
 frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
-
+cmd/data/downloaded/sp_2019_abril.rar
+cmd/main
