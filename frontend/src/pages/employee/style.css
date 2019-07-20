@@ -1,0 +1,10 @@
+.employes .search{
+    box-sizing: border-box;
+    padding: 10px 10px 20px;
+}
+
+.employes .search div{
+    box-sizing: border-box;
+    padding: 0 10px;
+    width: 25%;
+}

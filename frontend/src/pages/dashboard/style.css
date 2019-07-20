@@ -1,0 +1,7 @@
+.content{
+    vertical-align: top;
+    display: inline-block;
+    width: calc(100vw - 255px);
+    box-sizing: border-box;
+    padding: 10px 15px;
+}

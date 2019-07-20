@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
-import { Link } from 'react-router-dom';
-import {getCustomerById} from '../../services/customerService'
+import Sidemenu from '../../components/sidemenu'
+import "./style.css"
+// import {getCustomerById} from '../../services/customerService'
 
 const Dashboard = () => {    
     
@@ -11,11 +12,10 @@ const Dashboard = () => {
 
     return (
         <>
-            <h1>Dashboard</h1>
-            <Link to="/alertas"><h3>Alerta</h3></Link>
-            <Link to="/login"><h3>Login</h3></Link>
-            <Link to="/employee"><h3>Funcionario</h3></Link>
-            <Link to="/customer"><h3>Clientes</h3></Link>
+            <Sidemenu />
+            <div className="content">
+                <h1>ASD</h1>
+            </div>
         </>
     )
 }

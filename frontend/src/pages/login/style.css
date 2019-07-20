@@ -1,0 +1,37 @@
+.form-signin{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 350px;
+    background: #ddd;
+    text-align: center;
+    padding: 8px 10px;
+    border-radius: 10px;
+}
+
+.form-signin .title h1{
+    color: #424242;    
+}
+
+.form-signin input{
+    margin-bottom: 5px;
+}
+
+.form-signin .button{
+    color: #fff;
+    padding: 5px 10px;
+    border: solid 1px #ddd;
+    border-radius: 6px;
+}
+
+.form-signin .register{
+    background: #858796;
+    margin-right: 5px;
+
+}
+
+.form-signin .login{
+    background: #4e73df;
+    margin-left: 5px;
+}
