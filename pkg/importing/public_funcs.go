@@ -2,6 +2,7 @@ package importing
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -14,7 +15,7 @@ import (
 func FetchPublicAgentsFile(uf, month, year string) ([]entity.PublicFunc, error) {
 	var downloadFrom string
 	switch uf {
-	case "SP":
+	case "sp":
 		downloadFrom = fmt.Sprintf("http://www.transparencia.sp.gov.br/PortalTransparencia-Report/historico/remuneracao_%s_%s.rar", month, year)
 	default:
 		return nil, entity.ErrDownloadingFile
@@ -34,6 +35,8 @@ func FetchPublicAgentsFile(uf, month, year string) ([]entity.PublicFunc, error) 
 
 	decompressedFile := fmt.Sprintf("%s/%s.txt", entity.CacheFolder, filename)
 	if _, err := os.Stat(decompressedFile); err != nil {
+		log.Fatal(err)
+
 		if uf == "SP" {
 			err := os.Remove(entity.CacheFolder + "/Remuneracao.txt")
 			if err != nil {
@@ -46,7 +49,10 @@ func FetchPublicAgentsFile(uf, month, year string) ([]entity.PublicFunc, error) 
 		}
 	}
 	if uf == "SP" {
+
 		_, err := os.Stat(entity.CacheFolder + "/Remuneracao.txt")
+		log.Fatal(err)
+
 		if err == nil {
 			err := os.Rename(entity.CacheFolder+"/Remuneracao.txt", decompressedFile)
 			if err != nil {

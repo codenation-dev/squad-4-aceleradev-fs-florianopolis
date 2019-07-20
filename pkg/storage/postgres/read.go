@@ -3,6 +3,7 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/importing"
@@ -37,7 +38,7 @@ func (s *Storage) ReadAllPublicFunc(uf, year, month string) ([]entity.PublicFunc
 		if err.Error() == `pq: relation "public_func_sp_2019_abril" does not exist` {
 			err = s.fetchPublicFuncData(uf, year, month)
 			if err != nil {
-				panic(err)
+				log.Fatal(err)
 			}
 			return s.ReadAllPublicFunc(uf, year, month)
 		} else {
