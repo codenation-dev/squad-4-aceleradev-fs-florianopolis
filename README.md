@@ -5,7 +5,7 @@
 
 Este repositório deve ser clonado DIRETAMENTE no gopath, dentro da pasta /src/github.com/codenation-dev, assim fica com os nomes dos imports corretos, iguais ao da url do github.
 
-
+   
 ## Caso já esteja com o docker do postgres instalado
 
 Pode usar diretamente os comandos abaixo:
