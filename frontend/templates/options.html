@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Escolha os dados</title>
+        <style>
+            html, body, p {
+                padding: 0;
+                border: 0;
+                margin: 0;
+            }
+            body {
+                display: flex;
+                flex-flow: column nowrap;
+                justify-content: center;
+                align-items: left;
+                height: 100vh;
+            }
+            p {
+                margin-left: 4rem;
+                font-size: 2rem;
+                color: black;
+            }
+            .link {
+                font-size: 1rem;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Escolha a função</h1>
+        <a href="/customer/all">Ver lista de clientes</a>
+        <a href="/public_func/all">Ver lista de funcionários publicos</a>
+        <a href="/fetch/data/compare_customer_x_public_func">Quantos funcionários públicos já são clientes?</a>
+    </body>
+</html>
