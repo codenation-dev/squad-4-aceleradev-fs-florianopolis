@@ -8,9 +8,24 @@ const Login = (props) => {
     const registerUser = (evt) => {
         evt.preventDefault();
 
-        const doLogin = async () => {
+        const doRegister = async () => {
             try {
                 await register(username, password)
+                await login(username, password);
+                props.history.push("/");
+              } catch (ex) {
+                alert(ex.message);
+              }            
+        };
+      
+        return doRegister();                 
+    }
+
+    const loginUser = (evt) => {
+        evt.preventDefault();
+
+        const doLogin = async () => {
+            try {
                 await login(username, password);
                 props.history.push("/");
               } catch (ex) {
@@ -53,7 +68,7 @@ const Login = (props) => {
             </div>
     
             <div className="mt-5">
-                <button className="login btn btn-lg btn-primary btn-block" type="submit">Login</button>
+                <button className="login btn btn-lg btn-primary btn-block" onClick={(evt) => loginUser(evt)}>Login</button>
                 <button className="register btn btn-lg btn-secondary btn-block" onClick={(evt) => registerUser(evt)}>Register</button>
             </div>
         </form>
