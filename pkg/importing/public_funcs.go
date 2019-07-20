@@ -34,6 +34,7 @@ func FetchPublicAgentsFile(uf, month, year string) ([]entity.PublicFunc, error) 
 	}
 
 	decompressedFile := fmt.Sprintf("%s/%s.txt", entity.CacheFolder, filename)
+	fmt.Println("DESCOMPACTANDO", decompressedFile)
 	if _, err := os.Stat(decompressedFile); err != nil {
 		log.Fatal(err)
 
