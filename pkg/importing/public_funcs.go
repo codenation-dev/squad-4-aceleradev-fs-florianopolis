@@ -37,7 +37,7 @@ func FetchPublicAgentsFile(uf, month, year string) ([]entity.PublicFunc, error) 
 	if _, err := os.Stat(decompressedFile); err != nil {
 		log.Fatal(err)
 
-		if uf == "SP" {
+		if uf == "sp" {
 			err := os.Remove(entity.CacheFolder + "/Remuneracao.txt")
 			if err != nil {
 				return nil, err
@@ -48,7 +48,7 @@ func FetchPublicAgentsFile(uf, month, year string) ([]entity.PublicFunc, error) 
 			return nil, err
 		}
 	}
-	if uf == "SP" {
+	if uf == "sp" {
 
 		_, err := os.Stat(entity.CacheFolder + "/Remuneracao.txt")
 		log.Fatal(err)
@@ -67,7 +67,7 @@ func FetchPublicAgentsFile(uf, month, year string) ([]entity.PublicFunc, error) 
 
 func parseData(uf, month, year string) ([]entity.PublicFunc, error) {
 	switch uf {
-	case "SP":
+	case "sp":
 		filename := fmt.Sprintf("%s_%s_%s", uf, year, month)
 		decompressedFile := fmt.Sprintf("%s/%s.txt", entity.CacheFolder, filename)
 		return parseSPData(decompressedFile)
