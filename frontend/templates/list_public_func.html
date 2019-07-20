@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Listar funcionários públicos</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <h1>Escolha para ver os dados dos funcionários públicos</h1>
+        <form method="post" action="/public_func/all/process">
+            <fieldset>
+                <legend>UF</legend>
+                <p>
+                    <label>Selecionar estado</label>
+                    <select name="uf" id = "uf">
+                    <option value = "SP">São Paulo</option>
+                    </select>
+                </p>
+            </fieldset>
+            <fieldset>
+                <legend>Ano</legend>
+                <p>
+                    <label>Selecionar ano</label>
+                    <select name="year" id = "year">
+                        <option value = "2019">2019</option>
+                    </select>
+                </p>
+            </fieldset>
+            <fieldset>
+                <legend>Mês</legend>
+                <p>
+                    <label>Selecionar mês</label>
+                    <select name="month" id = "month">
+                        <option value = "Abril">abril</option>
+                    </select>
+                </p>
+            </fieldset>
+            <input type="submit">
+
+        </form>
+        <script src="" async defer></script>
+    </body>
+</html>
