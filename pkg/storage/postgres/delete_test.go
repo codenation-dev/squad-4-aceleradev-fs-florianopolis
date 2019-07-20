@@ -10,7 +10,7 @@ import (
 
 var s = memory.NewStorage()
 
-var pipa = entity.User{"pipa@email.com", "42"}
+// var pipa = entity.User{"pipa@email.com", "42"}
 var notFoundUser = entity.User{"not_found@email.com", "123"}
 
 // TODO: isso testa a regra de negócio, não a funcão delete do BD

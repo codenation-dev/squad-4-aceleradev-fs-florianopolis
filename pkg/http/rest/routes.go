@@ -3,7 +3,6 @@ package rest
 import (
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"net/http"
 
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/adding"
@@ -15,7 +14,7 @@ import (
 )
 
 // NewRouter implements handlers to all routes
-func NewRouter(adder adding.Service, reader reading.Service, updater updating.Service, deleter deleting.Service, tpl *template.Template) *mux.Router {
+func NewRouter(adder adding.Service, reader reading.Service, updater updating.Service, deleter deleting.Service) *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 	router.Handle("/login", login(reader)).Methods(http.MethodPost)
 	router.Handle("/", getIndex()).Methods(http.MethodGet)

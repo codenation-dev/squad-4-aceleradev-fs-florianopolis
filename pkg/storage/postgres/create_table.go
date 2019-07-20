@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"fmt"
+	"log"
 )
 
 // CreatePublicFuncTable inserts a new table if it do not exists and import the file
@@ -30,4 +31,19 @@ func (s *Storage) createCustomerTable(company string) error {
 		return err
 	}
 	return nil
+}
+
+func (s *Storage) createUsersTable(name string) error {
+	query := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s (
+		id SERIAL,
+		email TEXT UNIQUE)`, name)
+	_, err := s.db.Exec(query)
+	return err
+}
+
+func (s *Storage) dropTable(name string) {
+	_, err := s.db.Exec(fmt.Sprintf("DROP TABLE %s", name))
+	if err != nil {
+		log.Fatal(err)
+	}
 }

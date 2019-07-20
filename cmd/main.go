@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 
@@ -25,16 +24,15 @@ func main() {
 }
 
 func setup() *mux.Router {
+	dbName := "uati"
 
-	tpl := template.Must(template.ParseGlob("../frontend/templates/*.html"))
-
-	repo := postgres.NewStorage()
+	repo := postgres.NewStorage(dbName)
 
 	adder := adding.NewService(repo)
 	reader := reading.NewService(repo)
 	updater := updating.NewService(repo)
 	deleter := deleting.NewService(repo)
 
-	router := rest.NewRouter(adder, reader, updater, deleter, tpl)
+	router := rest.NewRouter(adder, reader, updater, deleter)
 	return router
 }
