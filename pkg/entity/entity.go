@@ -17,7 +17,7 @@ type User struct {
 }
 
 const (
-	CacheFolder = "../cmd/data/downloaded"
+	CacheFolder = "data/cache/"
 )
 
 // IsEmpty returns true if the field is empty

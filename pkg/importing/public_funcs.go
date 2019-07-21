@@ -28,21 +28,21 @@ func ImportPublicFuncFile(month, year string) ([]entity.PublicFunc, error) {
 	}
 
 	filename := fmt.Sprintf("remuneracao_%s_%s.rar", strings.Title(month), year)
-	baseURL := "http: //www.transparencia.sp.gov.br/PortalTransparencia-Report/historico/"
-	cache := "squad-4-aceleradev-fs-florianopolis/cmd/data/cache/"
+	baseURL := "http://www.transparencia.sp.gov.br/PortalTransparencia-Report/historico/"
+	cache := entity.CacheFolder
 
 	rarFile := cache + filename
 	txtFile := cache + "Remuneracao.txt"
 
 	if !exist(rarFile) {
-		err := downloadHTTPFile(baseURL+filename, cache)
+		err := downloadHTTPFile(baseURL+filename, rarFile)
 		if err != nil {
-			log.Fatal("donwloadHTTPFile", err)
+			return nil, err
 		}
 		if exist(txtFile) {
 			err := os.Remove(txtFile)
 			if err != nil {
-				log.Fatal("os.Remove", err)
+				return nil, err
 			}
 		}
 	}

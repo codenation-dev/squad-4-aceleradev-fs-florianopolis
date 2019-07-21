@@ -22,17 +22,20 @@ func (s *Storage) CreateUser(u entity.User) error {
 // it drops the old table, and populate it again with new values
 func (s *Storage) ImportPublicFunc(month, year string) error {
 	_, err := s.db.Exec("DROP TABLE IF EXISTS  public_func")
+
 	if err != nil {
-		log.Fatal("drop table", err)
+		return err
 	}
-	_, err = s.db.Exec(`CREATE TABLE public_func (
+	_, err = s.db.Exec(`CREATE TABLE IF NOT EXISTS public_func (
 		id SERIAL,
-		name VARCHAR(100),
+		complete_name VARCHAR(100),
+		short_name VARCHAR(30),
 		wage NUMERIC(10,2),
 		departament VARCHAR(50),
-		function VARCHAR(50)
-		)`)
-	return err
+		function VARCHAR(50))`)
+	if err != nil {
+		return err
+	}
 
 	publicFuncs, err := importing.ImportPublicFuncFile(month, year)
 	if err != nil {
@@ -45,7 +48,7 @@ func (s *Storage) ImportPublicFunc(month, year string) error {
 // CreatePublicFunc inserts a new public agent on the DB
 func (s *Storage) CreatePublicFunc(pp ...entity.PublicFunc) error {
 
-	var query = `INSERT INTO %s (complete_name, short_name, wage, departament, function) VALUES `
+	var query = `INSERT INTO public_func (complete_name, short_name, wage, departament, function) VALUES `
 
 	var vals = []interface{}{}
 	i := 0
@@ -64,7 +67,7 @@ func (s *Storage) CreatePublicFunc(pp ...entity.PublicFunc) error {
 
 			_, err := s.db.Exec(q, vals...)
 			if err != nil {
-				log.Fatalf("error executing batch (%v)", err)
+				return fmt.Errorf("error executing batch (%v)", err)
 			}
 			// restart the vars to a new batch
 			query = `INSERT INTO public_func (complete_name, short_name, wage, departament, function) VALUES `
