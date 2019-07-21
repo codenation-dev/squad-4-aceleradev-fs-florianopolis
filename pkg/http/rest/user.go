@@ -25,7 +25,7 @@ func getUser(reader reading.Service) http.HandlerFunc {
 			respondWithError(w, http.StatusBadRequest, err)
 			return
 		}
-		fmt.Fprint(w, u)
+		respondWithJSON(w, http.StatusOK, u)
 	}
 }
 
@@ -48,7 +48,7 @@ func addUser(adder adding.Service) http.HandlerFunc {
 		err = adder.AddUser(newUser)
 		assertError(err)
 
-		fmt.Fprint(w, "usuário adicionado com sucesso")
+		respondWithJSON(w, http.StatusOK, "usuário adicionado com sucesso")
 	}
 }
 
@@ -60,7 +60,7 @@ func deleteUser(deleter deleting.Service) http.HandlerFunc {
 			respondWithError(w, http.StatusBadRequest, err)
 			return
 		}
-		fmt.Fprint(w, "usuário deletado com sucesso")
+		respondWithJSON(w, http.StatusOK, "usuário deletado com sucesso")
 	}
 }
 
@@ -83,6 +83,6 @@ func updateUser(updater updating.Service) http.HandlerFunc {
 			respondWithError(w, http.StatusBadRequest, err)
 			return
 		}
-		fmt.Fprint(w, "usuário modificado com sucesso")
+		respondWithJSON(w, http.StatusOK, "usuário modificado com sucesso")
 	}
 }

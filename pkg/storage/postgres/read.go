@@ -3,101 +3,86 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"strconv"
 
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/importing"
-
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/reading"
 )
 
-func (s *Storage) fetchPublicFuncData(uf, year, month string) error {
-	tableName := fmt.Sprintf("public_func_%s_%s_%s", uf, year, month)
-	err := s.createPublicFuncTable(tableName)
-	fmt.Println("c***********", err)
+func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
+	where := "where 1=1"
 
-	if err != nil {
-		return err
+	if filter.ID != 0 {
+		where += fmt.Sprintf(" AND id_funcionario = %d", filter.ID)
 	}
-	publicFuncs, err := importing.FetchPublicAgentsFile(uf, month, year)
-	fmt.Println("d***********", err)
+	if filter.Nome != "" {
+		where += fmt.Sprintf(" AND nome ILIKE '%%%s%%'", filter.Nome)
+	}
+	if filter.Cargo != "" {
+		where += fmt.Sprintf(" AND cargo ILIKE '%%%s%%'", filter.Cargo)
+	}
+	if filter.Orgao != "" {
+		where += fmt.Sprintf(" AND orgao ILIKE '%%%s%%'", filter.Orgao)
+	}
 
-	if err != nil {
-		return err
+	if paginated {
+		where += " ORDER BY " + filter.SortBy
+		fmt.Println(filter)
+		if filter.Desc {
+			where += " desc"
+		} else {
+			where += " asc"
+		}
+		where += ` limit ` + strconv.FormatInt(filter.Offset, 10)
+		where += ` offset ` + strconv.FormatInt(filter.Page*filter.Offset, 10)
 	}
-	err = s.CreatePublicFunc(tableName, publicFuncs...)
-	fmt.Println("e***********", err)
 
-	if err != nil {
-		return err
-	}
-	return nil
+	return where
 }
 
-// ReadAllPublicFunc returns a slice with all public agents
-func (s *Storage) ReadAllPublicFunc(uf, year, month string) ([]entity.PublicFunc, error) {
-	tableName := fmt.Sprintf("public_func_%s_%s_%s", uf, year, month)
-
-	query := fmt.Sprintf(`SELECT  complete_name, short_name, wage, departament, function FROM %s`, tableName)
+// ReadPublicFunc returns a slice with all public agents
+func (s *Storage) ReadPublicFunc(filter reading.FuncFilter) ([]entity.PublicFunc, error) {
+	query := `SELECT  complete_name, short_name, wage, departament, function FROM public_func`
+	query += makeFuncFilter(filter, true)
 	rows, err := s.db.Query(query)
-
-	fmt.Println("f***************", err)
 	if err != nil {
-		if err.Error() == `pq: relation "public_func_sp_2019_abril" does not exist` {
-			err = s.fetchPublicFuncData(uf, year, month)
-			fmt.Println("g***************")
-			if err != nil {
-				log.Fatal(err)
-			}
-			return s.ReadAllPublicFunc(uf, year, month)
-		} else {
-
-			return nil, err
-		}
-	} else {
-		var count int
-		_ = s.db.QueryRow(fmt.Sprintf("select count (*) from %s", tableName)).Scan(&count)
-		if count == 0 {
-			err = s.fetchPublicFuncData(uf, year, month)
-			fmt.Println("g***************")
-			if err != nil {
-				log.Fatal(err)
-			}
-			return s.ReadAllPublicFunc(uf, year, month)
-		}
+		return nil, err
 	}
-
 	return scanRowsPublicFunc(rows)
 }
 
-func (s *Storage) fetchCustomerData(company string) error {
-	var err error
-	err = s.createCustomerTable(company)
-	if err != nil {
-		return err
+func makeCustomerFilter(filter reading.CustFilter, paginated bool) string {
+	where := "where 1=1"
+
+	if filter.ID != 0 {
+		where += fmt.Sprintf(" AND id = %d", filter.ID)
 	}
-	customers, err := importing.FetchCustomerData(company)
-	if err != nil {
-		return err
+	if filter.Name != "" {
+		where += fmt.Sprintf(" AND name ILIKE '%%%s%%'", filter.Name)
 	}
-	return s.CreateCustomer(company, customers...)
+
+	if paginated {
+		where += " ORDER BY " + filter.SortBy + " "
+		if filter.Desc {
+			where += " desc "
+		} else {
+			where += " asc"
+		}
+		where += ` limit ` + strconv.FormatInt(filter.Offset, 10)
+		where += ` offset ` + strconv.FormatInt(filter.Page*filter.Offset, 10)
+	}
+	return where
 }
 
-// ReadAllCustomers return all customers from the DB
-func (s *Storage) ReadAllCustomers(company string) ([]entity.Customer, error) {
+// ReadCustomer return customers from the DB
+func (s *Storage) ReadCustomer(filter reading.CustFilter) ([]entity.Customer, error) {
 	customers := []entity.Customer{}
-	query := fmt.Sprintf("SELECT name FROM %s", company) //limite usado em testes
+	query := "SELECT name FROM customer" + makeCustomerFilter(filter, true)
 	rows, err := s.db.Query(query)
 	if err != nil {
-		if err.Error() == fmt.Sprintf(`pq: relation "%s" does not exist`, company) {
-			err := s.fetchCustomerData(company)
-			if err != nil {
-				panic(err)
-			}
-			return s.ReadAllCustomers(company)
-		}
 		return nil, err
 	}
+
 	for rows.Next() {
 		c := entity.Customer{}
 		err := rows.Scan(&c.Name)
@@ -123,45 +108,18 @@ func scanRowsPublicFunc(rows *sql.Rows) ([]entity.PublicFunc, error) {
 	return publicFuncs, nil
 }
 
-func (s *Storage) readPublicFuncByList(funcTableName, field string, list []interface{}) ([]entity.PublicFunc, error) {
-	query := fmt.Sprintf(`SELECT complete_name, short_name, wage, departament, function 
-						FROM %s WHERE %s IN (`, funcTableName, field)
-	for n := 1; n < len(list)+1; n++ {
-		query += fmt.Sprintf("$%s, ", strconv.Itoa(n))
-	}
-	query = query[:len(query)-2] + ")"
+// // CompareCustomerPublicFunc returns a slice with all public agents that already are bank's customers
+// func (s *Storage) CompareCustomerPublicFunc(funcTableName, customerTableName string) ([]entity.PublicFunc, error) {
+// 	var err error
+// 	customers := []entity.Customer{}
 
-	rows, err := s.db.Query(query, list...)
-	if err != nil {
-		return nil, err
-	}
-	return scanRowsPublicFunc(rows)
-}
-
-// CompareCustomerPublicFunc returns a slice with all public agents that already are bank's customers
-func (s *Storage) CompareCustomerPublicFunc(funcTableName, customerTableName string) ([]entity.PublicFunc, error) {
-	var err error
-	customers := []entity.Customer{}
-
-	customers, err = s.ReadAllCustomers(customerTableName)
-	if err != nil {
-		return nil, err
-	}
-	names := []interface{}{}
-	for _, c := range customers {
-		names = append(names, c.Name)
-	}
-	return s.readPublicFuncByList(funcTableName, "short_name", names)
-}
-
-// ReadPublicFuncByWage reads data from all public funcs above given wage
-func (s *Storage) ReadPublicFuncByWage(tableName, wage string) ([]entity.PublicFunc, error) {
-	query := fmt.Sprintf(`SELECT complete_name, short_name, wage, departament, function
-				FROM %s
-				WHERE wage > $1`, tableName)
-	rows, err := s.db.Query(query, wage)
-	if err != nil {
-		return nil, err
-	}
-	return scanRowsPublicFunc(rows)
-}
+// 	customers, err = s.ReadAllCustomers(customerTableName)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	names := []interface{}{}
+// 	for _, c := range customers {
+// 		names = append(names, c.Name)
+// 	}
+// 	return s.readPublicFuncByList(funcTableName, "short_name", names)
+// }

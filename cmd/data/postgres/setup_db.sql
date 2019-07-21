@@ -7,16 +7,16 @@ DROP TABLE IF EXISTS public_func, customer, user, warning;
 
 CREATE TABLE IF NOT EXISTS users (
 id SERIAL,
-email TEXT UNIQUE,
-password TEXT
+email VARCHAR(50) UNIQUE,
+password VARCHAR(100)
 );
 
 CREATE TABLE IF NOT EXISTS public_func (
 id SERIAL,
-name TEXT,
+name VARCHAR(100),
 wage NUMERIC(10,2),
-departament TEXT,
-function TEXT
+departament VARCHAR(50),
+function VARCHAR(50)
 );
 
 

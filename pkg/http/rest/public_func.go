@@ -1,31 +1,42 @@
 package rest
 
 import (
-	"fmt"
 	"net/http"
 
-	"github.com/gorilla/mux"
-
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/adding"
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/reading"
 )
 
-func readAllPublicFunc(reader reading.Service) http.HandlerFunc {
+func getPublicFunc(reader reading.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
-		params := mux.Vars(r)
-
-		// uf := r.FormValue("uf")
-		// year := r.FormValue("year")
-		// month := r.FormValue("month")
-
-		// publicFuncs, err := reader.GetAllPublicFunc(params["uf"], params["year"], params["month"])
-		_, err := reader.GetAllPublicFunc(params["uf"], params["year"], params["month"])
+		err := r.ParseForm()
 		if err != nil {
-			http.Error(w, fmt.Sprintf("erro ao ler todos os dados (%s)", err.Error()), http.StatusInternalServerError)
+			respondWithError(w, http.StatusInternalServerError, err)
 			return
 		}
-		// fmt.Fprint(w, publicFuncs[:10]) // LIMITADO A 10 PARA TESTES
-		fmt.Fprint(w, err)
-	}
 
+		publicFuncs, err := reader.GetPublicFunc(r.Form)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err)
+			return
+		}
+		respondWithJSON(w, http.StatusOK, publicFuncs)
+	}
+}
+
+func importPublicFunc(adder adding.Service) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := r.ParseForm()
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err)
+			return
+		}
+
+		err = adder.ImportPublicFunc(r.Form)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err)
+			return
+		}
+		respondWithJSON(w, http.StatusOK, "importação realizada com sucesso")
+	}
 }

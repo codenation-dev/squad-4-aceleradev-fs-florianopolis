@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/publicFunc"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 	"github.com/mholt/archiver"
 )
 
@@ -21,7 +21,7 @@ func exist(file string) bool {
 
 // ImportPublicFuncFile implements routine to import the file from web,
 // decompress it and parses the data
-func ImportPublicFuncFile(month, year string) ([]publicFunc.PublicFunc, error) {
+func ImportPublicFuncFile(month, year string) ([]entity.PublicFunc, error) {
 	month = strings.Title(month)
 	if len(year) == 2 {
 		year = "20" + year
@@ -61,13 +61,13 @@ func ImportPublicFuncFile(month, year string) ([]publicFunc.PublicFunc, error) {
 	return publicFuncs, err
 }
 
-func parseSPData(path string) ([]publicFunc.PublicFunc, error) {
+func parseSPData(path string) ([]entity.PublicFunc, error) {
 	var indexName = 0
 	var indexIncome = 3
 	var indexDepartament = 2
 	var indexFunction = 1
 
-	publicFuncs := []publicFunc.PublicFunc{}
+	publicFuncs := []entity.PublicFunc{}
 
 	// Send this job to retrieve only the data we need
 	job := func(row []string) bool {
@@ -89,7 +89,7 @@ func parseSPData(path string) ([]publicFunc.PublicFunc, error) {
 		departament = strings.Replace(row[indexDepartament], "\u0000", "", -1)
 		function = strings.Replace(row[indexFunction], "\u0000", "", -1)
 
-		publicFuncs = append(publicFuncs, publicFunc.PublicFunc{
+		publicFuncs = append(publicFuncs, entity.PublicFunc{
 			CompleteName: completeName,
 			ShortName:    shortName,
 			Wage:         wageFloat,

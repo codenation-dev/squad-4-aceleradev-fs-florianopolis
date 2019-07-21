@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/importing"
+
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 )
 
@@ -16,10 +18,34 @@ func (s *Storage) CreateUser(u entity.User) error {
 	return err
 }
 
-// CreatePublicFunc inserts a new public agent on the DB
-func (s *Storage) CreatePublicFunc(tableName string, pp ...entity.PublicFunc) error {
+// ImportPublicFunc implement the import routine
+// it drops the old table, and populate it again with new values
+func (s *Storage) ImportPublicFunc(month, year string) error {
+	_, err := s.db.Exec("DROP TABLE IF EXISTS  public_func")
+	if err != nil {
+		log.Fatal("drop table", err)
+	}
+	_, err = s.db.Exec(`CREATE TABLE public_func (
+		id SERIAL,
+		name VARCHAR(100),
+		wage NUMERIC(10,2),
+		departament VARCHAR(50),
+		function VARCHAR(50)
+		)`)
+	return err
 
-	var query = fmt.Sprintf(`INSERT INTO %s (complete_name, short_name, wage, departament, function) VALUES `, tableName)
+	publicFuncs, err := importing.ImportPublicFuncFile(month, year)
+	if err != nil {
+		return err
+	}
+
+	return s.CreatePublicFunc(publicFuncs...)
+}
+
+// CreatePublicFunc inserts a new public agent on the DB
+func (s *Storage) CreatePublicFunc(pp ...entity.PublicFunc) error {
+
+	var query = `INSERT INTO %s (complete_name, short_name, wage, departament, function) VALUES `
 
 	var vals = []interface{}{}
 	i := 0
@@ -41,7 +67,7 @@ func (s *Storage) CreatePublicFunc(tableName string, pp ...entity.PublicFunc) er
 				log.Fatalf("error executing batch (%v)", err)
 			}
 			// restart the vars to a new batch
-			query = fmt.Sprintf(`INSERT INTO %s (complete_name, short_name, wage, departament, function) VALUES `, tableName)
+			query = `INSERT INTO public_func (complete_name, short_name, wage, departament, function) VALUES `
 			vals = []interface{}{}
 			i = 0
 
@@ -58,9 +84,9 @@ func (s *Storage) CreatePublicFunc(tableName string, pp ...entity.PublicFunc) er
 }
 
 // CreateCustomer inserts a new customer on the DB
-func (s *Storage) CreateCustomer(tableName string, cc ...entity.Customer) error {
+func (s *Storage) CreateCustomer(cc ...entity.Customer) error {
 
-	var query = fmt.Sprintf(`INSERT INTO %s (name) VALUES `, tableName)
+	var query = `INSERT INTO customer (name) VALUES `
 
 	var vals = []interface{}{}
 	batch := 60000 // if more fields in data, we have to change the batch
@@ -80,7 +106,7 @@ func (s *Storage) CreateCustomer(tableName string, cc ...entity.Customer) error 
 				return fmt.Errorf("error executing batch (%v)", err)
 			}
 			// restart the vars to a new batch
-			query = fmt.Sprintf(`INSERT INTO %s (name) VALUES `, tableName)
+			query = `INSERT INTO customer (name) VALUES `
 			vals = []interface{}{}
 			i = 0
 

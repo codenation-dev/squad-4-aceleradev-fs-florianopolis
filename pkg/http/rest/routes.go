@@ -24,12 +24,13 @@ func NewRouter(adder adding.Service, reader reading.Service, updater updating.Se
 	router.Handle("/user", addUser(adder)).Methods(http.MethodPost)
 	router.Handle("/user", updateUser(updater)).Methods(http.MethodPut)
 
-	router.Handle("/public_func/all/{uf}/{year}/{month}", readAllPublicFunc(reader)).Methods(http.MethodGet)
+	router.Handle("/public_func", getPublicFunc(reader)).Methods(http.MethodGet)
+	router.Handle("/public_func/import", importPublicFunc(adder)).Methods(http.MethodGet)
 
-	router.Handle("/customer/all/{company}", getAllCustomer(reader)).Methods(http.MethodGet)
+	router.Handle("/customer", getCustomer(reader)).Methods(http.MethodGet)
 
-	router.Handle("/fetch/data/compare_customer_x_public_func/{company}/{uf}/{year}/{month}", compareCustomerPublicFunc(reader)).Methods(http.MethodGet)
-	router.Handle("/fetch/data/public_func_above_wage/{uf}/{year}/{month}/{wage}", getPublicFincByWage(reader)).Methods(http.MethodGet)
+	// router.Handle("/fetch/data/compare_customer_x_public_func/{company}/{uf}/{year}/{month}", compareCustomerPublicFunc(reader)).Methods(http.MethodGet)
+	// router.Handle("/fetch/data/public_func_above_wage/{uf}/{year}/{month}/{wage}", getPublicFincByWage(reader)).Methods(http.MethodGet)
 
 	router.Use(authorize)
 	return router
