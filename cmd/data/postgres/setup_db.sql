@@ -2,7 +2,7 @@ CREATE DATABASE uati;
 
 \c uati;
 
--- DROP TABLE IF EXISTS public_funcs, customers, users, warnings;
+DROP TABLE IF EXISTS public_funcs, customers, users, warnings;
 DROP TABLE IF EXISTS public_func; --, customer, user, warning;
 
 CREATE TABLE IF NOT EXISTS users (
@@ -20,17 +20,10 @@ departament VARCHAR(50),
 function VARCHAR(50)
 );
 
-
-
--- -- TODO: trocar nome das tabelas para o singular
--- CREATE TABLE IF NOT EXISTS customers	(
--- id SERIAL,
--- -- TODO: gerar hash das 30 primeiras letras do nome
--- name VARCHAR(30),
--- wage NUMERIC(10,2),
--- is_public bit,
--- sent_warning TEXT -- Tem como usar isso para guardar os id dos users que receberam os warnings?
--- );
+CREATE TABLE IF NOT EXISTS customer	(
+id SERIAL,
+name VARCHAR(30),
+);
 
 
 

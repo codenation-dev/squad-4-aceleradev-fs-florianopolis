@@ -5,12 +5,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// type App struct {
-// 	db      Storage
-// 	service Service
-// 	router  *mux.Router
-// }
-
 type User struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`

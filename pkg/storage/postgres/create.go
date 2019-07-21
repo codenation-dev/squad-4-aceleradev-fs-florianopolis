@@ -18,6 +18,27 @@ func (s *Storage) CreateUser(u entity.User) error {
 	return err
 }
 
+func (s *Storage) ImportCustomer() error {
+	_, err := s.db.Exec("DROP TABLE IF EXISTS  customer")
+
+	if err != nil {
+		return err
+	}
+	_, err = s.db.Exec(`CREATE TABLE IF NOT EXISTS customer (
+		id SERIAL,
+		name VARCHAR(30))`)
+	if err != nil {
+		return err
+	}
+
+	customers, err := importing.ImportCustomer()
+	if err != nil {
+		return err
+	}
+
+	return s.CreateCustomer(customers...)
+}
+
 // ImportPublicFunc implement the import routine
 // it drops the old table, and populate it again with new values
 func (s *Storage) ImportPublicFunc(month, year string) error {
