@@ -2,89 +2,72 @@ package importing
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
 
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/publicFunc"
 	"github.com/mholt/archiver"
 )
 
-// FetchPublicAgentsFile import data from the goverment site
-func FetchPublicAgentsFile(uf, month, year string) ([]entity.PublicFunc, error) {
-	var downloadFrom string
-	// switch uf {
-	// case "sp":
-	downloadFrom = fmt.Sprintf("http://www.transparencia.sp.gov.br/PortalTransparencia-Report/historico/remuneracao_%s_%s.rar", month, year)
-	// default:
-	// 	return nil, entity.ErrDownloadingFile
-	// }
-
-	filename := fmt.Sprintf("%s_%s_%s", uf, year, month)
-	splited := strings.Split(downloadFrom, ".")
-	extension := splited[len(splited)-1]
-	downloadedFile := fmt.Sprintf("%s/%s.%s", entity.CacheFolder, filename, extension)
-
-	_, err := os.Stat(downloadedFile)
-	fmt.Println("b***********", err)
-
+func exist(file string) bool {
+	_, err := os.Stat(file)
 	if err != nil {
-		err = downloadHTTPFile(downloadFrom, downloadedFile)
-		if err != nil {
-			return nil, err
-		}
+		return false
+	}
+	return true
+}
+
+// ImportPublicFuncFile implements routine to import the file from web,
+// decompress it and parses the data
+func ImportPublicFuncFile(month, year string) ([]publicFunc.PublicFunc, error) {
+	month = strings.Title(month)
+	if len(year) == 2 {
+		year = "20" + year
 	}
 
-	decompressedFile := fmt.Sprintf("%s/%s.txt", entity.CacheFolder, filename)
-	_, err = os.Stat(decompressedFile)
-	fmt.Println("a******", err)
+	filename := fmt.Sprintf("remuneracao_%s_%s.rar", strings.Title(month), year)
+	baseURL := "http: //www.transparencia.sp.gov.br/PortalTransparencia-Report/historico/"
+	cache := "squad-4-aceleradev-fs-florianopolis/cmd/data/cache/"
 
-	if err != nil {
-		// if uf == "sp" {
-		// 	err := os.Remove(entity.CacheFolder + "/Remuneracao.txt")
+	rarFile := cache + filename
+	txtFile := cache + "Remuneracao.txt"
 
-		// 	if err != nil {
-		// 		return nil, err
-		// 	}
-		// }
-		err := archiver.Unarchive(downloadedFile, entity.CacheFolder+"/")
+	if !exist(rarFile) {
+		err := downloadHTTPFile(baseURL+filename, cache)
 		if err != nil {
-			return nil, err
+			log.Fatal("donwloadHTTPFile", err)
 		}
-	}
-	if uf == "sp" {
-
-		_, err := os.Stat(entity.CacheFolder + "/Remuneracao.txt")
-		if err == nil {
-			err := os.Rename(entity.CacheFolder+"/Remuneracao.txt", decompressedFile)
+		if exist(txtFile) {
+			err := os.Remove(txtFile)
 			if err != nil {
-				return nil, err
+				log.Fatal("os.Remove", err)
 			}
 		}
 	}
 
-	return parseData(uf, month, year)
-
-}
-
-func parseData(uf, month, year string) ([]entity.PublicFunc, error) {
-	switch uf {
-	case "sp":
-		filename := fmt.Sprintf("%s_%s_%s", uf, year, month)
-		decompressedFile := fmt.Sprintf("%s/%s.txt", entity.CacheFolder, filename)
-		return parseSPData(decompressedFile)
-	default:
-		return []entity.PublicFunc{}, entity.ErrDownloadingFile
+	if !exist(txtFile) {
+		err := archiver.Unarchive(rarFile, cache)
+		if err != nil {
+			log.Fatal("unarchive", err)
+		}
 	}
+
+	publicFuncs, err := parseSPData(txtFile)
+	if err != nil {
+		log.Fatal("parseSPData", err)
+	}
+	return publicFuncs, err
 }
 
-func parseSPData(path string) ([]entity.PublicFunc, error) {
+func parseSPData(path string) ([]publicFunc.PublicFunc, error) {
 	var indexName = 0
 	var indexIncome = 3
 	var indexDepartament = 2
 	var indexFunction = 1
 
-	publicFuncs := []entity.PublicFunc{}
+	publicFuncs := []publicFunc.PublicFunc{}
 
 	// Send this job to retrieve only the data we need
 	job := func(row []string) bool {
@@ -106,7 +89,7 @@ func parseSPData(path string) ([]entity.PublicFunc, error) {
 		departament = strings.Replace(row[indexDepartament], "\u0000", "", -1)
 		function = strings.Replace(row[indexFunction], "\u0000", "", -1)
 
-		publicFuncs = append(publicFuncs, entity.PublicFunc{
+		publicFuncs = append(publicFuncs, publicFunc.PublicFunc{
 			CompleteName: completeName,
 			ShortName:    shortName,
 			Wage:         wageFloat,
