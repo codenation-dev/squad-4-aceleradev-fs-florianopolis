@@ -3,7 +3,11 @@ package rest
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/emailserv"
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/adding"
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/deleting"
@@ -30,11 +34,36 @@ func NewRouter(adder adding.Service, reader reading.Service, updater updating.Se
 	router.Handle("/customer", getCustomer(reader)).Methods(http.MethodGet)
 	router.Handle("/customer/import", importCustomer(adder)).Methods(http.MethodGet)
 
+	router.Handle("/email_to", sendEmail(reader)).Methods(http.MethodPost)
 	// router.Handle("/fetch/data/compare_customer_x_public_func/{company}/{uf}/{year}/{month}", compareCustomerPublicFunc(reader)).Methods(http.MethodGet)
 	// router.Handle("/fetch/data/public_func_above_wage/{uf}/{year}/{month}/{wage}", getPublicFincByWage(reader)).Methods(http.MethodGet)
 
 	router.Use(authorize)
 	return router
+}
+
+func assertError(w http.ResponseWriter, status int, err error) {
+	if err != nil {
+		respondWithError(w, status, err)
+		return
+	}
+}
+
+func sendEmail(reader reading.Service) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		b, err := ioutil.ReadAll(r.Body)
+		assertError(w, http.StatusBadRequest, err)
+
+		email := entity.Email{}
+		err = json.Unmarshal(b, &email)
+		assertError(w, http.StatusInternalServerError, err)
+
+		err = emailserv.Send(email)
+		assertError(w, http.StatusInternalServerError, err)
+
+		respondWithJSON(w, http.StatusOK, "email enviado com sucesso")
+	}
 }
 
 func getIndex() http.HandlerFunc {

@@ -70,7 +70,7 @@ go build main.go
 
 ## Documentação
 
-https://documenter.getpostman.com/view/7983176/SVSNJTBp?version=latest
+https://documenter.getpostman.com/view/7983176/SVSNKnWE?version=latest
 https://blackrockdigital.github.io/startbootstrap-sb-admin-2/
 
 

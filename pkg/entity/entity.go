@@ -57,3 +57,10 @@ func Bcrypt(password string) ([]byte, error) {
 func IsPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
+
+// Email structs the email message
+type Email struct {
+	To      string `json:"to"`
+	Subject string `json:"subject"`
+	Message string `json:"message"`
+}
