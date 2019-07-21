@@ -1,0 +1,74 @@
+package postgres
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/backend/pkg/model"
+)
+
+// AddCustomer inserts a new customer on the DB
+func (s *Storage) AddCustomer(c model.Customer) error {
+	_, err := s.db.Exec(`INSERT INTO customers (name, wage, is_public, sent_warning)
+						VALUES ($1, $2, $3, $4)`,
+		&c.Name, &c.Wage, &c.IsPublic, &c.SentWarning)
+	fmt.Println(c, err)
+
+	return err
+}
+
+// AddUser inserts a new user on the DB
+func (s *Storage) AddUser(u model.User) error {
+	bPass, err := model.Bcrypt(u.Pass)
+	if err != nil {
+		return err
+	}
+	u.Pass = string(bPass)
+	_, err = s.db.Exec(`INSERT INTO users (email, pass)
+						VALUES ($1, $2)`,
+		&u.Email, &u.Pass)
+	return err
+}
+
+// AddWarning inserts a new warning on the DB
+func (s *Storage) AddWarning(w model.Warning) error {
+	_, err := s.db.Exec(`INSERT INTO warnings (dt, msg, sent_to, from_customer)
+						VALUES ($1, $2, $3, $4)`,
+		&w.Dt, &w.Message, &w.SentTo, &w.FromCustomer)
+	return err
+}
+
+// AddPublicFunc inserts a new public agent on the DB
+func (s *Storage) AddPublicFunc(pp ...model.PublicFunc) error {
+	var query = `INSERT INTO public_funcs (name, wage, place) VALUES `
+	var vals = []interface{}{}
+	batch := 20000
+	i := 0
+	for _, p := range pp {
+		// we cannot use the '?' in the query because limitations of the driver
+		// so we used the '$1, $2, $3...' notation
+		inc := fmt.Sprintf("($%v, $%v, $%v), ", (1 + (i * 3)), (2 + (i * 3)), (3 + (i * 3)))
+		i++
+		query += inc
+		vals = append(vals, p.Name, p.Wage, p.Place)
+		if i%batch == 0 && i != 0 {
+			q := query[0 : len(query)-2]
+			_, err := s.db.Exec(q, vals...)
+			if err != nil {
+				log.Fatalf("error executing batch:", err)
+			}
+			// restart the vars to a new batch
+			query = `INSERT INTO public_funcs (name, wage, place) VALUES `
+			vals = []interface{}{}
+			i = 0
+		}
+	}
+	q := query[0 : len(query)-2]
+
+	_, err := s.db.Exec(q, vals...)
+	if err != nil {
+		log.Fatalf("error executing the remaining batch", err)
+	}
+
+	return err
+}

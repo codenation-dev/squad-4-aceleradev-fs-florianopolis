@@ -1,0 +1,27 @@
+.sidemenu{
+    display: inline-block;
+    background: #4e73df;    
+    width: 250px;
+    height: 100vh;
+    color: #fff;
+    box-sizing: border-box;
+    padding-top: 50px;
+}
+.sidemenu a{
+    color: #c9d5f5;
+    font-size: 16px;
+    display: block;
+    border: solid 1px #718fe5;
+    border-width: 0px 0px 1px;
+    text-align: center;
+    padding: 4px;
+    transition: all 0.2s;
+}
+.sidemenu a:hover{
+    text-decoration: none;
+    background: #718fe5;
+    color: #fff;
+}
+.sidemenu a:first-of-type{
+    border-width: 1px 0px 1px;
+}
