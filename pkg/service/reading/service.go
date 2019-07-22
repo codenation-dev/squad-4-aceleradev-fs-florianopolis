@@ -50,7 +50,7 @@ type FuncFilter struct {
 	Offset int64  `schema:"offset"`
 	Page   int64  `schema:"page"`
 	SortBy string `schema:"sortby"`
-	Desc   bool   `schema:"asc"`
+	Desc   bool   `schema:"desc"`
 
 	//User specific filters
 	ID      int64  `schema:"id"`
@@ -81,7 +81,7 @@ type CustFilter struct {
 	Offset int64  `schema:"offset"`
 	Page   int64  `schema:"page"`
 	SortBy string `schema:"sortby"`
-	Desc   bool   `schema:"asc"`
+	Desc   bool   `schema:"desc"`
 
 	//User specific filters
 	ID   int64  `schema:"id"`
