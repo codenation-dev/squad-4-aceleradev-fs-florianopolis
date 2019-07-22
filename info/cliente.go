@@ -19,7 +19,7 @@ type ClienteFilter struct {
 }
 
 func (filter ClienteFilter) makeFilter(paginated bool) string {
-	where := "where 1=1"
+	where := " where 1=1"
 
 	if filter.ID != 0 {
 		where += fmt.Sprintf(" AND id_cliente = %d", filter.ID)

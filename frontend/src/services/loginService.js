@@ -17,7 +17,7 @@ export const login = (
     return api.post('login', 
       {
         email: email,
-        pass: shaPassword.toString(),   
+        password: shaPassword.toString(),   
       },
       {credentials: "include"}
     )
@@ -39,8 +39,8 @@ export const register = (
     const shaPassword = sha256(HASH + password);
     return api.post('user',
     {        
-        "email": email,
-        "pass": shaPassword.toString(),   
+        email: email,
+        password: shaPassword.toString(),   
       }
     )
     .then(response => response)

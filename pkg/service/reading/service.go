@@ -71,7 +71,7 @@ func (s *service) GetPublicFunc(mapFilter map[string][]string) ([]entity.PublicF
 	}
 
 	if filter.SortBy == "" {
-		filter.SortBy = "name"
+		filter.SortBy = "complete_name"
 	}
 
 	return s.bR.ReadPublicFunc(filter)

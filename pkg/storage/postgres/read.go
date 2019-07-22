@@ -42,8 +42,9 @@ func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 
 // ReadPublicFunc returns a slice with all public agents
 func (s *Storage) ReadPublicFunc(filter reading.FuncFilter) ([]entity.PublicFunc, error) {
-	query := `SELECT  complete_name, short_name, wage, departament, function FROM public_func`
+	query := `SELECT  complete_name, short_name, wage, departament, function FROM public_func `
 	query += makeFuncFilter(filter, true)
+
 	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -78,14 +79,17 @@ func (s *Storage) minMaxAvgWage() (interface{}, error) {
 }
 
 func (s *Storage) countByDepartament(q, offset, page string) ([]interface{}, error) {
-	query := `SELECT COUNT (id), departament 
+	query := `SELECT COUNT (id) AS count, ROUND(avg(wage), 2) as media, min(wage) as minimo, max(wage) as maximo, departament 
 					FROM public_func 
 					GROUP BY departament 
 					ORDER BY count DESC 
 					LIMIT $1 OFFSET $2`
 	type row struct {
-		Count       int    `json:"count"`
-		Departament string `json:"function"`
+		Count         int     `json:"count"`
+		MediaSalarial float32 `json:"media"`
+		MenorSalario  float32 `json:"minimo"`
+		MaiorSalario  float32 `json:"maximo"`
+		Departament   string  `json:"function"`
 	}
 
 	npage, _ := strconv.Atoi(page)
@@ -99,7 +103,7 @@ func (s *Storage) countByDepartament(q, offset, page string) ([]interface{}, err
 	resp := []interface{}{}
 	for rows.Next() {
 		r := row{}
-		err := rows.Scan(&r.Count, &r.Departament)
+		err := rows.Scan(&r.Count, &r.MediaSalarial, &r.MenorSalario, &r.MaiorSalario, &r.Departament)
 		if err != nil {
 			return nil, err
 		}
