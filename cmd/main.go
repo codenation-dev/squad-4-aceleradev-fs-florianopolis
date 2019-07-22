@@ -12,13 +12,14 @@ import (
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/updating"
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/storage/postgres"
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 func main() {
 	router := setup()
 	apiPort := ":3000"
 	fmt.Printf("API running on port%s\n", apiPort)
-	if err := http.ListenAndServe(apiPort, router); err != nil {
+	if err := http.ListenAndServe(apiPort, cors.Default().Handler(router)); err != nil {
 		log.Fatal(err)
 	}
 }
