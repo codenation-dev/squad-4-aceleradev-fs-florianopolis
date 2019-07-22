@@ -22,7 +22,7 @@ type FuncionarioFilter struct {
 }
 
 func (filter FuncionarioFilter) makeFilter(paginated bool) string {
-	where := "where 1 = 1"
+	where := " where 1 = 1"
 
 	if filter.ID != 0 {
 		where += fmt.Sprintf(" AND id_funcionario = %d", filter.ID)
