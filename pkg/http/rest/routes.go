@@ -2,9 +2,11 @@ package rest
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/emailserv"
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
@@ -38,14 +40,45 @@ func NewRouter(adder adding.Service, reader reading.Service, updater updating.Se
 	// router.Handle("/fetch/data/compare_customer_x_public_func/{company}/{uf}/{year}/{month}", compareCustomerPublicFunc(reader)).Methods(http.MethodGet)
 	// router.Handle("/fetch/data/public_func_above_wage/{uf}/{year}/{month}/{wage}", getPublicFincByWage(reader)).Methods(http.MethodGet)
 
+	router.Handle("/query", handleQuery(reader)).Methods(http.MethodGet)
+
 	router.Use(authorize)
 	return router
 }
 
-func assertError(w http.ResponseWriter, status int, err error) {
-	if err != nil {
-		respondWithError(w, status, err)
-		return
+func handleQuery(reader reading.Service) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// err := r.ParseForm()
+		// if err != nil {
+		// 	respondWithError(w, http.StatusBadRequest, err)
+		// 	return
+		// }
+		q := r.FormValue("q")
+		if q == "" {
+			respondWithError(w, http.StatusBadRequest, errors.New("precisa indicar um parametro 'q'"))
+			return
+		}
+		offset := r.FormValue("Offset")
+		n, err := strconv.Atoi(offset)
+		if err != nil {
+			respondWithError(w, http.StatusBadRequest, errors.New("numero Offset inválido"))
+		}
+		if offset == "" || n == 0 || n > 50 {
+			offset = "50"
+		}
+
+		page := r.FormValue("Page")
+		if page == "" {
+			page = "1"
+		}
+
+		resp, err := reader.Query(q, offset, page)
+		if err != nil {
+			respondWithError(w, http.StatusBadRequest, err)
+			return
+		}
+
+		respondWithJSON(w, http.StatusOK, resp)
 	}
 }
 
@@ -53,14 +86,23 @@ func sendEmail(reader reading.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		b, err := ioutil.ReadAll(r.Body)
-		assertError(w, http.StatusBadRequest, err)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err)
+			return
+		}
 
 		email := entity.Email{}
 		err = json.Unmarshal(b, &email)
-		assertError(w, http.StatusInternalServerError, err)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err)
+			return
+		}
 
 		err = emailserv.Send(email)
-		assertError(w, http.StatusInternalServerError, err)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err)
+			return
+		}
 
 		respondWithJSON(w, http.StatusOK, "email enviado com sucesso")
 	}

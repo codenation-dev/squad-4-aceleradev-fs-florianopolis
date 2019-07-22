@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -49,6 +50,48 @@ func (s *Storage) ReadPublicFunc(filter reading.FuncFilter) ([]entity.PublicFunc
 		return nil, err
 	}
 	return scanRowsPublicFunc(rows)
+}
+
+func (s *Storage) Query(q, offset, page string) (interface{}, error) {
+
+	switch q {
+	case "count_by_departament":
+		return s.countByDepartament(q, offset, page)
+
+	}
+
+	return nil, errors.New("parametro 'q' ainda não implementado, contatar administrador do sistema")
+}
+
+func (s *Storage) countByDepartament(q, offset, page string) ([]interface{}, error) {
+	query := `SELECT COUNT (id), departament 
+					FROM public_func 
+					GROUP BY departament 
+					ORDER BY count DESC 
+					LIMIT $1 OFFSET $2`
+	type row struct {
+		Count       int    `json:"count"`
+		Departament string `json:"function"`
+	}
+
+	npage, _ := strconv.Atoi(page)
+	noffset, _ := strconv.Atoi(offset)
+
+	rows, err := s.db.Query(query, offset, (npage-1)*noffset)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := []interface{}{}
+	for rows.Next() {
+		r := row{}
+		err := rows.Scan(&r.Count, &r.Departament)
+		if err != nil {
+			return nil, err
+		}
+		resp = append(resp, r)
+	}
+	return resp, nil
 }
 
 func makeCustomerFilter(filter reading.CustFilter, paginated bool) string {

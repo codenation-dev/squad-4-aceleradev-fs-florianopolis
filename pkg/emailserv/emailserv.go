@@ -28,7 +28,7 @@ func Send(email entity.Email) error {
 		from, []string{to}, []byte(msg))
 
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	return nil

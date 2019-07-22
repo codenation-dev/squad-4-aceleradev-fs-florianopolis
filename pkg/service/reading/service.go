@@ -13,6 +13,7 @@ type Service interface {
 	GetUser(email string) (entity.User, error)
 	GetPublicFunc(mapFilter map[string][]string) ([]entity.PublicFunc, error)
 	GetCustomer(mapFilter map[string][]string) ([]entity.Customer, error)
+	Query(q, offset, page string) (interface{}, error)
 
 	// CompareCustomerPublicFunc(uf, month, year, company string) ([]entity.PublicFunc, error)
 	// GetPublicFuncByWage(uf, year, month, wage string) ([]entity.PublicFunc, error)
@@ -23,6 +24,7 @@ type Repository interface {
 	ReadUser(email string) (entity.User, error)
 	ReadPublicFunc(filter FuncFilter) ([]entity.PublicFunc, error)
 	ReadCustomer(filter CustFilter) ([]entity.Customer, error)
+	Query(q, offset, page string) (interface{}, error)
 
 	// CompareCustomerPublicFunc(funcTableName, customerTableName string) ([]entity.PublicFunc, error)
 	// ReadPublicFuncByWage(tableName, wage string) ([]entity.PublicFunc, error)
@@ -35,6 +37,11 @@ type service struct {
 // NewService starts a new service with all the dependencies
 func NewService(r Repository) Service {
 	return &service{r}
+}
+
+func (s *service) Query(q, offset, page string) (interface{}, error) {
+	//TODO: do jeito que está só serve no SQL, tenho que deixar mais genérica
+	return s.bR.Query(q, offset, page)
 }
 
 func (s *service) GetUser(email string) (entity.User, error) {
@@ -98,9 +105,7 @@ func (s *service) GetCustomer(mapFilter map[string][]string) ([]entity.Customer,
 	if filter.SortBy == "" {
 		filter.SortBy = "name"
 	}
-	// Do something with filter
-	fmt.Printf("%+v", filter)
-
+	
 	return s.bR.ReadCustomer(filter)
 }
 
