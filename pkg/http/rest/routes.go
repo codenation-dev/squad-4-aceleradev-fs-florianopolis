@@ -61,7 +61,7 @@ func handleQuery(reader reading.Service) http.HandlerFunc {
 		offset := r.FormValue("Offset")
 		n, err := strconv.Atoi(offset)
 		if err != nil {
-			respondWithError(w, http.StatusBadRequest, errors.New("numero Offset inválido"))
+			offset = ""
 		}
 		if offset == "" || n == 0 || n > 50 {
 			offset = "50"

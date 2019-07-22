@@ -28,7 +28,6 @@ func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 
 	if paginated {
 		where += " ORDER BY " + filter.SortBy
-		fmt.Println(filter)
 		if filter.Desc {
 			where += " desc"
 		} else {
@@ -57,10 +56,25 @@ func (s *Storage) Query(q, offset, page string) (interface{}, error) {
 	switch q {
 	case "count_by_departament":
 		return s.countByDepartament(q, offset, page)
+	case "min_max_avg_wage":
+		return s.minMaxAvgWage()
+	case "best_wage"
 
 	}
 
 	return nil, errors.New("parametro 'q' ainda não implementado, contatar administrador do sistema")
+}
+
+func (s *Storage) minMaxAvgWage() (interface{}, error) {
+	query := `SELECT MAX (wage), MIN (wage), AVG (wage) FROM public_func`
+	type row struct {
+		Max  float64 `json:"max"`
+		Min  float64 `json:"min"`
+		Mean float64 `json:"mean"`
+	}
+	r := row{}
+	err := s.db.QueryRow(query).Scan(&r.Max, &r.Min, &r.Mean)
+	return r, err
 }
 
 func (s *Storage) countByDepartament(q, offset, page string) ([]interface{}, error) {

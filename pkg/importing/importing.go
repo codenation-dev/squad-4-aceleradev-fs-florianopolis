@@ -5,7 +5,6 @@ package importing
 import (
 	"bufio"
 	"encoding/csv"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -17,7 +16,6 @@ func readCSV(path string, job func([]string) bool, sep rune, hasHeader bool) {
 	if err != nil {
 		log.Fatalf("Could not open path %v: %v", path, err)
 	}
-	fmt.Println("CSV opened")
 	defer f.Close()
 
 	r := csv.NewReader(bufio.NewReader(f))
@@ -33,9 +31,6 @@ func readCSV(path string, job func([]string) bool, sep rune, hasHeader bool) {
 			break
 		} else if err != nil {
 			log.Fatalf("Could not read csv file: %v", err)
-		}
-		if counter%300000 == 0 {
-			fmt.Println("Reading CSV...")
 		}
 		keepgoing := job(line)
 		if keepgoing != true {

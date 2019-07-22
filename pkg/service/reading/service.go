@@ -2,8 +2,6 @@
 package reading
 
 import (
-	"fmt"
-
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 	"github.com/gorilla/schema"
 )
@@ -105,7 +103,7 @@ func (s *service) GetCustomer(mapFilter map[string][]string) ([]entity.Customer,
 	if filter.SortBy == "" {
 		filter.SortBy = "name"
 	}
-	
+
 	return s.bR.ReadCustomer(filter)
 }
 
