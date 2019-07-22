@@ -58,7 +58,7 @@ func (s *Storage) Query(q, offset, page string) (interface{}, error) {
 		return s.countByDepartament(q, offset, page)
 	case "min_max_avg_wage":
 		return s.minMaxAvgWage()
-	case "best_wage"
+		// case "best_wage"
 
 	}
 
