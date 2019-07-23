@@ -17,13 +17,16 @@ func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 		where += fmt.Sprintf(" AND id_funcionario = %d", filter.ID)
 	}
 	if filter.Nome != "" {
-		where += fmt.Sprintf(" AND nome ILIKE '%%%s%%'", filter.Nome)
+		where += fmt.Sprintf(" AND complete_name ILIKE '%%%s%%'", filter.Nome)
 	}
 	if filter.Cargo != "" {
-		where += fmt.Sprintf(" AND cargo ILIKE '%%%s%%'", filter.Cargo)
+		where += fmt.Sprintf(" AND function ILIKE '%%%s%%'", filter.Cargo)
 	}
 	if filter.Orgao != "" {
-		where += fmt.Sprintf(" AND orgao ILIKE '%%%s%%'", filter.Orgao)
+		where += fmt.Sprintf(" AND department ILIKE '%%%s%%'", filter.Orgao)
+	}
+	if filter.Salario > 0 {
+		where += fmt.Sprintf(" AND wage > %d", filter.Salario)
 	}
 
 	if paginated {
@@ -113,7 +116,7 @@ func (s *Storage) countByDepartament(q, offset, page string) ([]interface{}, err
 }
 
 func makeCustomerFilter(filter reading.CustFilter, paginated bool) string {
-	where := "where 1=1"
+	where := " where 1=1"
 
 	if filter.ID != 0 {
 		where += fmt.Sprintf(" AND id = %d", filter.ID)

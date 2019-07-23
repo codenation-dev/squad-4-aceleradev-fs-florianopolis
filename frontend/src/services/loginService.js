@@ -21,7 +21,7 @@ export const login = (
       },
       {credentials: "include"}
     )
-    .then(response => response)
+    .then(response => console.log(response))
     .catch(err => {throw new Error(err)})    
 }
 

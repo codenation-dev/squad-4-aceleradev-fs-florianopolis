@@ -97,9 +97,6 @@ func (s *service) GetCustomer(mapFilter map[string][]string) ([]entity.Customer,
 	if filter.Offset == 0 || filter.Offset > 50 {
 		filter.Offset = 50
 	}
-	if filter.Page == 0 {
-		filter.Page = 1
-	}
 	if filter.SortBy == "" {
 		filter.SortBy = "name"
 	}

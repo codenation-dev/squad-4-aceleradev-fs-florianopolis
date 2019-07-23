@@ -22,7 +22,7 @@ function VARCHAR(50)
 
 CREATE TABLE IF NOT EXISTS customer	(
 id SERIAL,
-name VARCHAR(30),
+name VARCHAR(30)
 );
 
 

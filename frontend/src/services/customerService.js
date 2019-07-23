@@ -1,9 +1,9 @@
 import api from './api';
 
 export const listCustomer = (
-    nome ) => {
+  name, page ) => {
     
-    return api.get(`cliente?nome=${nome}`)
+    return api.get(`customer?name=${name}&page=${page}`)
     .then(response => response)
     .catch(err => {throw new Error(err)})
 }

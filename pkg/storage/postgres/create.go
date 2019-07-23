@@ -19,7 +19,7 @@ func (s *Storage) CreateUser(u entity.User) error {
 }
 
 func (s *Storage) ImportCustomer() error {
-	_, err := s.db.Exec("DROP TABLE IF EXISTS  customer")
+	_, err := s.db.Exec("DROP TABLE IF EXISTS customer")
 
 	if err != nil {
 		return err

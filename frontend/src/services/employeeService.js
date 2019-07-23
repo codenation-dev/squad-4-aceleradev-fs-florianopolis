@@ -1,9 +1,9 @@
 import api from './api';
 
 export const listEmployee = (
-    nome, orgao, funcao ) => {
+    nome, funcao, orgao, wage, page) => {
     
-    return api.get(`funcionario?nome=${nome}`)
+    return api.get(`public_func?nome=${nome}&cargo=${funcao}&orgao=${orgao}&salario=${wage}&page=${page}`)
     .then(response => response)
     .catch(err => {throw new Error(err)})
 }
