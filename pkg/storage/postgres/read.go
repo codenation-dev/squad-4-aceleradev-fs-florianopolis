@@ -12,7 +12,7 @@ import (
 
 func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 	where := "where 1 = 1"
-
+	// filter.Offset = 500000
 	if filter.ID != 0 {
 		where += fmt.Sprintf(" AND id_funcionario = %d", filter.ID)
 	}
@@ -33,8 +33,8 @@ func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 		} else {
 			where += " asc"
 		}
-		where += ` limit ` + strconv.FormatInt(filter.Offset, 10)
-		where += ` offset ` + strconv.FormatInt(filter.Page*filter.Offset, 10)
+		// where += ` limit ` + strconv.FormatInt(filter.Offset, 10)
+		// where += ` offset ` + strconv.FormatInt(filter.Page*filter.Offset, 10)
 	}
 
 	return where

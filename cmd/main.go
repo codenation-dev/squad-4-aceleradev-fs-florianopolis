@@ -17,7 +17,7 @@ import (
 
 func main() {
 	router := setup()
-	apiPort := ":3000"
+	apiPort := ":8080"
 	fmt.Printf("API running on port%s\n", apiPort)
 	if err := http.ListenAndServe(apiPort, cors.Default().Handler(router)); err != nil {
 		log.Fatal(err)
