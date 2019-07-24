@@ -42,7 +42,7 @@ func NewRouter(adder adding.Service, reader reading.Service, updater updating.Se
 
 	router.Handle("/query", handleQuery(reader)).Methods(http.MethodGet)
 
-	router.Use(authorize)
+	// router.Use(authorize)
 	return router
 }
 
