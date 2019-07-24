@@ -23,7 +23,7 @@ func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 		where += fmt.Sprintf(" AND function ILIKE '%%%s%%'", filter.Cargo)
 	}
 	if filter.Orgao != "" {
-		where += fmt.Sprintf(" AND department ILIKE '%%%s%%'", filter.Orgao)
+		where += fmt.Sprintf(" AND departament ILIKE '%%%s%%'", filter.Orgao)
 	}
 	if filter.Salario > 0 {
 		where += fmt.Sprintf(" AND wage > %d", filter.Salario)
