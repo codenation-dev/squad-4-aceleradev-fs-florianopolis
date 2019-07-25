@@ -12,18 +12,21 @@ import (
 
 func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 	where := "where 1 = 1"
-	// filter.Offset = 500000
+
 	if filter.ID != 0 {
 		where += fmt.Sprintf(" AND id_funcionario = %d", filter.ID)
 	}
 	if filter.Nome != "" {
-		where += fmt.Sprintf(" AND nome ILIKE '%%%s%%'", filter.Nome)
+		where += fmt.Sprintf(" AND complete_name ILIKE '%%%s%%'", filter.Nome)
 	}
 	if filter.Cargo != "" {
-		where += fmt.Sprintf(" AND cargo ILIKE '%%%s%%'", filter.Cargo)
+		where += fmt.Sprintf(" AND function ILIKE '%%%s%%'", filter.Cargo)
 	}
 	if filter.Orgao != "" {
-		where += fmt.Sprintf(" AND orgao ILIKE '%%%s%%'", filter.Orgao)
+		where += fmt.Sprintf(" AND departament ILIKE '%%%s%%'", filter.Orgao)
+	}
+	if filter.Salario > 0 {
+		where += fmt.Sprintf(" AND wage > %d", filter.Salario)
 	}
 
 	if paginated {
