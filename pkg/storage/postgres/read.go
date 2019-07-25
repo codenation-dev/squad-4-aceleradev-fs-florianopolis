@@ -29,6 +29,7 @@ func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 		where += fmt.Sprintf(" AND wage > %d", filter.Salario)
 	}
 
+	filter.Offset = 5000
 	if paginated {
 		where += " ORDER BY " + filter.SortBy
 		if filter.Desc {
@@ -36,7 +37,7 @@ func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 		} else {
 			where += " asc"
 		}
-		// where += ` limit ` + strconv.FormatInt(filter.Offset, 10)
+		where += ` limit ` + strconv.FormatInt(filter.Offset, 10)
 		// where += ` offset ` + strconv.FormatInt(filter.Page*filter.Offset, 10)
 	}
 

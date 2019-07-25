@@ -35,7 +35,7 @@ func NewRouter(adder adding.Service, reader reading.Service, updater updating.Se
 
 	router.Handle("/customer", getCustomer(reader)).Methods(http.MethodGet)
 	router.Handle("/customer/import", importCustomer(adder)).Methods(http.MethodGet)
-
+ 
 	router.Handle("/email_to", sendEmail(reader)).Methods(http.MethodPost)
 	// router.Handle("/fetch/data/compare_customer_x_public_func/{company}/{uf}/{year}/{month}", compareCustomerPublicFunc(reader)).Methods(http.MethodGet)
 	// router.Handle("/fetch/data/public_func_above_wage/{uf}/{year}/{month}/{wage}", getPublicFincByWage(reader)).Methods(http.MethodGet)
