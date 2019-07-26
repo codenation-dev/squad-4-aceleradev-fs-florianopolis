@@ -22,7 +22,7 @@ import (
 // NewRouter implements handlers to all routes
 func NewRouter(adder adding.Service, reader reading.Service, updater updating.Service, deleter deleting.Service) *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
-	router.Handle("/login", login(reader)).Methods(http.MethodPost)
+	router.Handle("/login", login(reader)).Methods(http.MethodPost, http.MethodOptions)
 	router.Handle("/", getIndex()).Methods(http.MethodGet)
 
 	router.Handle("/user/{email}", getUser(reader)).Methods(http.MethodGet)
@@ -30,7 +30,7 @@ func NewRouter(adder adding.Service, reader reading.Service, updater updating.Se
 	router.Handle("/user", addUser(adder)).Methods(http.MethodPost)
 	router.Handle("/user", updateUser(updater)).Methods(http.MethodPut)
 
-	router.Handle("/public_func", getPublicFunc(reader)).Methods(http.MethodGet)
+	router.Handle("/public_func", getPublicFunc(reader)).Methods(http.MethodGet, http.MethodOptions)
 	router.Handle("/public_func/import", importPublicFunc(adder)).Methods(http.MethodGet)
 
 	router.Handle("/customer", getCustomer(reader)).Methods(http.MethodGet)
@@ -42,7 +42,7 @@ func NewRouter(adder adding.Service, reader reading.Service, updater updating.Se
 
 	router.Handle("/query", handleQuery(reader)).Methods(http.MethodGet)
 
-	// router.Use(authorize)
+	router.Use(authorize)
 	return router
 }
 
@@ -122,7 +122,6 @@ func respondWithError(w http.ResponseWriter, status int, err error) {
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
 
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	w.Write(response)
 }

@@ -20,7 +20,13 @@ func main() {
 
 	apiPort := ":3000"
 	fmt.Printf("API running on port%s\n", apiPort)
-	if err := http.ListenAndServe(apiPort, handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization", "Token"}), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}), handlers.AllowedOrigins([]string{"*"}))(router)); err != nil {
+
+	headersOk := handlers.AllowedHeaders([]string{"Content-Type", "content-type", "Origin", "Accept"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	//allowCred := handlers.AllowCredentials()
+	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+
+	if err := http.ListenAndServe(apiPort, handlers.CORS(originsOk, headersOk, methodsOk)(router)); err != nil {
 		log.Fatal(err)
 	}
 }

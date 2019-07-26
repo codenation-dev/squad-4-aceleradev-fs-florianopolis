@@ -2,7 +2,6 @@ package rest
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -21,9 +20,21 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+type Token struct {
+	Token string `json:"token"`
+}
+
 // SignIn handles the login control to the API
 func login(reader reading.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Content-Type", "application/json")
+
+		if r.Method == "OPTIONS" {
+			w.Header().Set("Access-Control-Allow-Headers", "Authorization") // You can add more headers here if needed
+			return
+		}
 		// var user entity.User
 		receivedUser := entity.User{}
 		b, err := ioutil.ReadAll(r.Body)
@@ -70,75 +81,89 @@ func login(reader reading.Service) http.HandlerFunc {
 			Value:   tokenString,
 			Expires: expirationTime,
 		})
-		fmt.Fprint(w, "login efetuado com sucesso")
+
+		accessToken := &Token{
+			Token: tokenString,
+		}
+
+		respondWithJSON(w, http.StatusOK, accessToken)
 	}
 }
 
 // Middleware handles the authorization to use the API
 func authorize(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		/*
-			if r.RequestURI == "/" || r.RequestURI == "/login" {
-				next.ServeHTTP(w, r)
-				return
-			} else if r.RequestURI == "/user" && r.Method == http.MethodPost {
-				next.ServeHTTP(w, r)
-				return
-			}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3001")
+		//w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Content-Type", "application/json")
+		if (*r).Method == "OPTIONS" {
+			w.Header().Set("Access-Control-Allow-Headers", "Authorization") // You can add more headers here if needed
+			return
+		}
 
-			c, err := r.Cookie("token")
-			if err != nil {
-				if err == http.ErrNoCookie {
-					http.Error(w, entity.ErrUnauthorized.Error(), http.StatusUnauthorized)
-					return
-				}
-				http.Error(w, entity.ErrUnauthorized.Error(), http.StatusInternalServerError)
-				return
-			}
+		if r.RequestURI == "/" || r.RequestURI == "/login" {
+			next.ServeHTTP(w, r)
+			return
+		} else if r.RequestURI == "/user" && r.Method == http.MethodPost {
+			next.ServeHTTP(w, r)
+			return
+		}
 
-			// Get the JWT string from the cookie
-			tknStr := c.Value
-
-			claims := &Claims{}
-
-			tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
-				return jwtKey, nil
-			})
-			if !tkn.Valid {
-				http.Error(w, entity.ErrUnauthorized.Error(), http.StatusUnauthorized)
+		c, err := r.Cookie("token")
+		if err != nil {
+			if err == http.ErrNoCookie {
+				respondWithError(w, http.StatusUnauthorized, entity.ErrUnauthorized)
 				return
 			}
-			if err != nil {
-				if err == jwt.ErrSignatureInvalid {
-					http.Error(w, entity.ErrUnauthorized.Error(), http.StatusUnauthorized)
-					return
-				}
-				http.Error(w, entity.ErrUnauthorized.Error(), http.StatusInternalServerError)
+			http.Error(w, entity.ErrUnauthorized.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Get the JWT string from the cookie
+		tknStr := c.Value
+
+		claims := &Claims{}
+
+		tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+			return jwtKey, nil
+		})
+		if !tkn.Valid {
+			respondWithError(w, http.StatusUnauthorized, entity.ErrUnauthorized)
+			return
+		}
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				respondWithError(w, http.StatusUnauthorized, entity.ErrUnauthorized)
 				return
 			}
+			http.Error(w, entity.ErrUnauthorized.Error(), http.StatusInternalServerError)
+			return
+		}
 
-			// // TODO: não consegui implementar essa contagem de 30 segundos
-			// if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 30*time.Second {
-			// 	w.WriteHeader(http.StatusBadRequest)
-			// 	return
-			// }
+		// // TODO: não consegui implementar essa contagem de 30 segundos
+		// if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 30*time.Second {
+		// 	w.WriteHeader(http.StatusBadRequest)
+		// 	return
+		// }
 
-			// create a new token for the current use, with a renewed expiration time
-			expirationTime := time.Now().Add(5 * time.Minute)
-			claims.ExpiresAt = expirationTime.Unix()
-			token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-			tokenString, err := token.SignedString(jwtKey)
-			if err != nil {
-				http.Error(w, "error creating new token", http.StatusInternalServerError)
-				return
-			}
+		// create a new token for the current use, with a renewed expiration time
+		expirationTime := time.Now().Add(5 * time.Minute)
+		claims.ExpiresAt = expirationTime.Unix()
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+		tokenString, err := token.SignedString(jwtKey)
+		if err != nil {
+			http.Error(w, "error creating new token", http.StatusInternalServerError)
+			return
+		}
 
-			// Set the new token as the users `token` cookie
-			http.SetCookie(w, &http.Cookie{
-				Name:    "token",
-				Value:   tokenString,
-				Expires: expirationTime,
-			})*/
+		// Set the new token as the users `token` cookie
+		http.SetCookie(w, &http.Cookie{
+			Name:    "token",
+			Value:   tokenString,
+			Expires: expirationTime,
+		})
 
 		next.ServeHTTP(w, r)
 	})
