@@ -32,6 +32,7 @@ func NewRouter(adder adding.Service, reader reading.Service, updater updating.Se
 
 	router.Handle("/public_func", getPublicFunc(reader)).Methods(http.MethodGet, http.MethodOptions)
 	router.Handle("/public_func/import", importPublicFunc(adder)).Methods(http.MethodGet)
+	router.Handle("/public_func/stats", statsPublicFunc(reader)).Methods(http.MethodGet)
 
 	router.Handle("/customer", getCustomer(reader)).Methods(http.MethodGet)
 	router.Handle("/customer/import", importCustomer(adder)).Methods(http.MethodGet)

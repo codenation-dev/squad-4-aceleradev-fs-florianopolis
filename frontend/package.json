@@ -3,13 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-<<<<<<< HEAD
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "crypto-js": "^3.1.9-1",
-=======
-    "bootstrap": "^4.3.1",
->>>>>>> my-frontend
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.1",
@@ -21,16 +17,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-<<<<<<< HEAD
-<<<<<<< HEAD
     "eject": "react-scripts eject",
-    "proxy": "http://localhost:3000/"
-=======
-    "eject": "react-scripts eject"
->>>>>>> my-frontend
-=======
-    "eject": "react-scripts eject"
->>>>>>> d78b903c9b62015597ec93b3fd34cdec5e0b1dc0
+    "proxy": "http://localhost:8080/"
   },
   "browserslist": [
     ">0.2%",

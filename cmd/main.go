@@ -17,7 +17,7 @@ import (
 
 func main() {
 	router := setup()
-	apiPort := ":8080"
+	apiPort := ":3000"
 	fmt.Printf("API running on port%s\n", apiPort)
 
 	headersOk := handlers.AllowedHeaders([]string{"Content-Type", "content-type", "Origin", "Accept"})
