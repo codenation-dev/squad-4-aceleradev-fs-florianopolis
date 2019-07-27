@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { listEmployee } from '../../services/employeeService';
 
 const renderEmployeeList = (list) => {
-    console.log(list)
     if (!list || list.length === 0){
         return <tr><td className="col text-center" colSpan="4">Nenhum funcionário encontrado!!!</td></tr>
     }
@@ -25,9 +24,14 @@ const Employee = () => {
     const [cargo, setCargo] = useState('');
     const [orgao, setOrgao] = useState('');
     const [valor, setValor] = useState(0);
+    const [ehCliente, setEhCliente] = useState('A');
+    const [campoOrdenacao, setCampoOrdenacao] = useState('complete_name');
+    const [ordenacao, setOrdenacao] = useState('asc');
     const [page, setPage] = useState(0);
     const [search, setSearch] = useState(false);
     const [employeeList, setEmployeeList] = useState([]);
+
+    const [AMBOS, EH_CLIENTE, NAO_CLIENTE] = ["A", "S", "N"]
 
     useEffect(() => {
         const fetchData = async () => {
@@ -82,8 +86,67 @@ const Employee = () => {
                     pattern="[0-9]*" inputMode="numeric"
                     placeholder="Valor"
                     aria-label="Valor" />
+            </div>
+            <div className="row">
+                <div className="col-5 mr-2">                    
+                    <legend className="col-form-label pt-0">Já é Cliente?</legend>
+                    
+                    <div className="col">
+                        <div class="form-check form-check-inline">
+                        <label className="radio-inline p-2">
+                            <input type="radio"   
+                                className="form-check-input"                              
+                                name="eh_cliente" 
+                                value={ehCliente} 
+                                checked={ehCliente === EH_CLIENTE} 
+                                onChange={evt => setEhCliente(evt.currentTarget.value)} />Sim
+                        </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                        <label className="radio-inline p-2">
+                            <input type="radio" 
+                                className="form-check-input"  
+                                name="eh_cliente" 
+                                value={ehCliente} 
+                                checked={ehCliente === NAO_CLIENTE} 
+                                onChange={evt => setEhCliente(evt.currentTarget.value)} />Não
+                        </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                        <label className="radio-inline p-2">
+                            <input type="radio" 
+                                className="form-check-input"  
+                                name="eh_cliente" 
+                                value={ehCliente} 
+                                checked={ehCliente === AMBOS} 
+                                onChange={evt => setEhCliente(evt.currentTarget.value)} />Ambos
+                        </label>
+                        </div>
+                    </div>
+                </div>
 
-                <button className="" href="#" onClick={() => pesquisar()}>Pesquisar</button>
+                <div className="col-5 mr-2">                    
+                    <legend className="col-form-label pt-0">Ordenação</legend>
+                    <label className="input-group mb-3">
+                        <select className="form-control" value={campoOrdenacao} onChange={evt => setCampoOrdenacao(evt.target.value)}>
+                            <option value="function">Cargo</option>
+                            <option value="complete_name">Nome</option>
+                            <option value="departament">Órgão</option>
+                            <option value="wage">Salário</option>
+                            <option value="relevancia">Relevância</option>
+                        </select>
+
+                        <select  className="form-control"
+                            value={ordenacao} onChange={evt => setOrdenacao(evt.target.value)}>
+                            <option value="asc">Ascendente</option>
+                            <option value="desc">Descendente</option>                        
+                        </select>
+                    </label>
+                </div>
+
+                <div className="col-1 mr-2 center">               
+                    <button className="btn btn-info" type="button" href="#" onClick={() => pesquisar()}>Pesquisar</button>
+                </div>
             </div>
             <table className="table table-striped table-dark table-hover ">
                 <thead>
