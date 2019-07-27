@@ -32,12 +32,13 @@ func statsPublicFunc(reader reading.Service) http.HandlerFunc {
 			return
 		}
 
-		/*publicFuncs, err := reader.StatsPublicFunc(r.Form)
+		publicStats, err := reader.StatsPublicFunc(r.Form)
 		if err != nil {
 			respondWithError(w, http.StatusInternalServerError, err)
 			return
-		}*/
-		respondWithJSON(w, http.StatusOK, "")
+		}
+
+		respondWithJSON(w, http.StatusOK, publicStats)
 	}
 }
 
