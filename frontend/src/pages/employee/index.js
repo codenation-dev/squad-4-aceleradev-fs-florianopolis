@@ -71,6 +71,16 @@ const Employee = () => {
     };
 
     const fetchStatData = async () => {
+      const resultList = await listEmployee(
+        nome,
+        cargo,
+        orgao,
+        valor,
+        ehCliente,
+        page,
+        campoOrdenacao,
+        ordenacao
+      );      
       const result = await statEmployee(nome, cargo, orgao, valor, ehCliente);
       const departResult = await departStatEmployee(
         nome,
@@ -81,6 +91,7 @@ const Employee = () => {
       );
       setEmployeeStat(result);
       setDepartStat(departResult);
+      setEmployeeList(resultList);
     };
 
     if (showList) {
