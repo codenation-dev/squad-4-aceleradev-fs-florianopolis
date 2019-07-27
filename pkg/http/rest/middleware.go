@@ -28,7 +28,7 @@ type Token struct {
 func login(reader reading.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080")
 		w.Header().Set("Content-Type", "application/json")
 
 		if r.Method == "OPTIONS" {
@@ -60,7 +60,7 @@ func login(reader reading.Service) http.HandlerFunc {
 			return
 		}
 
-		expirationTime := time.Now().Add(5 * time.Minute)
+		expirationTime := time.Now().Add(5 * time.Hour)
 
 		claims := &Claims{
 			Email: receivedUser.Email,
@@ -94,7 +94,7 @@ func login(reader reading.Service) http.HandlerFunc {
 func authorize(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3001")
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080")
 		//w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		w.Header().Set("Content-Type", "application/json")
@@ -149,7 +149,7 @@ func authorize(next http.Handler) http.Handler {
 		// }
 
 		// create a new token for the current use, with a renewed expiration time
-		expirationTime := time.Now().Add(5 * time.Minute)
+		expirationTime := time.Now().Add(5 * time.Hour)
 		claims.ExpiresAt = expirationTime.Unix()
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 		tokenString, err := token.SignedString(jwtKey)

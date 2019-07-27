@@ -17,12 +17,7 @@ import (
 
 func main() {
 	router := setup()
-<<<<<<< HEAD
-
-	apiPort := ":3000"
-=======
 	apiPort := ":8080"
->>>>>>> my-frontend
 	fmt.Printf("API running on port%s\n", apiPort)
 
 	headersOk := handlers.AllowedHeaders([]string{"Content-Type", "content-type", "Origin", "Accept"})
