@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { listCustomer } from '../../services/customerService';
 
 const renderCustomerList = (list) => {
-    if (list.length == 0){
+    if (!list || list.length === 0){
         return <tr><td className="col text-center">Nenhum cliente encontrado!!!</td></tr>
     }
 

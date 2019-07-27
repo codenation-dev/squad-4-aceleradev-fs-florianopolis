@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import { listEmployee } from '../../services/employeeService';
 
 const renderEmployeeList = (list) => {
-    if (list.length == 0){
-        return <td className="col text-center" colSpan="4">Nenhum funcionário encontrado!!!</td>
+    console.log(list)
+    if (!list || list.length === 0){
+        return <tr><td className="col text-center" colSpan="4">Nenhum funcionário encontrado!!!</td></tr>
     }
     console.log(list)
     return list.map((customer, key) => {        
@@ -31,7 +32,7 @@ const Employee = () => {
     useEffect(() => {
         const fetchData = async () => {
             const result = await listEmployee(nome, cargo, orgao, valor, page);
-            setEmployeeList(result.data);
+            setEmployeeList(result);
         };
       
         fetchData();        
@@ -78,7 +79,7 @@ const Employee = () => {
                     onChange={e => setValor(e.target.value)}
                     className="form-control col-2 mr-2"
                     type="search"
-                    pattern="[0-9]*" inputmode="numeric"
+                    pattern="[0-9]*" inputMode="numeric"
                     placeholder="Valor"
                     aria-label="Valor" />
 

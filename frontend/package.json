@@ -22,11 +22,15 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "eject": "react-scripts eject",
     "proxy": "http://localhost:3000/"
 =======
     "eject": "react-scripts eject"
 >>>>>>> my-frontend
+=======
+    "eject": "react-scripts eject"
+>>>>>>> d78b903c9b62015597ec93b3fd34cdec5e0b1dc0
   },
   "browserslist": [
     ">0.2%",

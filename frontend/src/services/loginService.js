@@ -1,5 +1,6 @@
 import api from './api';
 import sha256 from 'crypto-js/sha256';
+
 const HASH = 'b340b3c69a177bc5508c842aa038afc252692dee';
 
 export const login = (
@@ -19,10 +20,13 @@ export const login = (
         email: email,
         password: shaPassword.toString(),   
       },
-      {credentials: "include"}
+      {withCredentials: false}
     )
-    .then(response => console.log(response))
-    .catch(err => {throw new Error(err)})    
+    .then(response => {
+        localStorage.setItem("authToken", response.data.token)
+        document.cookie = `token=${response.data.token};max-age=604800;`
+    })
+    .catch(err => console.log(err))    
 }
 
 export const register = (
@@ -47,15 +51,13 @@ export const register = (
     .catch(err => {throw new Error(err)})    
 }
 
-//export const isLogged = () => !!localStorageWrapper.get(NS_LOGGED_USER)
-
-//export const logout = () => localStorageWrapper.set(NS_LOGGED_USER, null)
-
-//export const getUser = () => isLogged && localStorageWrapper.get(NS_LOGGED_USER)
+export const logout = () => {
+    localStorage.clear();
+    document.cookie.remove('token');
+}
 
 export default {
     register,
     login,
-    //isLogged,
-    //getUser
+    logout
 }
