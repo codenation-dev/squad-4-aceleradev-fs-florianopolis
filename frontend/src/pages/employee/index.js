@@ -7,6 +7,7 @@ import {
 } from "../../services/employeeService";
 import EmployeeBar from "../graphics/EmployeeBar";
 import QtdDepart from "../graphics/qtdDepart";
+import QtdCargo from "../graphics/qtdCargo";
 
 const renderEmployeeList = result => {
   console.log(result.stats);
@@ -164,7 +165,8 @@ const Employee = () => {
     return (
       <div>
         <EmployeeBar data={employeeStat} />
-        <QtdDepart data={departStat} />
+        <QtdDepart data={departStat.por_orgao} />
+        <QtdCargo data={departStat.por_cargo} />
       </div>
     );
   };
