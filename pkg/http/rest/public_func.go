@@ -42,6 +42,24 @@ func statsPublicFunc(reader reading.Service) http.HandlerFunc {
 	}
 }
 
+func distrPublicFunc(reader reading.Service) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := r.ParseForm()
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err)
+			return
+		}
+
+		distPublicStats, err := reader.DistPublicFunc(r.Form)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err)
+			return
+		}
+
+		respondWithJSON(w, http.StatusOK, distPublicStats)
+	}
+}
+
 func importPublicFunc(adder adding.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()

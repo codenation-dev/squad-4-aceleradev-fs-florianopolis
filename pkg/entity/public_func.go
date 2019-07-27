@@ -10,8 +10,11 @@ type PublicFunc struct {
 }
 
 type PublicStats struct {
-	Floor int     `json:"floor"`
-	Avg   float64 `json:"avg"`
-	Qtd   int     `json:"qtd"`
+	Floor       string  `json:"floor"`
+	Avg         float64 `json:"avg"`
+	Qtd         int     `json:"qtd"`
+	Departament string  `json:"departament"`
+	Cargo       string  `json:"cargo"`
+	Min         float64 `json:"min"`
+	Max         float64 `json:"max"`
 }
-

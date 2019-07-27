@@ -90,10 +90,10 @@ func (s *Storage) ReadPublicFunc(filter reading.FuncFilter) (interface{}, error)
 
 // StatsPublicFunc returns a slice with some stats
 func (s *Storage) StatsPublicFunc(filter reading.FuncFilter) ([]entity.PublicStats, error) {
-	query := `select floor(wage/10000), avg(wage), count(*) as qtd from public_func `
+	query := `select concat(floor(wage/10000), '0k'), avg(wage), count(*) as qtd from public_func `
 	query += makeFuncFilter(filter, false)
 
-	query += " group by floor(wage/10000)"
+	query += " group by floor(wage/10000) ORDER BY floor(wage/10000)"
 	fmt.Println(query)
 	rows, err := s.db.Query(query)
 	if err != nil {
@@ -112,6 +112,36 @@ func (s *Storage) StatsPublicFunc(filter reading.FuncFilter) ([]entity.PublicSta
 
 	return stats, nil
 }
+
+// DistPublicFunc returns a slice with some stats
+func (s *Storage) DistPublicFunc(filter reading.FuncFilter) ([]entity.PublicStats, error) {
+	query := `select function, min(wage), max(wage) as maximo, avg(wage) as media, count(1) as qtd from public_func`
+
+	query += makeFuncFilter(filter, false)
+
+	
+
+
+	query += " group by function order by qtd desc limit 20"
+	fmt.Println(query)
+	rows, err := s.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	stats := []entity.PublicStats{}
+	for rows.Next() {
+		s := entity.PublicStats{}
+		err := rows.Scan(&s.Cargo, &s.Min, &s.Max, &s.Avg, &s.Qtd)
+		if err != nil {
+			return nil, err
+		}
+		stats = append(stats, s)
+	}
+
+	return stats, nil
+}
+
 
 func (s *Storage) Query(q, offset, page string) (interface{}, error) {
 

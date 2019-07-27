@@ -15,6 +15,7 @@ type Service interface {
 	GetCustomer(mapFilter map[string][]string) ([]entity.Customer, error)
 	Query(q, offset, page string) (interface{}, error)
 	StatsPublicFunc(mapFilter map[string][]string) ([]entity.PublicStats, error)
+	DistPublicFunc(mapFilter map[string][]string) ([]entity.PublicStats, error)
 
 	// CompareCustomerPublicFunc(uf, month, year, company string) ([]entity.PublicFunc, error)
 	// GetPublicFuncByWage(uf, year, month, wage string) ([]entity.PublicFunc, error)
@@ -27,6 +28,7 @@ type Repository interface {
 	ReadCustomer(filter CustFilter) ([]entity.Customer, error)
 	Query(q, offset, page string) (interface{}, error)
 	StatsPublicFunc(filter FuncFilter) ([]entity.PublicStats, error)
+	DistPublicFunc(filter FuncFilter) ([]entity.PublicStats, error)
 
 	// CompareCustomerPublicFunc(funcTableName, customerTableName string) ([]entity.PublicFunc, error)
 	// ReadPublicFuncByWage(tableName, wage string) ([]entity.PublicFunc, error)
@@ -102,6 +104,14 @@ func (s *service) StatsPublicFunc(mapFilter map[string][]string) ([]entity.Publi
 		return nil, err
 	}
 	return s.bR.StatsPublicFunc(filter)
+}
+
+func (s *service) DistPublicFunc(mapFilter map[string][]string) ([]entity.PublicStats, error) {
+	filter, err := validateFilter(mapFilter)
+	if err != nil {
+		return nil, err
+	}
+	return s.bR.DistPublicFunc(filter)
 }
 
 type CustFilter struct {
