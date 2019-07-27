@@ -27,7 +27,7 @@ func NewRouter(adder adding.Service, reader reading.Service, updater updating.Se
 
 	router.Handle("/user/{email}", getUser(reader)).Methods(http.MethodGet)
 	router.Handle("/user/{email}", deleteUser(deleter)).Methods(http.MethodDelete)
-	router.Handle("/user", addUser(adder)).Methods(http.MethodPost)
+	router.Handle("/user", addUser(adder)).Methods(http.MethodPost, http.MethodOptions)
 	router.Handle("/user", updateUser(updater)).Methods(http.MethodPut)
 
 	router.Handle("/public_func", getPublicFunc(reader)).Methods(http.MethodGet, http.MethodOptions)

@@ -19,7 +19,7 @@ export default class EmployeeBar extends PureComponent {
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="floor" />
-        <YAxis />
+        <YAxis scale="log" domain={[0.01, 'auto']} allowDataOverflow />
         <Tooltip />
         <Legend />
         <Bar dataKey="qtd" fill="#8884d8" />

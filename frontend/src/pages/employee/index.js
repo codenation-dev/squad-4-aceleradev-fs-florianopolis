@@ -1,6 +1,7 @@
 import  React,{ useEffect, useState }from "react";
 
 import { listEmployee, statEmployee } from '../../services/employeeService';
+import EmployeeBar from "../graphics/EmployeeBar";
 
 const renderEmployeeList = (result) => {
     console.log(result.stats);
@@ -114,7 +115,9 @@ const Employee = () => {
     }
     const renderEstatisticaInfo = () => {
         return (
-            <div>Ttsere</div>
+            <div>
+              <EmployeeBar data={employeeStat} />
+            </div>
         )
     }
     const renderInfo = () => showList ? renderListInfo() : renderEstatisticaInfo()
