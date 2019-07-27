@@ -17,8 +17,12 @@ import (
 
 func main() {
 	router := setup()
+<<<<<<< HEAD
 
 	apiPort := ":3000"
+=======
+	apiPort := ":8080"
+>>>>>>> my-frontend
 	fmt.Printf("API running on port%s\n", apiPort)
 	if err := http.ListenAndServe(apiPort, handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization", "Token"}), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}), handlers.AllowedOrigins([]string{"*"}))(router)); err != nil {
 		log.Fatal(err)

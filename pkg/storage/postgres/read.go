@@ -11,7 +11,16 @@ import (
 )
 
 func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
-	where := "where 1 = 1"
+	var where string
+
+	switch filter.Customer {
+	case "yes":
+		where = ` INNER JOIN customer ON public_func.short_name = customer.name`
+	case "no":
+		where = ` LEFT JOIN customer ON public_func.short_name = customer.name`
+	}
+
+	where += " where 1 = 1"
 
 	if filter.ID != 0 {
 		where += fmt.Sprintf(" AND id_funcionario = %d", filter.ID)
@@ -29,6 +38,7 @@ func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 		where += fmt.Sprintf(" AND wage > %d", filter.Salario)
 	}
 
+	filter.Offset = 2000000
 	if paginated {
 		where += " ORDER BY " + filter.SortBy
 		if filter.Desc {
@@ -37,9 +47,9 @@ func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 			where += " asc"
 		}
 		where += ` limit ` + strconv.FormatInt(filter.Offset, 10)
-		where += ` offset ` + strconv.FormatInt(filter.Page*filter.Offset, 10)
+		// where += ` offset ` + strconv.FormatInt(filter.Page*filter.Offset, 10)
 	}
-
+	fmt.Println(where)
 	return where
 }
 
