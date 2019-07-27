@@ -2,18 +2,20 @@ import React from "react";
 import { useEffect, useState } from 'react';
 import { listEmployee } from '../../services/employeeService';
 
-const renderEmployeeList = (list) => {
-    if (!list || list.length === 0){
+const renderEmployeeList = (result) => {
+    console.log(result.stats);
+    
+    if (!result ||!result.list || result.list.length === 0){
         return <tr><td className="col text-center" colSpan="4">Nenhum funcionário encontrado!!!</td></tr>
     }
-    console.log(list)
-    return list.map((customer, key) => {        
+
+    return result.list.map((customer, key) => {        
         return (
-            <tr key={key} className="">
-                <td className="col">{customer.complete_name}</td>
-                <td className="col">{customer.function}</td>
-                <td className="col">{customer.departament}</td>
-                <td className="col text-right">{customer.wage.toLocaleString('pt-BR', {"minimumFractionDigits": 2})}</td>
+            <tr key={key} className="d-flex">
+                <td className="col-5">{customer.complete_name}</td>
+                <td className="col-3">{customer.function}</td>
+                <td className="col-3">{customer.departament}</td>
+                <td className="col text-right">{customer.wage.toLocaleString('pt-BR', {"minimumFractionDigits": 2, "maximumFractionDigits": 2})}</td>
             </tr>
         )
     })
@@ -24,6 +26,7 @@ const Employee = () => {
     const [cargo, setCargo] = useState('');
     const [orgao, setOrgao] = useState('');
     const [valor, setValor] = useState(0);
+    const [showList, setShowList] = useState(1);
     const [ehCliente, setEhCliente] = useState('A');
     const [campoOrdenacao, setCampoOrdenacao] = useState('complete_name');
     const [ordenacao, setOrdenacao] = useState(false);
@@ -40,10 +43,10 @@ const Employee = () => {
         };
       
         fetchData();        
-    }, [page, search]);
+    }, [page, search, showList]);
 
     const nextPage = () => {
-        if (employeeList && employeeList.length > 0) {
+        if (employeeList.list && employeeList.list.length > 0) {
           setPage(page + 1);
         }
       };
@@ -57,10 +60,59 @@ const Employee = () => {
         setSearch(!search)        
     }
       
+    const renderListInfo = () => {
+        return (
+            <>
+            <table className="table table-striped table-dark table-hover">
+                <thead>
+                    <tr className="d-flex">
+                        <th className="col-5">Nome</th>
+                        <th className="col-3">Cargo</th>
+                        <th className="col-3">Orgão</th>
+                        <th className="col text-right">Salário</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {renderEmployeeList(employeeList)}
+                </tbody>
+            </table>
+
+            <div className="d-flex justify-content-center">
+            <nav>
+                <ul className="pagination">
+                <li className="page-item">
+                    <button
+                    id="prev"
+                    className="page-link"
+                    href="#"
+                    onClick={() => previousPage()}
+                    >
+                    Previous
+                    </button>
+                </li>
+                <li className="page-item">
+                    <button id="next" className="page-link" href="#" onClick={() => nextPage()}>
+                    Next
+                    </button>
+                </li>
+                </ul>
+            </nav>
+            </div>
+            </>
+        )
+    }
+    const renderEstatisticaInfo = () => {
+        return (
+            <div>Ttsere</div>
+        )
+    }
+    const renderInfo = () => showList === 1 ? renderListInfo() : renderEstatisticaInfo()
+
     return (
         <div className="container">
-            <h1>Lista de Funcionários</h1>
-            <div className="row">
+            <h1>Leads</h1>
+            <div className="card mb-2">
+                <div className="card-body row">            
                 <input value={nome}
                     onChange={e => setNome(e.target.value)}
                     className="form-control col-3 mr-2"
@@ -146,43 +198,24 @@ const Employee = () => {
 
                 <div className="col-1 mr-2 center">               
                     <button className="btn btn-info" type="button" href="#" onClick={() => pesquisar()}>Pesquisar</button>
+                    {(showList 
+                        ? <button className="btn btn-info" type="button" href="#" onClick={() => setShowList(1)}>Gráficos</button>
+                        : <button className="btn btn-info" type="button" href="#" onClick={() => setShowList(0)}>Lista</button>)
+                    }
                 </div>
             </div>
-            <table className="table table-striped table-dark table-hover ">
-                <thead>
-                    <tr>
-                        <th className="col">Nome</th>
-                        <th className="col">Cargo</th>
-                        <th className="col">Orgão</th>
-                        <th className="col text-right">Salário</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {renderEmployeeList(employeeList)}
-                </tbody>
-            </table>
-
-            <div className="d-flex justify-content-center">
-            <nav>
-                <ul className="pagination">
-                <li className="page-item">
-                    <button
-                    id="prev"
-                    className="page-link"
-                    href="#"
-                    onClick={() => previousPage()}
-                    >
-                    Previous
-                    </button>
-                </li>
-                <li className="page-item">
-                    <button id="next" className="page-link" href="#" onClick={() => nextPage()}>
-                    Next
-                    </button>
-                </li>
-                </ul>
-            </nav>
             </div>
+            
+            <div className="card mb-2">
+                <div className="card-body row">
+                    <div className="col-3">Quantidade <h2 className="font-weight-bold text-info">{employeeList.stats && employeeList.stats.total || 0}</h2></div>
+                    <div className="col-3">Média Salarial<h2 className="font-weight-bold text-info">{(employeeList.stats && employeeList.stats.media || 0).toLocaleString('pt-BR', {"minimumFractionDigits": 2, "maximumFractionDigits": 2})}</h2></div>
+                    <div className="col-3">Menor Salário<h2 className="font-weight-bold text-info">{(employeeList.stats && employeeList.stats.menor || 0).toLocaleString('pt-BR', {"minimumFractionDigits": 2, "maximumFractionDigits": 2})}</h2></div>
+                    <div className="col-3">Maior Salário<h2 className="font-weight-bold text-info">{(employeeList.stats && employeeList.stats.maior || 0).toLocaleString('pt-BR', {"minimumFractionDigits": 2, "maximumFractionDigits": 2})}</h2></div>
+                </div>
+            </div>
+
+            {renderInfo()}            
         </div>
     )
 }
