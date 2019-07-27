@@ -2,6 +2,8 @@
 package reading
 
 import (
+	"fmt"
+
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 	"github.com/gorilla/schema"
 )
@@ -12,6 +14,7 @@ type Service interface {
 	GetPublicFunc(mapFilter map[string][]string) ([]entity.PublicFunc, error)
 	GetCustomer(mapFilter map[string][]string) ([]entity.Customer, error)
 	Query(q, offset, page string) (interface{}, error)
+	StatsPublicFunc(mapFilter map[string][]string) ([]entity.PublicStats, error)
 
 	// CompareCustomerPublicFunc(uf, month, year, company string) ([]entity.PublicFunc, error)
 	// GetPublicFuncByWage(uf, year, month, wage string) ([]entity.PublicFunc, error)
@@ -23,6 +26,7 @@ type Repository interface {
 	ReadPublicFunc(filter FuncFilter) ([]entity.PublicFunc, error)
 	ReadCustomer(filter CustFilter) ([]entity.Customer, error)
 	Query(q, offset, page string) (interface{}, error)
+	StatsPublicFunc(filter FuncFilter) ([]entity.PublicStats, error)
 
 	// CompareCustomerPublicFunc(funcTableName, customerTableName string) ([]entity.PublicFunc, error)
 	// ReadPublicFuncByWage(tableName, wage string) ([]entity.PublicFunc, error)
@@ -53,18 +57,18 @@ type FuncFilter struct {
 	Desc   bool   `schema:"desc"`
 
 	//User specific filters
-	ID      int64  `schema:"id"`
-	Nome    string `schema:"nome"`
-	Cargo   string `schema:"cargo"`
-	Orgao   string `schema:"orgao"`
-	Salario int64  `schema:"salario"`
+	ID       int64  `schema:"id"`
+	Nome     string `schema:"nome"`
+	Cargo    string `schema:"cargo"`
+	Orgao    string `schema:"orgao"`
+	Salario  int64  `schema:"salario"`
 	Customer string `schema:"customer"` // yes - no - both
 }
 
-func (s *service) GetPublicFunc(mapFilter map[string][]string) ([]entity.PublicFunc, error) {
+func validateFilter(mapFilter map[string][]string) (FuncFilter, error) {
 	filter := FuncFilter{}
 	if err := schema.NewDecoder().Decode(&filter, mapFilter); err != nil {
-		return nil, err
+		return filter, err
 	}
 
 	if filter.Offset == 0 || filter.Offset > 50 {
@@ -78,8 +82,26 @@ func (s *service) GetPublicFunc(mapFilter map[string][]string) ([]entity.PublicF
 	if filter.Customer != "yes" && filter.Customer != "no" {
 		filter.Customer = ""
 	}
+	fmt.Println(filter)
 
+	return filter, nil
+
+}
+
+func (s *service) GetPublicFunc(mapFilter map[string][]string) ([]entity.PublicFunc, error) {
+	filter, err := validateFilter(mapFilter)
+	if err != nil {
+		return nil, err
+	}
 	return s.bR.ReadPublicFunc(filter)
+}
+
+func (s *service) StatsPublicFunc(mapFilter map[string][]string) ([]entity.PublicStats, error) {
+	filter, err := validateFilter(mapFilter)
+	if err != nil {
+		return nil, err
+	}
+	return s.bR.StatsPublicFunc(filter)
 }
 
 type CustFilter struct {
