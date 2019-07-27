@@ -26,16 +26,16 @@ const Employee = () => {
     const [valor, setValor] = useState(0);
     const [ehCliente, setEhCliente] = useState('A');
     const [campoOrdenacao, setCampoOrdenacao] = useState('complete_name');
-    const [ordenacao, setOrdenacao] = useState('asc');
+    const [ordenacao, setOrdenacao] = useState(false);
     const [page, setPage] = useState(0);
     const [search, setSearch] = useState(false);
     const [employeeList, setEmployeeList] = useState([]);
 
-    const [AMBOS, EH_CLIENTE, NAO_CLIENTE] = ["A", "S", "N"]
+    const [AMBOS, EH_CLIENTE, NAO_CLIENTE] = ["A", "yes", "no"]
 
     useEffect(() => {
         const fetchData = async () => {
-            const result = await listEmployee(nome, cargo, orgao, valor, page);
+            const result = await listEmployee(nome, cargo, orgao, valor, ehCliente, page, campoOrdenacao, ordenacao);
             setEmployeeList(result);
         };
       
@@ -92,34 +92,34 @@ const Employee = () => {
                     <legend className="col-form-label pt-0">Já é Cliente?</legend>
                     
                     <div className="col">
-                        <div class="form-check form-check-inline">
+                        <div className="form-check form-check-inline">
                         <label className="radio-inline p-2">
                             <input type="radio"   
                                 className="form-check-input"                              
                                 name="eh_cliente" 
-                                value={ehCliente} 
+                                value={EH_CLIENTE} 
                                 checked={ehCliente === EH_CLIENTE} 
-                                onChange={evt => setEhCliente(evt.currentTarget.value)} />Sim
+                                onChange={evt => setEhCliente(evt.target.value)} />Sim
                         </label>
                         </div>
-                        <div class="form-check form-check-inline">
+                        <div className="form-check form-check-inline">
                         <label className="radio-inline p-2">
                             <input type="radio" 
                                 className="form-check-input"  
                                 name="eh_cliente" 
-                                value={ehCliente} 
+                                value={NAO_CLIENTE} 
                                 checked={ehCliente === NAO_CLIENTE} 
-                                onChange={evt => setEhCliente(evt.currentTarget.value)} />Não
+                                onChange={evt => setEhCliente(evt.target.value)} />Não
                         </label>
                         </div>
-                        <div class="form-check form-check-inline">
+                        <div className="form-check form-check-inline">
                         <label className="radio-inline p-2">
                             <input type="radio" 
                                 className="form-check-input"  
                                 name="eh_cliente" 
-                                value={ehCliente} 
+                                value={AMBOS} 
                                 checked={ehCliente === AMBOS} 
-                                onChange={evt => setEhCliente(evt.currentTarget.value)} />Ambos
+                                onChange={evt => setEhCliente(evt.target.value)} />Ambos
                         </label>
                         </div>
                     </div>
@@ -138,8 +138,8 @@ const Employee = () => {
 
                         <select  className="form-control"
                             value={ordenacao} onChange={evt => setOrdenacao(evt.target.value)}>
-                            <option value="asc">Ascendente</option>
-                            <option value="desc">Descendente</option>                        
+                            <option value="false">Ascendente</option>
+                            <option value="true">Descendente</option>                        
                         </select>
                     </label>
                 </div>
