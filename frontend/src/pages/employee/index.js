@@ -1,6 +1,6 @@
 import  React,{ useEffect, useState }from "react";
 
-import { listEmployee } from '../../services/employeeService';
+import { listEmployee, statEmployee } from '../../services/employeeService';
 
 const renderEmployeeList = (result) => {
     console.log(result.stats);
@@ -119,7 +119,7 @@ const Employee = () => {
     }
     const renderInfo = () => showList ? renderListInfo() : renderEstatisticaInfo()
 
-    return (
+    return (    
         <div className="container">
             <h1>Leads</h1>
             <div className="card mb-2">
@@ -228,83 +228,6 @@ const Employee = () => {
 
             {renderInfo()}            
         </div>
-
-        <div className='col-5 mr-2'>
-          <legend className='col-form-label pt-0'>Ordenação</legend>
-          <label className='input-group mb-3'>
-            <select
-              className='form-control'
-              value={campoOrdenacao}
-              onChange={evt => setCampoOrdenacao(evt.target.value)}
-            >
-              <option value='function'>Cargo</option>
-              <option value='complete_name'>Nome</option>
-              <option value='departament'>Órgão</option>
-              <option value='wage'>Salário</option>
-              <option value='relevancia'>Relevância</option>
-            </select>
-
-            <select
-              className='form-control'
-              value={ordenacao}
-              onChange={evt => setOrdenacao(evt.target.value)}
-            >
-              <option value='false'>Ascendente</option>
-              <option value='true'>Descendente</option>
-            </select>
-          </label>
-        </div>
-
-        <div className='col-1 mr-2 center'>
-          <button
-            className='btn btn-info'
-            type='button'
-            href='#'
-            onClick={() => pesquisar()}
-          >
-            Pesquisar
-          </button>
-        </div>
-      </div>
-      <table className='table table-striped table-dark table-hover '>
-        <thead>
-          <tr>
-            <th className='col'>Nome</th>
-            <th className='col'>Cargo</th>
-            <th className='col'>Orgão</th>
-            <th className='col text-right'>Salário</th>
-          </tr>
-        </thead>
-        <tbody>{renderEmployeeList(employeeList)}</tbody>
-      </table>
-
-      <div className='d-flex justify-content-center'>
-        <nav>
-          <ul className='pagination'>
-            <li className='page-item'>
-              <button
-                id='prev'
-                className='page-link'
-                href='#'
-                onClick={() => previousPage()}
-              >
-                Previous
-              </button>
-            </li>
-            <li className='page-item'>
-              <button
-                id='next'
-                className='page-link'
-                href='#'
-                onClick={() => nextPage()}
-              >
-                Next
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </div>
   )
 };
 
