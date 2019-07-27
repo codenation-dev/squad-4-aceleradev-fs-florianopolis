@@ -11,7 +11,7 @@ import (
 // Service implements the business rules
 type Service interface {
 	GetUser(email string) (entity.User, error)
-	GetPublicFunc(mapFilter map[string][]string) ([]entity.PublicFunc, error)
+	GetPublicFunc(mapFilter map[string][]string) (interface{}, error)
 	GetCustomer(mapFilter map[string][]string) ([]entity.Customer, error)
 	Query(q, offset, page string) (interface{}, error)
 	StatsPublicFunc(mapFilter map[string][]string) ([]entity.PublicStats, error)
@@ -23,7 +23,7 @@ type Service interface {
 // Repository implements the interface to deal with the storage
 type Repository interface {
 	ReadUser(email string) (entity.User, error)
-	ReadPublicFunc(filter FuncFilter) ([]entity.PublicFunc, error)
+	ReadPublicFunc(filter FuncFilter) (interface{}, error)
 	ReadCustomer(filter CustFilter) ([]entity.Customer, error)
 	Query(q, offset, page string) (interface{}, error)
 	StatsPublicFunc(filter FuncFilter) ([]entity.PublicStats, error)
@@ -88,7 +88,7 @@ func validateFilter(mapFilter map[string][]string) (FuncFilter, error) {
 
 }
 
-func (s *service) GetPublicFunc(mapFilter map[string][]string) ([]entity.PublicFunc, error) {
+func (s *service) GetPublicFunc(mapFilter map[string][]string) (interface{}, error) {
 	filter, err := validateFilter(mapFilter)
 	if err != nil {
 		return nil, err

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
@@ -52,7 +53,7 @@ func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 }
 
 // ReadPublicFunc returns a slice with all public agents
-func (s *Storage) ReadPublicFunc(filter reading.FuncFilter) ([]entity.PublicFunc, error) {
+func (s *Storage) ReadPublicFunc(filter reading.FuncFilter) (interface{}, error) {
 	query := `SELECT  complete_name, short_name, wage, departament, function FROM public_func `
 	query += makeFuncFilter(filter, true)
 	fmt.Println(query)
@@ -61,7 +62,30 @@ func (s *Storage) ReadPublicFunc(filter reading.FuncFilter) ([]entity.PublicFunc
 	if err != nil {
 		return nil, err
 	}
-	return scanRowsPublicFunc(rows)
+
+	publicfuncs, err := scanRowsPublicFunc(rows)
+
+	queryCount := `SELECT COUNT (1) total, AVG (wage) media, MAX (wage) maior, MIN (wage) menor FROM public_func `
+	queryCount += makeFuncFilter(filter, false)
+	fmt.Println(queryCount)
+
+	count := struct {
+		Total int     `json:"total"`
+		Media float64 `json:"media"`
+		Maior float64 `json:"maior"`
+		Menor float64 `json:"menor"`
+	}{}
+
+	err = s.db.QueryRow(queryCount).Scan(&count.Total, &count.Media, &count.Maior, &count.Menor)
+	if err != nil {
+		log.Fatal(err)
+	}
+	resp := map[string]interface{}{}
+	resp["stats"] = count
+	resp["list"] = publicfuncs
+
+	return resp, nil
+	// return publicfuncs, nil
 }
 
 // StatsPublicFunc returns a slice with some stats
