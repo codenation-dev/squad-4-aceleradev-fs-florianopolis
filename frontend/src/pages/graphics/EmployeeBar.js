@@ -1,17 +1,17 @@
 import React, { PureComponent } from 'react';
 import {
-  BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 
 
 export default class EmployeeBar extends PureComponent {
-  static jsfiddleUrl = 'https://jsfiddle.net/alidingling/30763kr7/';
 
   render() {
     return (
+      <div style={{width: '100%', height: 300}}>
+      Histograma de salário do mês:
+    <ResponsiveContainer>
       <BarChart
-        width={500}
-        height={300}
         data={this.props.data}
         margin={{
           top: 5, right: 30, left: 20, bottom: 5,
@@ -22,8 +22,10 @@ export default class EmployeeBar extends PureComponent {
         <YAxis scale="log" domain={[0.01, 'auto']} allowDataOverflow />
         <Tooltip />
         <Legend />
-        <Bar dataKey="qtd" fill="#8884d8" />
+        <Bar dataKey="qtd" fill="#8884d8" name="quantidade de pessoas" />
       </BarChart>
+      </ResponsiveContainer>
+      </div>
     );
   }
 }
