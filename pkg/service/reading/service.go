@@ -58,6 +58,7 @@ type FuncFilter struct {
 	Cargo   string `schema:"cargo"`
 	Orgao   string `schema:"orgao"`
 	Salario int64  `schema:"salario"`
+	Customer string `schema:"customer"` // yes - no - both
 }
 
 func (s *service) GetPublicFunc(mapFilter map[string][]string) ([]entity.PublicFunc, error) {
@@ -71,7 +72,11 @@ func (s *service) GetPublicFunc(mapFilter map[string][]string) ([]entity.PublicF
 	}
 
 	if filter.SortBy == "" {
-		filter.SortBy = "complete_name"
+		filter.SortBy = "short_name"
+	}
+
+	if filter.Customer != "yes" && filter.Customer != "no" {
+		filter.Customer = ""
 	}
 
 	return s.bR.ReadPublicFunc(filter)

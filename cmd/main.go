@@ -17,7 +17,6 @@ import (
 
 func main() {
 	router := setup()
-
 	apiPort := ":3000"
 	fmt.Printf("API running on port%s\n", apiPort)
 
