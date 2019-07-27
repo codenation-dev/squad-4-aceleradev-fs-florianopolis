@@ -4,7 +4,7 @@ import {
 } from 'recharts';
 
 
-export default class Example extends PureComponent {
+export default class EmployeeBar extends PureComponent {
   static jsfiddleUrl = 'https://jsfiddle.net/alidingling/30763kr7/';
 
   render() {
