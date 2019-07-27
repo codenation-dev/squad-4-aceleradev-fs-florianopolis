@@ -4,8 +4,7 @@ import {
 } from 'recharts';
 
 
-export default class QtdDepart extends PureComponent {
-  static jsfiddleUrl = 'https://jsfiddle.net/alidingling/31s5e83y/';
+export default class QtdCargo extends PureComponent {
 
   render() {
     return (

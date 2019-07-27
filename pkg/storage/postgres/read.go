@@ -114,12 +114,10 @@ func (s *Storage) StatsPublicFunc(filter reading.FuncFilter) ([]entity.PublicSta
 }
 
 // DistPublicFunc returns a slice with some stats
-func (s *Storage) DistPublicFunc(filter reading.FuncFilter) ([]entity.PublicStats, error) {
+func (s *Storage) DistPublicFunc(filter reading.FuncFilter) (map[string][]entity.PublicStats, error) {
 	query := `select function, min(wage), max(wage) as maximo, avg(wage) as media, count(1) as qtd from public_func`
-	
 	query += makeFuncFilter(filter, false)
 	query += " group by function order by qtd desc limit 20"
-	fmt.Println(query)
 	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -134,7 +132,28 @@ func (s *Storage) DistPublicFunc(filter reading.FuncFilter) ([]entity.PublicStat
 		stats = append(stats, s)
 	}
 
-	return stats, nil
+	query2 := `select departament, min(wage), max(wage) as maximo, avg(wage) as media, count(1) as qtd from public_func`
+	query2 += makeFuncFilter(filter, false)
+	query2 += " group by departament order by qtd desc limit 20"
+	rows, err = s.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	stats2 := []entity.PublicStats{}
+	rows, err = s.db.Query(query2)
+	for rows.Next() {
+		s := entity.PublicStats{}
+		err := rows.Scan(&s.Departament, &s.Min, &s.Max, &s.Avg, &s.Qtd)
+		if err != nil {
+			return nil, err
+		}
+		stats2 = append(stats2, s)
+	}
+
+	result := map[string][]entity.PublicStats{}
+	result["por_cargo"] = stats
+	result["por_orgao"] = stats2
+	return result, nil
 }
 
 func (s *Storage) Query(q, offset, page string) (interface{}, error) {
