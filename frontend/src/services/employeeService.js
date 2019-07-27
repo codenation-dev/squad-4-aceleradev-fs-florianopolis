@@ -9,6 +9,15 @@ export const listEmployee = (
     .catch(error => [])
 }
 
+export const statEmployee = (
+  nome, funcao, orgao, wage, ehCliente) => {
+  
+  return api.get(`public_func/stats?nome=${nome}&cargo=${funcao}&orgao=${orgao}&salario=${wage}&customer=${ehCliente}`)
+  .then(response => response.data)
+  .catch(error => [])
+}
+
 export default {
-  listEmployee
+  listEmployee,
+  statEmployee,
 }

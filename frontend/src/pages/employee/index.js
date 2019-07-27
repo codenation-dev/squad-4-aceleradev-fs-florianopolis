@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from 'react';
-import { listEmployee } from '../../services/employeeService';
+import { listEmployee, statEmployee } from '../../services/employeeService';
 
 const renderEmployeeList = (result) => {
     console.log(result.stats);
@@ -26,13 +26,14 @@ const Employee = () => {
     const [cargo, setCargo] = useState('');
     const [orgao, setOrgao] = useState('');
     const [valor, setValor] = useState(0);
-    const [showList, setShowList] = useState(1);
+    const [showList, setShowList] = useState(true);
     const [ehCliente, setEhCliente] = useState('A');
     const [campoOrdenacao, setCampoOrdenacao] = useState('complete_name');
     const [ordenacao, setOrdenacao] = useState(false);
     const [page, setPage] = useState(0);
     const [search, setSearch] = useState(false);
     const [employeeList, setEmployeeList] = useState([]);
+    const [employeeStat, setEmployeeStat] = useState([]);
 
     const [AMBOS, EH_CLIENTE, NAO_CLIENTE] = ["A", "yes", "no"]
 
@@ -42,7 +43,17 @@ const Employee = () => {
             setEmployeeList(result);
         };
       
-        fetchData();        
+        const fetchStatData = async () => {
+            const result = await statEmployee(nome, cargo, orgao, valor, ehCliente);
+            setEmployeeStat(result);
+        };
+
+        if (showList){
+            fetchData();        
+        }else{
+            fetchStatData();
+        }
+        
     }, [page, search, showList]);
 
     const nextPage = () => {
@@ -106,7 +117,7 @@ const Employee = () => {
             <div>Ttsere</div>
         )
     }
-    const renderInfo = () => showList === 1 ? renderListInfo() : renderEstatisticaInfo()
+    const renderInfo = () => showList ? renderListInfo() : renderEstatisticaInfo()
 
     return (
         <div className="container">
@@ -199,8 +210,8 @@ const Employee = () => {
                 <div className="col-1 mr-2 center">               
                     <button className="btn btn-info" type="button" href="#" onClick={() => pesquisar()}>Pesquisar</button>
                     {(showList 
-                        ? <button className="btn btn-info" type="button" href="#" onClick={() => setShowList(1)}>Gráficos</button>
-                        : <button className="btn btn-info" type="button" href="#" onClick={() => setShowList(0)}>Lista</button>)
+                        ? <button className="btn btn-info" type="button" href="#" onClick={() => setShowList(!showList)}>Gráficos</button>
+                        : <button className="btn btn-info" type="button" href="#" onClick={() => setShowList(!showList)}>Lista</button>)
                     }
                 </div>
             </div>
