@@ -26,6 +26,10 @@ name VARCHAR(30)
 );
 
 
+alter table public_func add column relevancia smallint;
+
+update public_func set relevancia = floor(random() * 10) + 1;
+commit;
 
 -- CREATE TABLE IF NOT EXISTS warnings(
 -- id SERIAL,

@@ -28,7 +28,8 @@ type Token struct {
 func login(reader reading.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		//w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3001")
 		w.Header().Set("Content-Type", "application/json")
 
 		if r.Method == "OPTIONS" {
