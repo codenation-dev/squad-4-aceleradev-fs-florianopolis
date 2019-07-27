@@ -141,17 +141,3 @@ func (s *service) GetCustomer(mapFilter map[string][]string) ([]entity.Customer,
 	return s.bR.ReadCustomer(filter)
 }
 
-// func (s *service) CompareCustomerPublicFunc(uf, month, year, company string) ([]entity.PublicFunc, error) {
-// 	funcTableName := makeTablename(uf, year, month)
-// 	customerTableName := company
-// 	return s.bR.CompareCustomerPublicFunc(funcTableName, customerTableName)
-// }
-
-// func (s *service) GetPublicFuncByWage(uf, year, month, wage string) ([]entity.PublicFunc, error) {
-// 	tableName := makeTablename(uf, year, month)
-// 	return s.bR.ReadPublicFuncByWage(tableName, wage)
-// }
-
-// func makeTablename(uf, year, month string) string {
-// 	return fmt.Sprintf("public_func_%s_%s_%s", uf, year, month)
-// }

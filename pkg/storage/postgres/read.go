@@ -116,16 +116,14 @@ func (s *Storage) StatsPublicFunc(filter reading.FuncFilter) ([]entity.PublicSta
 // DistPublicFunc returns a slice with some stats
 func (s *Storage) DistPublicFunc(filter reading.FuncFilter) ([]entity.PublicStats, error) {
 	query := `select function, min(wage), max(wage) as maximo, avg(wage) as media, count(1) as qtd from public_func`
-
+	
 	query += makeFuncFilter(filter, false)
-
 	query += " group by function order by qtd desc limit 20"
 	fmt.Println(query)
 	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
-
 	stats := []entity.PublicStats{}
 	for rows.Next() {
 		s := entity.PublicStats{}
