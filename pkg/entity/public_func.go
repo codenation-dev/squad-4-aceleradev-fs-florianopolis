@@ -8,3 +8,10 @@ type PublicFunc struct {
 	Departament  string  `json:"departament"`
 	Function     string  `json:"function"`
 }
+
+type PublicStats struct {
+	Floor int     `json:"floor"`
+	Avg   float64 `json:"avg"`
+	Qtd   int     `json:"qtd"`
+}
+

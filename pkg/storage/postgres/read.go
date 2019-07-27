@@ -49,7 +49,6 @@ func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 		where += ` limit ` + strconv.FormatInt(filter.Offset, 10)
 		// where += ` offset ` + strconv.FormatInt(filter.Page*filter.Offset, 10)
 	}
-	fmt.Println(where)
 	return where
 }
 
@@ -63,6 +62,31 @@ func (s *Storage) ReadPublicFunc(filter reading.FuncFilter) ([]entity.PublicFunc
 		return nil, err
 	}
 	return scanRowsPublicFunc(rows)
+}
+
+// StatsPublicFunc returns a slice with some stats
+func (s *Storage) StatsPublicFunc(filter reading.FuncFilter) ([]entity.PublicStats, error) {
+	query := `select floor(wage/10000), avg(wage), count(*) as qtd from public_func `
+	query += makeFuncFilter(filter, false)
+
+	query += " group by floor(wage/10000)"
+	fmt.Println(query)
+	rows, err := s.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	stats := []entity.PublicStats{}
+	for rows.Next() {
+		s := entity.PublicStats{}
+		err := rows.Scan(&s.Floor, &s.Avg, &s.Qtd)
+		if err != nil {
+			return nil, err
+		}
+		stats = append(stats, s)
+	}
+
+	return stats, nil
 }
 
 func (s *Storage) Query(q, offset, page string) (interface{}, error) {
