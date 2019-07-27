@@ -203,15 +203,24 @@ const Employee = () => {
           <input
             value={valor}
             onChange={e => setValor(e.target.value)}
-            className="form-control col-2 mr-2"
+            className="form-control col mr-2"
             type="search"
             pattern="[0-9]*"
             inputMode="numeric"
             placeholder="Valor"
             aria-label="Valor"
           />
+
+            <button
+              className="btn btn-info"
+              type="button"
+              href="#"
+              onClick={() => pesquisar()}
+            >
+              Pesquisar
+            </button>
         </div>
-        <div className="row">
+        <div className="card-body row">
           <div className="col-5 mr-2">
             <legend className="col-form-label pt-0">Já é Cliente?</legend>
 
@@ -258,7 +267,7 @@ const Employee = () => {
             </div>
           </div>
 
-          <div className="col-5 mr-2">
+          <div className="col-5 mr-2 ml-0">
             <legend className="col-form-label pt-0">Ordenação</legend>
             <label className="input-group mb-3">
               <select
@@ -284,15 +293,7 @@ const Employee = () => {
             </label>
           </div>
 
-          <div className="col-1 mr-2 center">
-            <button
-              className="btn btn-info"
-              type="button"
-              href="#"
-              onClick={() => pesquisar()}
-            >
-              Pesquisar
-            </button>
+          <div className="col-2 p-0 align-items-end">          
             {showList ? (
               <button
                 className="btn btn-info"
