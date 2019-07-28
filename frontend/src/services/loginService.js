@@ -54,7 +54,8 @@ export const register = (email, password) => {
 
 export const logout = () => {
   localStorage.clear()
-  document.cookie.remove('token')
+  document.cookie = `token=;expires=;`
+  window.location = "/login";
 };
 
 export default {

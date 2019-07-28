@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import {logout} from '../../services/loginService';
 import {
   listEmployee,
   statEmployee,
@@ -175,7 +175,22 @@ const Employee = () => {
 
   return (
     <div className="container">
-      <h1>Leads</h1>
+      
+      <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
+      <ul className="nav navbar-nav mr-auto">
+          <li className="nav-item active">
+            <span className="nav-link">Leads</span>
+          </li>
+        </ul>
+        <ul className="nav navbar-nav ml-auto">
+          <li className="nav-item">
+            <button type="button" className="btn btn-default btn-md" onClick={() => logout()}>
+              <span className="glyphicon glyphicon-log-out"></span> Sair
+            </button>
+          </li>
+        </ul>
+      </nav>
+
       <div className="card mb-2">
         <div className="card-body row">
           <input
