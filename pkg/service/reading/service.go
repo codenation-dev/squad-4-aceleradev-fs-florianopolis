@@ -14,7 +14,7 @@ type Service interface {
 	GetPublicFunc(mapFilter map[string][]string) (interface{}, error)
 	GetCustomer(mapFilter map[string][]string) ([]entity.Customer, error)
 	Query(q, offset, page string) (interface{}, error)
-	StatsPublicFunc(mapFilter map[string][]string) ([]entity.PublicStats, error)
+	StatsPublicFunc(mapFilter map[string][]string) (interface{}, error)
 	DistPublicFunc(mapFilter map[string][]string) (map[string][]entity.PublicStats, error)
 
 	// CompareCustomerPublicFunc(uf, month, year, company string) ([]entity.PublicFunc, error)
@@ -27,7 +27,7 @@ type Repository interface {
 	ReadPublicFunc(filter FuncFilter) (interface{}, error)
 	ReadCustomer(filter CustFilter) ([]entity.Customer, error)
 	Query(q, offset, page string) (interface{}, error)
-	StatsPublicFunc(filter FuncFilter) ([]entity.PublicStats, error)
+	StatsPublicFunc(filter FuncFilter) (interface{}, error)
 	DistPublicFunc(filter FuncFilter) (map[string][]entity.PublicStats, error)
 
 	// CompareCustomerPublicFunc(funcTableName, customerTableName string) ([]entity.PublicFunc, error)
@@ -99,7 +99,7 @@ func (s *service) GetPublicFunc(mapFilter map[string][]string) (interface{}, err
 	return s.bR.ReadPublicFunc(filter)
 }
 
-func (s *service) StatsPublicFunc(mapFilter map[string][]string) ([]entity.PublicStats, error) {
+func (s *service) StatsPublicFunc(mapFilter map[string][]string) (interface{}, error) {
 	filter, err := validateFilter(mapFilter)
 	if err != nil {
 		return nil, err

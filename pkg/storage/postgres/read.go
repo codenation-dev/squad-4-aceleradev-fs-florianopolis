@@ -11,6 +11,13 @@ import (
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/reading"
 )
 
+type CountInfo struct {
+	Total int     `json:"total"`
+	Media float64 `json:"media"`
+	Maior float64 `json:"maior"`
+	Menor float64 `json:"menor"`
+}
+
 func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 	var where string
 
@@ -55,6 +62,20 @@ func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 	return where
 }
 
+func getCountStats(s *Storage, filter reading.FuncFilter) interface{} {
+	queryCount := `SELECT COUNT (1) total, AVG (wage) media, MAX (wage) maior, MIN (wage) menor FROM public_func `
+	queryCount += makeFuncFilter(filter, false)
+	fmt.Println(queryCount)
+
+	count := CountInfo{}
+	err := s.db.QueryRow(queryCount).Scan(&count.Total, &count.Media, &count.Maior, &count.Menor)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return count
+}
+
 // ReadPublicFunc returns a slice with all public agents
 func (s *Storage) ReadPublicFunc(filter reading.FuncFilter) (interface{}, error) {
 	query := `SELECT  complete_name, short_name, wage, departament, function FROM public_func `
@@ -68,31 +89,15 @@ func (s *Storage) ReadPublicFunc(filter reading.FuncFilter) (interface{}, error)
 
 	publicfuncs, err := scanRowsPublicFunc(rows)
 
-	queryCount := `SELECT COUNT (1) total, AVG (wage) media, MAX (wage) maior, MIN (wage) menor FROM public_func `
-	queryCount += makeFuncFilter(filter, false)
-	fmt.Println(queryCount)
-
-	count := struct {
-		Total int     `json:"total"`
-		Media float64 `json:"media"`
-		Maior float64 `json:"maior"`
-		Menor float64 `json:"menor"`
-	}{}
-
-	err = s.db.QueryRow(queryCount).Scan(&count.Total, &count.Media, &count.Maior, &count.Menor)
-	if err != nil {
-		log.Fatal(err)
-	}
 	resp := map[string]interface{}{}
-	resp["stats"] = count
+	resp["stats"] = getCountStats(s, filter)
 	resp["list"] = publicfuncs
 
 	return resp, nil
-	// return publicfuncs, nil
 }
 
 // StatsPublicFunc returns a slice with some stats
-func (s *Storage) StatsPublicFunc(filter reading.FuncFilter) ([]entity.PublicStats, error) {
+func (s *Storage) StatsPublicFunc(filter reading.FuncFilter) (interface{}, error) {
 	query := `select concat(floor(wage/10000) + 1, '0k'), avg(wage), count(*) as qtd from public_func `
 	query += makeFuncFilter(filter, false)
 
@@ -113,7 +118,11 @@ func (s *Storage) StatsPublicFunc(filter reading.FuncFilter) ([]entity.PublicSta
 		stats = append(stats, s)
 	}
 
-	return stats, nil
+	resp := map[string]interface{}{}
+	resp["stats"] = stats
+	resp["info"] = getCountStats(s, filter)
+
+	return resp, nil
 }
 
 // DistPublicFunc returns a slice with some stats

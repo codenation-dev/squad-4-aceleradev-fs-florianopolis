@@ -75,6 +75,7 @@ const Employee = () => {
         campoOrdenacao,
         ordenacao
       );
+      
       setEmployeeList(result);
     };
 
@@ -98,9 +99,10 @@ const Employee = () => {
         valor,
         ehCliente, relevancia
       );
-      setEmployeeStat(result);
-      setDepartStat(departResult);
-      setEmployeeList(resultList);
+      console.log(result);
+      setEmployeeList({stats: result.info || {}})
+      setDepartStat(departResult || {});
+      setEmployeeStat(result.stats || {});
     };
 
     if (showList) {
