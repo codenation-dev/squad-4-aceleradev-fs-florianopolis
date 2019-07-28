@@ -38,6 +38,9 @@ func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 	if filter.Salario > 0 {
 		where += fmt.Sprintf(" AND wage > %d", filter.Salario)
 	}
+	if filter.Relevancia > 0 {
+		where += fmt.Sprintf(" AND relevancia = %d", filter.Relevancia)
+	}
 
 	if paginated {
 		where += " ORDER BY " + filter.SortBy

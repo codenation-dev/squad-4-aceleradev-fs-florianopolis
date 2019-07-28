@@ -9,8 +9,7 @@ import EmployeeBar from "../graphics/EmployeeBar";
 import QtdDepart from "../graphics/qtdDepart";
 import QtdCargo from "../graphics/qtdCargo";
 
-const renderEmployeeList = result => {
-  console.log(result.stats);
+const renderEmployeeList = result => {  
 
   if (!result || !result.list || result.list.length === 0) {
     return (
@@ -46,6 +45,7 @@ const Employee = () => {
   const [valor, setValor] = useState(0);
   const [showList, setShowList] = useState(true);
   const [ehCliente, setEhCliente] = useState("A");
+  const [relevancia, setRelevancia] = useState(0);
   const [campoOrdenacao, setCampoOrdenacao] = useState("complete_name");
   const [ordenacao, setOrdenacao] = useState(false);
   const [page, setPage] = useState(0);
@@ -56,6 +56,12 @@ const Employee = () => {
 
   const [AMBOS, EH_CLIENTE, NAO_CLIENTE] = ["A", "yes", "no"];
 
+  const filterRelevancia = [{id: 0, name: 'Sem Relevância'}, {id: 1, name: '1'}, {id: 2, name: '2'}
+  , {id: 3, name: '3'}, {id: 4, name: '4'}, {id: 5, name: '5'}, {id: 6, name: '6'}, {id: 7, name: '7'}
+  , {id: 8, name: '8'}, {id: 9, name: '9'}, {id: 10, name: '10'}]
+
+  const makeRelevanciaFilter = (item) => <option value={item.id}>{item.name}</option>
+
   useEffect(() => {
     const fetchData = async () => {
       const result = await listEmployee(
@@ -64,6 +70,7 @@ const Employee = () => {
         orgao,
         valor,
         ehCliente,
+        relevancia,
         page,
         campoOrdenacao,
         ordenacao
@@ -78,17 +85,18 @@ const Employee = () => {
         orgao,
         valor,
         ehCliente,
+        relevancia,
         page,
         campoOrdenacao,
         ordenacao
       );      
-      const result = await statEmployee(nome, cargo, orgao, valor, ehCliente);
+      const result = await statEmployee(nome, cargo, orgao, valor, ehCliente, relevancia);
       const departResult = await departStatEmployee(
         nome,
         cargo,
         orgao,
         valor,
-        ehCliente
+        ehCliente, relevancia
       );
       setEmployeeStat(result);
       setDepartStat(departResult);
@@ -184,14 +192,14 @@ const Employee = () => {
         </ul>
         <ul className="nav navbar-nav ml-auto">
           <li className="nav-item">
-            <button type="button" className="btn btn-default btn-md" onClick={() => logout()}>
+            <button type="button" className="btn btn-default" onClick={() => logout()}>
               <span className="glyphicon glyphicon-log-out"></span> Sair
             </button>
           </li>
         </ul>
       </nav>
 
-      <div className="card mb-2">
+      <div className="card my-2">
         <div className="card-body row">
           <input
             value={nome}
@@ -238,7 +246,7 @@ const Employee = () => {
             </button>
         </div>
         <div className="card-body row">
-          <div className="col-5 mr-2">
+          <div className="col-4 mr-2">
             <legend className="col-form-label pt-0">Já é Cliente?</legend>
 
             <div className="col">
@@ -284,6 +292,18 @@ const Employee = () => {
             </div>
           </div>
 
+          <div className="col-2 mr-2 ml-0">
+          <legend className="col-form-label pt-0">Relevância</legend>
+            <label className="input-group mb-3">
+              <select
+                className="form-control"
+                value={relevancia}
+                onChange={evt => setRelevancia(evt.target.value)}
+              >
+                {filterRelevancia.map(makeRelevanciaFilter)}                
+              </select>
+              </label>
+          </div>
           <div className="col-5 mr-2 ml-0">
             <legend className="col-form-label pt-0">Ordenação</legend>
             <label className="input-group mb-3">

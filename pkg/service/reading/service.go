@@ -59,12 +59,13 @@ type FuncFilter struct {
 	Desc   bool   `schema:"desc"`
 
 	//User specific filters
-	ID       int64  `schema:"id"`
-	Nome     string `schema:"nome"`
-	Cargo    string `schema:"cargo"`
-	Orgao    string `schema:"orgao"`
-	Salario  int64  `schema:"salario"`
-	Customer string `schema:"customer"` // yes - no - both
+	ID         int64  `schema:"id"`
+	Nome       string `schema:"nome"`
+	Cargo      string `schema:"cargo"`
+	Orgao      string `schema:"orgao"`
+	Salario    int64  `schema:"salario"`
+	Relevancia int64  `schema:"relevancia"`
+	Customer   string `schema:"customer"` // yes - no - both
 }
 
 func validateFilter(mapFilter map[string][]string) (FuncFilter, error) {
@@ -140,4 +141,3 @@ func (s *service) GetCustomer(mapFilter map[string][]string) ([]entity.Customer,
 
 	return s.bR.ReadCustomer(filter)
 }
-
