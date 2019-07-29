@@ -9,6 +9,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"golang.org/x/text/encoding/charmap"
 )
 
 func readCSV(path string, job func([]string) bool, sep rune, hasHeader bool) {
@@ -17,9 +19,11 @@ func readCSV(path string, job func([]string) bool, sep rune, hasHeader bool) {
 		log.Fatalf("Could not open path %v: %v", path, err)
 	}
 	defer f.Close()
+	c := charmap.ISO8859_1.NewDecoder().Reader(f)
 
-	r := csv.NewReader(bufio.NewReader(f))
+	r := csv.NewReader(bufio.NewReader(c))
 	r.Comma = sep
+
 	if hasHeader {
 		r.Read()
 	}

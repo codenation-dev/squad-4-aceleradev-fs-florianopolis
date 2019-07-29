@@ -65,12 +65,12 @@ func makeFuncFilter(filter reading.FuncFilter, paginated bool) string {
 func getCountStats(s *Storage, filter reading.FuncFilter) interface{} {
 	queryCount := `SELECT COUNT (1) total, AVG (wage) media, MAX (wage) maior, MIN (wage) menor FROM public_func `
 	queryCount += makeFuncFilter(filter, false)
-	fmt.Println(queryCount)
 
 	count := CountInfo{}
 	err := s.db.QueryRow(queryCount).Scan(&count.Total, &count.Media, &count.Maior, &count.Menor)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return count
 	}
 
 	return count
@@ -78,13 +78,19 @@ func getCountStats(s *Storage, filter reading.FuncFilter) interface{} {
 
 // ReadPublicFunc returns a slice with all public agents
 func (s *Storage) ReadPublicFunc(filter reading.FuncFilter) (interface{}, error) {
-	query := `SELECT  complete_name, short_name, wage, departament, function FROM public_func `
+	query := `SELECT  complete_name, short_name, wage, departament, function, relevancia FROM public_func `
 	query += makeFuncFilter(filter, true)
-	fmt.Println(query)
 
 	rows, err := s.db.Query(query)
 	if err != nil {
-		return nil, err
+		err := s.ImportPublicFunc("Maio", "2019")
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = s.ImportCustomer()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	publicfuncs, err := scanRowsPublicFunc(rows)
@@ -102,7 +108,6 @@ func (s *Storage) StatsPublicFunc(filter reading.FuncFilter) (interface{}, error
 	query += makeFuncFilter(filter, false)
 
 	query += " group by floor(wage/10000) ORDER BY floor(wage/10000)"
-	fmt.Println(query)
 	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -276,7 +281,7 @@ func scanRowsPublicFunc(rows *sql.Rows) ([]entity.PublicFunc, error) {
 
 	for rows.Next() {
 		pf := entity.PublicFunc{}
-		err := rows.Scan(&pf.CompleteName, &pf.ShortName, &pf.Wage, &pf.Departament, &pf.Function)
+		err := rows.Scan(&pf.CompleteName, &pf.ShortName, &pf.Wage, &pf.Departament, &pf.Function, &pf.Relevancia)
 		if err != nil {
 			return nil, err
 		}

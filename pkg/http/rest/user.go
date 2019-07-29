@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"log"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -32,24 +31,23 @@ func getUser(reader reading.Service) http.HandlerFunc {
 
 func addUser(adder adding.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		log.Println("aqui")
-		assertError := func(err error) {
-			if err != nil {
-				http.Error(w, fmt.Sprintf("erro ao adicionar usuário (%s)", err.Error()), http.StatusBadRequest)
-				return
-			}
-		}
 
 		b, err := ioutil.ReadAll(r.Body)
-		assertError(err)
-
+		if err != nil {
+			http.Error(w, fmt.Sprintf("erro ao adicionar usuário (%s)", err.Error()), http.StatusBadRequest)
+			return
+		}
 		newUser := entity.User{}
 		err = json.Unmarshal(b, &newUser)
-		assertError(err)
-
+		if err != nil {
+			http.Error(w, fmt.Sprintf("erro ao adicionar usuário (%s)", err.Error()), http.StatusBadRequest)
+			return
+		}
 		err = adder.AddUser(newUser)
-		assertError(err)
-
+		if err != nil {
+			http.Error(w, fmt.Sprintf("erro ao adicionar usuário (%s)", err.Error()), http.StatusBadRequest)
+			return
+		}
 		respondWithJSON(w, http.StatusOK, "usuário adicionado com sucesso")
 	}
 }

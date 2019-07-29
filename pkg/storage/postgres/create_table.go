@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"fmt"
-	"log"
 )
 
 // CreatePublicFuncTable inserts a new table if it do not exists and import the file
@@ -14,18 +13,24 @@ func (s *Storage) createPublicFuncTable(tableName string) error {
 		short_name VARCHAR(30),
 		wage NUMERIC(15,2),
 		departament VARCHAR(100),
-		function VARCHAR(100)
+		function VARCHAR(100),
+		relevancia smallint
 		)`, tableName)
 	_, err := s.db.Exec(query)
 	if err != nil {
 		return err
 	}
 	query = fmt.Sprintf(`CREATE INDEX idx_short_name ON %s (short_name)`, tableName)
+	_, err = s.db.Exec(query)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 // CreateCustomerTable inserts a new table if it do not exists and import the file
 func (s *Storage) createCustomerTable(company string) error {
+	company = "customer"
 	query := fmt.Sprintf(`CREATE TABLE %s (id SERIAL primary key, name VARCHAR(30))`, company)
 	_, err := s.db.Exec(query)
 	if err != nil {
@@ -41,16 +46,17 @@ func (s *Storage) createCustomerTable(company string) error {
 }
 
 func (s *Storage) createUsersTable(name string) error {
+	name = "users"
 	query := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s (
-		id SERIAL primary key,
-		email VARCHAR(100) UNIQUE)`, name)
+		id SERIAL,
+		email VARCHAR(50) UNIQUE,
+		password VARCHAR(100))`, name)
+	fmt.Println(query)
 	_, err := s.db.Exec(query)
 	return err
 }
 
-func (s *Storage) dropTable(name string) {
-	_, err := s.db.Exec(fmt.Sprintf("DROP TABLE %s", name))
-	if err != nil {
-		log.Fatal(err)
-	}
+func (s *Storage) dropTable(name string) error {
+	_, err := s.db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s", name))
+	return err
 }

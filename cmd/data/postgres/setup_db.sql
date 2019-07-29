@@ -17,7 +17,8 @@ complete_name VARCHAR(100),
 short_name VARCHAR(30),
 wage NUMERIC(10,2),
 departament VARCHAR(50),
-function VARCHAR(50)
+function VARCHAR(50),
+relevancia smallint
 );
 
 CREATE TABLE IF NOT EXISTS customer	(
@@ -26,10 +27,10 @@ name VARCHAR(30)
 );
 
 
-alter table public_func add column relevancia smallint;
+-- alter table public_func add column relevancia smallint;
 
-update public_func set relevancia = floor(random() * 10) + 1;
-commit;
+-- update public_func set relevancia = floor(random() * 10) + 1;
+-- commit;
 
 -- CREATE TABLE IF NOT EXISTS warnings(
 -- id SERIAL,

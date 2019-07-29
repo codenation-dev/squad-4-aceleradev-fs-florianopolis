@@ -3,9 +3,11 @@ package importing
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 	"github.com/mholt/archiver"
@@ -58,7 +60,9 @@ func ImportPublicFuncFile(month, year string) ([]entity.PublicFunc, error) {
 	if err != nil {
 		log.Fatal("parseSPData", err)
 	}
+
 	return publicFuncs, err
+
 }
 
 func parseSPData(path string) ([]entity.PublicFunc, error) {
@@ -73,7 +77,9 @@ func parseSPData(path string) ([]entity.PublicFunc, error) {
 	job := func(row []string) bool {
 		var completeName, shortName, wageString, departament, function string
 
-		completeName = strings.Replace(row[indexName], "\u0000", "", -1)
+		completeName = row[indexName]
+		// completeName = strings.Replace(row[indexName], "\u0000", "", -1)
+		// completeName = strings.Replace(row[indexName], "\U0x96", "", -1)
 		if len(completeName) > 30 {
 			shortName = completeName[:30]
 		} else {
@@ -86,8 +92,12 @@ func parseSPData(path string) ([]entity.PublicFunc, error) {
 			panic(err) //TODO: implemntar um erro melhor, mas este job só aceita retornar bool
 			// e se eu só setar o bool como "false", vai parecer que terminou o parse sem erros
 		}
-		departament = strings.Replace(row[indexDepartament], "\u0000", "", -1)
-		function = strings.Replace(row[indexFunction], "\u0000", "", -1)
+		departament = row[indexDepartament]
+		// departament = strings.Replace(row[indexDepartament], "\u0000", "", -1)
+		// departament = strings.Replace(row[indexDepartament], "\u9600", "", -1)
+		function = row[indexFunction]
+		// function = strings.Replace(row[indexFunction], "\u0000", "", -1)
+		// function = strings.Replace(row[indexFunction], "\u9600", "", -1)
 
 		publicFuncs = append(publicFuncs, entity.PublicFunc{
 			CompleteName: completeName,
@@ -100,5 +110,21 @@ func parseSPData(path string) ([]entity.PublicFunc, error) {
 	}
 
 	readCSV(path, job, ';', true)
+
+	publicFuncs = makeRelevance(publicFuncs)
+
 	return publicFuncs, nil
+}
+
+func makeRelevance(pf []entity.PublicFunc) []entity.PublicFunc {
+	s1 := rand.NewSource(time.Now().UnixNano())
+	r1 := rand.New(s1)
+	pfWithRelevance := []entity.PublicFunc{}
+	for _, p := range pf {
+		r := r1.Intn(10)
+		p.Relevancia = r + 1
+		pfWithRelevance = append(pfWithRelevance, p)
+
+	}
+	return pfWithRelevance
 }
