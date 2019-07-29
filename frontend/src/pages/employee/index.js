@@ -202,7 +202,9 @@ const Employee = () => {
       </nav>
 
       <div className="card my-2">
-        <div className="card-body row">
+        <div className="row">
+          <div className="col-10">
+        <div className="card-body mr-0 pr-0 row">
           <input
             value={nome}
             onChange={e => setNome(e.target.value)}
@@ -236,18 +238,8 @@ const Employee = () => {
             inputMode="numeric"
             placeholder="Valor"
             aria-label="Valor"
-          />
-
-            <button
-              className="btn btn-info"
-              type="button"
-              href="#"
-              onClick={() => pesquisar()}
-            >
-              Pesquisar
-            </button>
-        </div>
-        <div className="card-body row">
+          />            
+        
           <div className="col-4 mr-2">
             <legend className="col-form-label pt-0">Já é Cliente?</legend>
 
@@ -330,12 +322,22 @@ const Employee = () => {
                 <option value="true">Descendente</option>
               </select>
             </label>
-          </div>
-
-          <div className="col-2 p-0 align-items-end">          
+          </div>          
+        </div>
+      </div>
+      
+      <div className="col-2 card-body d-flex flex-column">
+      <button
+          className="btn btn-info"
+          type="button"
+          href="#"
+          onClick={() => pesquisar()}
+        >
+          Pesquisar
+        </button>
             {showList ? (
               <button
-                className="btn btn-info"
+                className="btn btn-info my-2"
                 type="button"
                 href="#"
                 onClick={() => setShowList(!showList)}
@@ -344,7 +346,7 @@ const Employee = () => {
               </button>
             ) : (
               <button
-                className="btn btn-info"
+                className="btn btn-info  my-2"
                 type="button"
                 href="#"
                 onClick={() => setShowList(!showList)}
@@ -352,8 +354,8 @@ const Employee = () => {
                 Lista
               </button>
             )}
-          </div>
-        </div>
+      </div>
+      </div>
       </div>
 
       <div className="card mb-2">
