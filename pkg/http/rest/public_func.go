@@ -6,7 +6,7 @@ import (
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/adding"
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/reading"
 )
-
+ 
 func getPublicFunc(reader reading.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()

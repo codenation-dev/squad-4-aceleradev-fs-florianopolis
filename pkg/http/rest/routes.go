@@ -4,12 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/emailserv"
-	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/adding"
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/service/deleting"
@@ -38,7 +36,7 @@ func NewRouter(adder adding.Service, reader reading.Service, updater updating.Se
 	router.Handle("/customer", getCustomer(reader)).Methods(http.MethodGet)
 	router.Handle("/customer/import", importCustomer(adder)).Methods(http.MethodGet)
 
-	router.Handle("/email_to", sendEmail(reader)).Methods(http.MethodPost)
+	router.Handle("/email_to", sendEmail(reader)).Methods(http.MethodGet)
 	// router.Handle("/fetch/data/compare_customer_x_public_func/{company}/{uf}/{year}/{month}", compareCustomerPublicFunc(reader)).Methods(http.MethodGet)
 	// router.Handle("/fetch/data/public_func_above_wage/{uf}/{year}/{month}/{wage}", getPublicFincByWage(reader)).Methods(http.MethodGet)
 
@@ -86,27 +84,46 @@ func handleQuery(reader reading.Service) http.HandlerFunc {
 
 func sendEmail(reader reading.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
-		b, err := ioutil.ReadAll(r.Body)
+		err := r.ParseForm()
 		if err != nil {
 			respondWithError(w, http.StatusInternalServerError, err)
 			return
 		}
 
-		email := entity.Email{}
-		err = json.Unmarshal(b, &email)
+		publicFuncs, err := reader.GetPublicFunc(r.Form)
 		if err != nil {
 			respondWithError(w, http.StatusInternalServerError, err)
 			return
 		}
 
-		err = emailserv.Send(email)
+		c, err := r.Cookie("token")
+		if err != nil {
+			respondWithError(w, http.StatusNoContent, err)
+			return
+		}
+
+		_, claims, err := getClaims(c)
 		if err != nil {
 			respondWithError(w, http.StatusInternalServerError, err)
 			return
 		}
 
-		respondWithJSON(w, http.StatusOK, "email enviado com sucesso")
+		_ = emailserv.Send(publicFuncs, claims.Email)
+
+		// 	email := entity.Email{}
+		// 	err = json.Unmarshal(b, &email)
+		// 	if err != nil {
+		// 		respondWithError(w, http.StatusInternalServerError, err)
+		// 		return
+		// 	}
+
+		// 	err = emailserv.Send(email)
+		// 	if err != nil {
+		// 		respondWithError(w, http.StatusInternalServerError, err)
+		// 		return
+		// 	}
+
+		respondWithJSON(w, http.StatusOK, fmt.Sprintf("email enviado com sucesso para %s", claims.Email))
 	}
 }
 

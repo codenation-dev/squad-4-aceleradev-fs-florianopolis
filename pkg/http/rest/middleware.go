@@ -90,6 +90,18 @@ func login(reader reading.Service) http.HandlerFunc {
 	}
 }
 
+func getClaims(c *http.Cookie) (*jwt.Token, *Claims, error) {
+	// Get the JWT string from the cookie
+	tknStr := c.Value
+
+	claims := &Claims{}
+
+	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	return tkn, claims, err
+}
+
 // Middleware handles the authorization to use the API
 func authorize(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -121,14 +133,12 @@ func authorize(next http.Handler) http.Handler {
 			return
 		}
 
-		// Get the JWT string from the cookie
-		tknStr := c.Value
+		tkn, claims, err := getClaims(c)
+		if err != nil {
+			respondWithError(w, http.StatusBadRequest, err)
+			return
+		}
 
-		claims := &Claims{}
-
-		tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
-			return jwtKey, nil
-		})
 		if !tkn.Valid {
 			respondWithError(w, http.StatusUnauthorized, entity.ErrUnauthorized)
 			return
