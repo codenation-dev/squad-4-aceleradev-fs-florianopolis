@@ -51,6 +51,26 @@ func NewStorage(dbName string) *Storage {
 	return s
 }
 
+func (s *Storage) ReadAllUsers() ([]string, error) {
+	query := `SELECT email FROM users`
+	rows, err := s.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	emails := []string{}
+	for rows.Next() {
+		email := ""
+		err := rows.Scan(&email)
+		if err != nil {
+			return nil, err
+		}
+		emails = append(emails, email)
+
+	}
+	return emails, nil
+}
+
 // ReadUser reads a customer from the DB, given the email
 func (s *Storage) ReadUser(email string) (entity.User, error) {
 	user := entity.User{}

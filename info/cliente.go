@@ -45,9 +45,7 @@ func (filter ClienteFilter) makeFilter(paginated bool) string {
 func ClienteList(filter *ClienteFilter) ([]model.Cliente, error) {
 	clienteList := []model.Cliente{}
 	query := `SELECT id_cliente, nome FROM cliente ` + filter.makeFilter(true)
-	fmt.Println(query)
 	rows, err := DBCon.Query(query)
-	fmt.Println(rows)
 	if err != nil {
 		return nil, err
 	}
@@ -60,6 +58,5 @@ func ClienteList(filter *ClienteFilter) ([]model.Cliente, error) {
 		}
 		clienteList = append(clienteList, pf)
 	}
-	fmt.Println(clienteList)
 	return clienteList, nil
 }

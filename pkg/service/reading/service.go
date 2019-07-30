@@ -11,6 +11,7 @@ import (
 // Service implements the business rules
 type Service interface {
 	GetUser(email string) (entity.User, error)
+	GetAllUsers() ([]string, error)
 	GetPublicFunc(mapFilter map[string][]string) (interface{}, error)
 	GetCustomer(mapFilter map[string][]string) ([]entity.Customer, error)
 	Query(q, offset, page string) (interface{}, error)
@@ -24,6 +25,7 @@ type Service interface {
 // Repository implements the interface to deal with the storage
 type Repository interface {
 	ReadUser(email string) (entity.User, error)
+	ReadAllUsers() ([]string, error)
 	ReadPublicFunc(filter FuncFilter) (interface{}, error)
 	ReadCustomer(filter CustFilter) ([]entity.Customer, error)
 	Query(q, offset, page string) (interface{}, error)
@@ -50,6 +52,10 @@ func (s *service) Query(q, offset, page string) (interface{}, error) {
 
 func (s *service) GetUser(email string) (entity.User, error) {
 	return s.bR.ReadUser(email)
+}
+
+func (s *service) GetAllUsers() ([]string, error) {
+	return s.bR.ReadAllUsers()
 }
 
 type FuncFilter struct {
@@ -85,7 +91,6 @@ func validateFilter(mapFilter map[string][]string) (FuncFilter, error) {
 	if filter.Customer != "yes" && filter.Customer != "no" {
 		filter.Customer = ""
 	}
-	fmt.Println(filter)
 
 	return filter, nil
 

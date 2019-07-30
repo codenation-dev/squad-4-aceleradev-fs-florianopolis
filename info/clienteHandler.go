@@ -33,11 +33,9 @@ func ClienteList(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("%+v", filter)
 
 	clienteList, err := database.ClienteList(filter)
-	fmt.Println("retorno", err)
 	if err != nil {
 		model.ErrorResponse(w, fmt.Errorf("sem dados: %v", err), http.StatusBadRequest)
 		return
 	}
-	fmt.Println(clienteList)
 	model.ToJSON(w, clienteList)
 }

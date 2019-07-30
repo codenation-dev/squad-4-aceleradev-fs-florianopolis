@@ -51,7 +51,6 @@ func (s *Storage) createUsersTable(name string) error {
 		id SERIAL,
 		email VARCHAR(50) UNIQUE,
 		password VARCHAR(100))`, name)
-	fmt.Println(query)
 	_, err := s.db.Exec(query)
 	return err
 }

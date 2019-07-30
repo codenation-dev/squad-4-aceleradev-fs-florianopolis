@@ -96,19 +96,33 @@ func sendEmail(reader reading.Service) http.HandlerFunc {
 			return
 		}
 
-		c, err := r.Cookie("token")
-		if err != nil {
-			respondWithError(w, http.StatusNoContent, err)
-			return
-		}
+		// c, err := r.Cookie("token")
+		// fmt.Println("cookie", c)
+		// if err != nil {
+		// 	respondWithError(w, http.StatusNoContent, err)
+		// 	return
+		// }
 
-		_, claims, err := getClaims(c)
+		// _, claims, err := getClaims(c)
+		// fmt.Println("claims", claims)
+		// if err != nil {
+		// 	respondWithError(w, http.StatusInternalServerError, err)
+		// 	return
+		// }
+
+		emails, err := reader.GetAllUsers()
 		if err != nil {
 			respondWithError(w, http.StatusInternalServerError, err)
 			return
+
 		}
 
-		_ = emailserv.Send(publicFuncs, claims.Email)
+		err = emailserv.Send(publicFuncs, emails...)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err)
+			return
+
+		}
 
 		// 	email := entity.Email{}
 		// 	err = json.Unmarshal(b, &email)
@@ -123,7 +137,7 @@ func sendEmail(reader reading.Service) http.HandlerFunc {
 		// 		return
 		// 	}
 
-		respondWithJSON(w, http.StatusOK, fmt.Sprintf("email enviado com sucesso para %s", claims.Email))
+		respondWithJSON(w, http.StatusOK, fmt.Sprintf("email enviado com sucesso para %s", emails))
 	}
 }
 
