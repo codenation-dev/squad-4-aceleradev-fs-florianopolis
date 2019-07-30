@@ -133,9 +133,11 @@ func getIndex() http.HandlerFunc {
 	}
 }
 
-func respondWithError(w http.ResponseWriter, status int, err error) {
+func respondWithError(w http.ResponseWriter, status int, payload interface{}) {
+	response, _ := json.Marshal(payload)
+
 	w.WriteHeader(status)
-	fmt.Fprint(w, err.Error())
+	w.Write(response)
 }
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
