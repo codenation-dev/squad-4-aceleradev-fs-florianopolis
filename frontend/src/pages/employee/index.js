@@ -5,6 +5,7 @@ import {
   statEmployee,
   departStatEmployee
 } from "../../services/employeeService";
+import { sendEmail } from "../../services/emailService";
 import EmployeeBar from "../graphics/EmployeeBar";
 import QtdDepart from "../graphics/qtdDepart";
 import QtdCargo from "../graphics/qtdCargo";
@@ -14,7 +15,7 @@ const renderEmployeeList = result => {
   if (!result || !result.list || result.list.length === 0) {
     return (
       <tr>
-        <td className="col text-center" colSpan="4">
+        <td className="col text-center" colSpan="12">
           Nenhum funcionário encontrado!!!
         </td>
       </tr>
@@ -23,11 +24,11 @@ const renderEmployeeList = result => {
 
   return result.list.map((customer, key) => {
     return (
-      <tr key={key} className="d-flex">
-        <td className="col-5">{customer.complete_name}</td>
-        <td className="col-3">{customer.function}</td>
-        <td className="col-3">{customer.departament}</td>
-        <td className="col text-right">
+      <tr key={key}>
+        <td scope="row" colSpan="6">{customer.complete_name}</td>
+        <td scope="row" colSpan="3">{customer.function}</td>
+        <td scope="row" colSpan="2">{customer.departament}</td>
+        <td scope="row" className="text-right">
           {customer.wage.toLocaleString("pt-BR", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
@@ -60,7 +61,7 @@ const Employee = () => {
   , {id: 3, name: '3'}, {id: 4, name: '4'}, {id: 5, name: '5'}, {id: 6, name: '6'}, {id: 7, name: '7'}
   , {id: 8, name: '8'}, {id: 9, name: '9'}, {id: 10, name: '10'}]
 
-  const makeRelevanciaFilter = (item) => <option value={item.id}>{item.name}</option>
+  const makeRelevanciaFilter = (item) => <option key={item.id} value={item.id}>{item.name}</option>
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,7 +100,7 @@ const Employee = () => {
         valor,
         ehCliente, relevancia
       );
-      console.log(result);
+
       setEmployeeList({stats: result.info || {}})
       setDepartStat(departResult || {});
       setEmployeeStat(result.stats || {});
@@ -129,14 +130,14 @@ const Employee = () => {
 
   const renderListInfo = () => {
     return (
-      <>
+      <div>
         <table className="table table-striped table-dark table-hover">
           <thead>
-            <tr className="d-flex">
-              <th className="col-5">Nome</th>
-              <th className="col-3">Cargo</th>
-              <th className="col-3">Orgão</th>
-              <th className="col text-right">Salário</th>
+            <tr>
+              <th scope="col" colSpan="6">Nome</th>
+              <th scope="col" colSpan="3">Cargo</th>
+              <th scope="col" colSpan="2">Orgão</th>
+              <th scope="col" className="text-right">Salário</th>
             </tr>
           </thead>
           <tbody>{renderEmployeeList(employeeList)}</tbody>
@@ -168,7 +169,7 @@ const Employee = () => {
             </ul>
           </nav>
         </div>
-      </>
+      </div>
     );
   };
   const renderEstatisticaInfo = () => {
@@ -346,7 +347,7 @@ const Employee = () => {
               </button>
             ) : (
               <button
-                className="btn btn-info  my-2"
+                className="btn btn-info my-2"
                 type="button"
                 href="#"
                 onClick={() => setShowList(!showList)}
@@ -354,6 +355,24 @@ const Employee = () => {
                 Lista
               </button>
             )}
+
+              <button
+                className="btn btn-info"
+                type="button"
+                href="#"
+                onClick={async() => {
+                  const result = await sendEmail(nome,
+                    cargo,
+                    orgao,
+                    valor,
+                    ehCliente,
+                    relevancia)
+                  alert("Email enviado com sucesso!")
+                  console.log(result)
+                }}
+              >
+                Enviar Email
+              </button>
       </div>
       </div>
       </div>

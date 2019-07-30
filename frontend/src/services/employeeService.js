@@ -1,5 +1,4 @@
 import api from './api';
-import {logout} from './loginService';
 
 export const listEmployee = (
     nome, funcao, orgao, wage, ehCliente, relevancia, page, campoOrdenacao, ordenacao) => {
