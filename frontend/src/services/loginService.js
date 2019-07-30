@@ -48,7 +48,7 @@ export const register = (email, password) => {
     )
     .then(response => response)
     .catch(err => {
-      throw new Error(err)
+      throw new Error(err.data)
     })
 };
 

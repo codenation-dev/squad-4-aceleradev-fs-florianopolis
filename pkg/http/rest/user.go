@@ -34,19 +34,16 @@ func addUser(adder adding.Service) http.HandlerFunc {
 
 		b, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("erro ao adicionar usuário (%s)", err.Error()), http.StatusBadRequest)
-			return
+			respondWithError(w, http.StatusBadRequest, fmt.Sprintf("erro ao adicionar usuário (%s)", err.Error()))
 		}
 		newUser := entity.User{}
 		err = json.Unmarshal(b, &newUser)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("erro ao adicionar usuário (%s)", err.Error()), http.StatusBadRequest)
-			return
+			respondWithError(w, http.StatusBadRequest, fmt.Sprintf("erro ao adicionar usuário (%s)", err.Error()))
 		}
 		err = adder.AddUser(newUser)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("erro ao adicionar usuário (%s)", err.Error()), http.StatusBadRequest)
-			return
+			respondWithError(w, http.StatusBadRequest, fmt.Sprintf("erro ao adicionar usuário (%s)", err.Error()))
 		}
 		respondWithJSON(w, http.StatusOK, "usuário adicionado com sucesso")
 	}
