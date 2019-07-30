@@ -2,8 +2,6 @@
 package reading
 
 import (
-	"fmt"
-
 	"github.com/codenation-dev/squad-4-aceleradev-fs-florianopolis/pkg/entity"
 	"github.com/gorilla/schema"
 )
